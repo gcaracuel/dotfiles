@@ -1,0 +1,31 @@
+---
+- name: Update packages
+  become: yes
+  become_method: sudo
+  apt: upgrade=dist update_cache=yes
+- name: Install libraries using APT
+  yum: name={{ item }} state=latest
+  become: yes
+  become_method: sudo
+  with_items:
+    - bash
+    - curl
+    - git
+    - htop
+    - nmap
+    - node
+    - python
+    - python-pip
+    - python-pycurl
+    - python3
+    - vim
+    - tmux
+    - wget
+    - zsh
+    - https://github.com/atom/atom/releases/download/v1.11.2/atom.x86_64.rpm
+    - mvn
+    - nvm
+    - virtualenv
+    - httpie
+    - byobu
+    - rvm

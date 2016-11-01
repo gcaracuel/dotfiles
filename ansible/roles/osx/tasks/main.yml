@@ -1,0 +1,49 @@
+---
+- name: Update Homebrew
+  homebrew: update_homebrew=yes
+
+- name: Install libraries with Homebrew
+  homebrew: name={{ item }} state=latest
+  with_items:
+    - ack
+    - curl
+    - git
+    - nmap
+    - node
+    - python
+    - python3
+    - readline
+    - rename
+    - ssh-copy-id
+    - vim
+    - watch
+    - wget
+    - zsh
+    - zsh-completions
+    - httpie
+    - tree
+    - openssl
+    - coreutils
+    - findutils
+    - cask
+    - htop
+    - mvn
+    - nvm
+    - virtualenv
+    - byobu
+    - rvm
+
+- name: Install apps with Homebrew Cask
+  homebrew_cask: name={{ item }} state=present
+  with_items:
+    - atom
+    - iterm2
+    - macpass
+    - vlc
+    - vagrant
+    - vagrant-manager
+    - font-hack
+    - github-desktop
+
+- name: Cleanup Brew packages
+  command: brew cleanup
