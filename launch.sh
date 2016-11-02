@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
+
+# Requirements:
+# git & ansible
+
+
 git pull
-# Requirement:   sudo pip install --upgrade pip install git+git://github.com/ansible/ansible.git@stable-2.2
 ansible-playbook -i ansible/inventory ansible/bootstrap.yml
 
 #if [[ `uname -s` == 'Linux' ]]; then

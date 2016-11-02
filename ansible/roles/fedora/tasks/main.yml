@@ -1,8 +1,4 @@
 ---
-- name: Update packages
-  become: yes
-  become_method: sudo
-  apt: upgrade=dist update_cache=yes
 - name: Install libraries using APT
   yum: name={{ item }} state=latest
   become: yes
