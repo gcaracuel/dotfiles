@@ -1,6 +1,6 @@
 ---
-- name: Install libraries using APT
-  yum: name={{ item }} state=latest
+- name: Install libraries using DNF
+  dnf: name={{ item }} state=latest
   become: yes
   become_method: sudo
   with_items:
