@@ -1,9 +1,9 @@
 ---
 - name: Backup old dotfiles
   file: src=~/.{{ item }}
-        dest=~/.{{ item }}.backup
+        dest=~/.{{ item }}.ansible_date_time.epoch_backup
         state=file
-        force=no
+        force=yes
 - name: Symlink my dotfiles
   file: src=./dotfiles/{{ item }}
         dest=~/.{{ item }}
