@@ -1,0 +1,15 @@
+[user]
+	email = gcaracuel@gmail.com
+	name = Guillermo Caracuel
+[credential]
+	helper = cache
+[core]
+	editor = vim
+	excludesfile = /home/gcaracuel/.gitignore_global
+[push]
+	default = simple
+[mergetool]
+	prompt = false
+[merge]
+	conflictstyle = diff3
+	tool = vimdiff

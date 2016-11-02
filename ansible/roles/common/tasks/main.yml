@@ -1,12 +1,12 @@
 - include: dotfiles.yml
   with_items:
-    - .vimrc
-    - .zshrc
-    - .gitignore_global
-    - .gitconfig
-    - .tmux.conf
-    - .npmrc
-    - .atom/
+    - vimrc
+    - zshrc
+    - gitignore_global
+    - gitconfig
+    - tmux.conf
+    - npmrc
+    - atom/
 
 - name: Dowloading (custom) oh my zsh
   git:  repo=https://github.com/gcaracuel/oh-my-zsh dest==~/.oh-my-zsh/ clone=yesc update=yes

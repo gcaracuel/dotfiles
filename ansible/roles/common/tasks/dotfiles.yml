@@ -1,11 +1,11 @@
 ---
 - name: Backup old dotfiles
-  file: src=~/{{ item }}
-        dest=~/{{ item }}.backup
+  file: src=~/.{{ item }}
+        dest=~/.{{ item }}.backup
         state=file
         force=no
 - name: Symlink my dotfiles
   file: src=./dotfiles/{{ item }}
-        dest=~/{{ item }}
+        dest=~/.{{ item }}
         state=link
         force=yes

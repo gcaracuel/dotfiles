@@ -1,0 +1,5 @@
+email = gcaracuel@gmail.com
+color = false
+strict-ssl = false
+always-auth = true
+#always-auth = false
