@@ -2,25 +2,25 @@
 set nocompatible
 filetype off
 
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
 
-" let Vundle manage Vundle
-" " required! 
-Bundle 'gmarik/vundle'
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
 
-"# The bundles you install will be listed here
 
-Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
+"# The bundles you install will be listed here (Using Vundle)
+
+Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 " Powerline setup
 set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 9
 set laststatus=2
 
-Bundle 'tpope/vim-fugitive'
-Bundle 'scrooloose/nerdtree'
+Plugin 'tpope/vim-fugitive'
+Plugin 'scrooloose/nerdtree'
 map <F3> :NERDTreeToggle<CR>
 
-Bundle 'klen/python-mode'
+Plugin 'klen/python-mode'
 " Python-mode
 " Activate rope
 " Keys:
@@ -61,10 +61,10 @@ let g:pymode_syntax_space_errors = g:pymode_syntax_all
 " Don't autofold code
 let g:pymode_folding = 0
 
-Bundle 'davidhalter/jedi-vim'
+Plugin 'davidhalter/jedi-vim'
 
 "# Go-vim
-Bundle 'fatih/vim-go'
+Plugin 'fatih/vim-go'
 let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
 let g:go_highlight_structs = 1
@@ -189,15 +189,15 @@ set tabstop=4
 set shiftwidth=4
 set expandtab
 
-" more subtle popup colors 
+" more subtle popup colors
 if has ('gui_running')
      highlight Pmenu guibg=#cccccc gui=bold
      endif
-" Show whitespaces 
+" Show whitespaces
 " Use <leader>l to activate deactivate
-" MUST be inserted BEFORE the colorscheme command  
+" MUST be inserted BEFORE the colorscheme command
 set listchars=tab:>-,trail:·,extends:>,precedes:<,nbsp:_
 set list
 
 "# Colors!
-colorscheme Tomorrow-Night-Eighties 
+colorscheme Tomorrow-Night-Eighties

@@ -1,7 +1,7 @@
-source /home/gcaracuel/.antigen/antigen.zsh
+#source $HOME/.antigen/antigen.zsh
 
 # Path to your oh-my-zsh installation.
-export ZSH=/home/gcaracuel/.oh-my-zsh
+export ZSH=$HOME/.oh-my-zsh
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
@@ -13,7 +13,8 @@ ZSH_THEME="bureau"
 #ZSH_THEME="avit"
 #ZSH_THEME="spaceship"
 
-DEFAULT_USER="gcaracuel"
+#DEFAULT_USER="gcaracuel"
+DEFAULT_USER=$USER
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -58,10 +59,7 @@ DEFAULT_USER="gcaracuel"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 
-# Autoenv
-source $(which activate.sh)
-
-plugins=(git yum vagrant systemd virtualenv virtualenvwrapper svn sudo pip npm node mvn docker bower z rvm autoenv tmux)
+plugins=(git yum vagrant systemd virtualenv virtualenvwrapper svn sudo pip npm node mvn docker bower z rvm tmux)
 
 # User configuration
 

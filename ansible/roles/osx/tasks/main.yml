@@ -1,4 +1,7 @@
 ---
+- name: Install XCode
+  command: xcode-select --install
+
 - name: Update Homebrew
   homebrew: update_homebrew=yes
 
@@ -30,6 +33,7 @@
     - mvn
     - nvm
     - virtualenv
+    - virtualenvwrapper
     - byobu
     - rvm
 
@@ -44,6 +48,9 @@
     - vagrant-manager
     - font-hack
     - github-desktop
+    - virtualbox
+
+## Here install this: https://github.com/chriskempson/tomorrow-theme/tree/master/iTerm2
 
 - name: Cleanup Brew packages
   command: brew cleanup
