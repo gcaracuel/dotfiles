@@ -1,6 +1,22 @@
 ---
-- name: Copy my dotfiles - {{ item }}
-  copy: src=../dotfiles/{{ item }}
+- block:
+  - file:
+      path: ~/.dotfiles_backups/{{ item | dirname }}
+      state: directory
+      recurse: yes
+  - name: Check if {{ item }} is a directory
+    file:
+      path: ~/.{{ item | dirname }}
+      state: directory
+      recurse: yes
+  when: '"/" in "{{ item }}"'
+- name: Backup dotfiles - {{ item }}
+  copy: src=~/.{{ item }}
+        dest=~/.dotfiles_backups/{{ item }}_{{ ansible_date_time.epoch }}
+        follow=yes
+  ignore_errors: yes
+- name: Link dotfiles - {{ item }}
+  file: src={{ playbook_dir }}/../dotfiles/{{ item }}
         dest=~/.{{ item }}
-        backup=yes
-        force=yes
+        state=link
+        follow=yes

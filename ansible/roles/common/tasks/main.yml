@@ -1,3 +1,9 @@
+- file:
+    path: ~/.dotfiles_backups/
+    state: directory
+    recurse: yes
+  tags: dotfiles
+
 - include: dotfiles.yml
   with_items:
     - vimrc
@@ -6,11 +12,13 @@
     - gitconfig
     - tmux.conf
     - npmrc
-    - atom/
-    - vim/
+    - atom/config.cson
+    - vim/colors/Tomorrow-Night-Eighties.vim
+  tags: dotfiles
 
 - name: Dowloading (custom) oh my zsh
-  git:  repo=https://github.com/gcaracuel/oh-my-zsh dest=~/.oh-my-zsh/ clone=yes update=yes
+  git: repo=https://github.com/gcaracuel/oh-my-zsh dest=~/.oh-my-zsh/ clone=yes update=yes
+  tags: dotfiles
 
 - name: Change shell to ZSH
   become: yes
@@ -34,7 +42,6 @@
   command: vim +PluginInstall +qall
 - name: Ensure VIM tmp dir exists
   file: path=~/.vim/tmp state=directory mode=0700
-
 
 - name: Cloning Powerline Fonts
   git: repo=https://github.com/powerline/fonts.git dest=/tmp/fonts/ clone=yes update=yes

@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
 
+
+# usage:
+#  ./launch.sh -v  OR   cd ansible && ansible-playbook -i inventory bootstrap.yml
+#  (Only update dotfiles)  ./launch.sh  "-v --tags dotfieles"  OR  cd ansible && ansible-playbook -i inventory bootstrap.yml --tags dotfiles
+
+
 echo "
 # Requirements:\n
-#   (Fedora): sudo dnf install ansible git python2-dnf\n
+#   (Fedora): sudo dnf install ansible git\n
 #   (OSX): sudo pacman -S ansible\n"
 
 git pull
-ansible-playbook -i ansible/inventory ansible/bootstrap.yml $1
+cd ansible && ansible-playbook -i inventory bootstrap.yml $1

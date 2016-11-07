@@ -7,8 +7,8 @@
 # you're doing.
 
 nodes = [
-  {:hostname => 'fedora', :box => 'fedora/24-cloud-base'},
-  {:hostname => 'osx', :box => 'gobadiah/macos-sierra'}
+  {:hostname => 'fedora', :box => 'bertvv/fedora24'},
+  {:hostname => 'osx', :box => 'jhcook/macos-sierra'}
 ]
 
 
@@ -23,7 +23,12 @@ Vagrant.configure(2) do |config|
   nodes.each do |node|
     config.vm.define node[:hostname] do |basenode|
       basenode.vm.box = node[:hostname]
-      basenode.vm.box = node[:box] ? node[:box] : "fedora/24-cloud-base"
+      basenode.vm.box = node[:box] ? node[:box] : "bertvv/fedora24"
+
+      basenode.vm.provision :ansible_local do |ansible|
+        ansible.playbook = "ansible/bootstrap.yml"
+        ansible.verbose = "v"
+      end
 
       # Disable automatic box update checking. If you disable this, then
       # boxes will only be checked for updates when the user runs
