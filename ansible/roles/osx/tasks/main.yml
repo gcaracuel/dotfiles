@@ -46,7 +46,11 @@
     - font-hack
     - github-desktop
     - virtualbox
+    - spotify
+    - google-chrome
+    - slack
 
+## TO-DO
 ## Here install this: https://github.com/chriskempson/tomorrow-theme/tree/master/iTerm2
 
 - name: Cleanup Brew packages
