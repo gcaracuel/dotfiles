@@ -1,0 +1,5 @@
+---
+- name: Install NVM
+  shell: /bin/bash -c "curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.32.1/install.sh | bash"
+  become: yes
+  become_method: sudo

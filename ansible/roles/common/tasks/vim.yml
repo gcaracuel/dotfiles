@@ -1,0 +1,7 @@
+---
+- name: Install Vundle VIM package manager
+  git:  repo=https://github.com/VundleVim/Vundle.vim.git dest=~/.vim/bundle/Vundle.vim clone=yes update=yes
+- name: Install VIM plugins
+  command: vim +PluginInstall +qall
+- name: Ensure VIM tmp dir exists
+  file: path=~/.vim/tmp state=directory mode=0700

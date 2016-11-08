@@ -1,0 +1,8 @@
+- name: Cloning Powerline Fonts
+  git: repo=https://github.com/powerline/fonts.git dest=/tmp/fonts/ clone=yes update=yes
+- name: Install Powerline Fonts (script)
+  command: /tmp/fonts/install.sh
+- name: Install Powerline fonts (pip)
+  pip: name=powerline-status
+  become: yes
+  become_method: sudo

@@ -36,26 +36,6 @@
     - maven
     - VirtualBox-5.1
 
-- name: Install RVM
-  shell: /bin/bash -c "gpg2 --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 && curl -sSL https://get.rvm.io | bash -s stable --ruby"
-  become: yes
-  become_method: sudo
-
-- name: Install NVM
-  shell: /bin/bash -c "curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.32.1/install.sh | bash"
-  become: yes
-  become_method: sudo
-
-- name: Install VIRTUALENV
-  pip: name=virtualenv state=latest
-  become: yes
-  become_method: sudo
-- name: Install VIRTUALENVWRAPPER
-  pip: name=virtualenvwrapper state=latest
-  become: yes
-  become_method: sudo
-
-
 - name: Install Gnome-Terminal theme
   shell: /bin/bash -c "rm setup-theme.sh ; wget https://raw.githubusercontent.com/chriskempson/tomorrow-theme/master/Gnome-Terminal/setup-theme.sh && chmod +x setup-theme.sh && alias gconftool=gconftool-2 && ./setup-theme.sh"
   args:
