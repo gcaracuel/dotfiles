@@ -68,3 +68,7 @@
   shell: /bin/bash -c "rm setup-theme.sh ; wget https://raw.githubusercontent.com/chriskempson/tomorrow-theme/master/Gnome-Terminal/setup-theme.sh && chmod +x setup-theme.sh && alias gconftool=gconftool-2 && ./setup-theme.sh"
   args:
     chdir: /tmp
+
+- include: oracle_java.yml
+  tags:
+    - java

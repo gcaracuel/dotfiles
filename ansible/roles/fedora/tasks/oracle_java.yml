@@ -1,0 +1,34 @@
+---
+- name: Download Java RPM
+  shell:
+    "curl -L  -H 'Cookie:oraclelicense=accept-securebackup-cookie' -o {{ oracle_java_dir_source }}/{{ oracle_java_rpm_filename }} {{ oracle_java_rpm_url }}"
+  args:
+    creates: "{{ oracle_java_dir_source }}/{{ oracle_java_rpm_filename }}"
+  register: oracle_java_task_rpm_download
+  become: yes
+  become_method: sudo
+
+- name: Install Java RPM
+  action: "{{ ansible_pkg_mgr }} name={{ oracle_java_dir_source }}/{{ oracle_java_rpm_filename }} state=present"
+  when: not oracle_java_task_rpm_download|skipped
+  become: yes
+  become_method: sudo
+
+- name: Set Java version as default
+  alternatives:
+    name="{{ item.exe }}"
+    link="/usr/bin/{{ item.exe }}"
+    path="{{ item.path }}/{{ item.exe }}"
+  with_items:
+    - { path: "{{ oracle_java_home }}/jre/bin", exe: 'java' }
+    - { path: "{{ oracle_java_home }}/jre/bin", exe: 'keytool' }
+    - { path: "{{ oracle_java_home }}/bin", exe: 'javac' }
+    - { path: "{{ oracle_java_home }}/bin", exe: 'javadoc' }
+  become: yes
+  become_method: sudo
+
+  when: oracle_java_set_as_default
+- name: Cleanup Java RPM
+  file: path={{ oracle_java_dir_source }}/{{ oracle_java_rpm_filename }} state=absent force=yes
+  become: yes
+  become_method: sudo

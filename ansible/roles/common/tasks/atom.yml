@@ -3,7 +3,6 @@
   command: apm install {{ item }} chdir=~
   with_items:
     - merge-conflicts
-  # IS NOT WORKING
     - atom-beautify
     - file-icons
     - linter
