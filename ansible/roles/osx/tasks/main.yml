@@ -31,7 +31,8 @@
     - byobu
 
 - name: Install Cask
-  homebrew: name=brew-cask state=latest
+  homebrew_tap: tap=caskroom/cask
+  become: no
 - name: Install apps with Cask
   homebrew_cask: name={{ item }} state=present
   with_items:
