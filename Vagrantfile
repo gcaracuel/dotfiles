@@ -37,8 +37,16 @@ easy_install pip
 pip install ansible
 SCRIPT
         $ansible = <<SCRIPT
-cd ~ &&  git clone https://github.com/gcaracuel/dotfiles.git
-cd dotfiles && ./launch.sh -v
+cd ~ && \
+if [ ! -d dotfiles]
+then
+  git clone https://github.com/gcaracuel/dotfiles.git
+  cd dotfiles
+else
+  cd dotfiles
+  git pull https://github.com/gcaracuel/dotfiles.git
+fi
+./launch.sh -v
 SCRIPT
         basenode.vm.provision "shell", inline: $deps
         basenode.vm.provision "shell", inline: $ansible, privileged: false

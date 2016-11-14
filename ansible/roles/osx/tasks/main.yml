@@ -26,13 +26,12 @@
     - coreutils
     - findutils
     - htop
-    - maven
     - gpg
     - nvm
     - byobu
 
-- name: Install Sask
-  homebrew: name=cask state=latest
+- name: Install Cask
+  homebrew: name=brew-cask state=latest
 - name: Install apps with Cask
   homebrew_cask: name={{ item }} state=present
   with_items:
@@ -47,6 +46,10 @@
     - spotify
     - google-chrome
     - slack
+    - java
+
+- name: Install Maven
+  homebrew: name=maven state=latest
 
 ## TO-DO
 ## Here install this: https://github.com/chriskempson/tomorrow-theme/tree/master/iTerm2
