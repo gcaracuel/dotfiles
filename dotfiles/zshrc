@@ -85,13 +85,21 @@ source $ZSH/oh-my-zsh.sh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
 
 # NVM
-export NVM_DIR="/home/$DEFAULT_USER/.nvm"
+export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh" # OSX
 
 # VirtualEnv
 export WORKON_HOME=~/Envs
 mkdir -p $WORKON_HOME
-source /usr/bin/virtualenvwrapper.sh
+case `uname` in
+  Darwin)
+    source /usr/local/bin/virtualenvwrapper.sh
+    ;;
+  Linux)
+    source /usr/bin/virtualenvwrapper.sh
+    ;;
+esac
 
 # RVM
 rvm_silence_path_mismatch_check_flag=1     # This silence a dummy bug when using RVM and virtualenv at the same time

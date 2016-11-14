@@ -9,6 +9,32 @@
     gpgcheck: yes
   become: yes
   become_method: sudo
+- name: Add Spotify repo
+  yum_repository:
+    name: spotify
+    description: Spotify Negativo17 $releasever - $basearch - VirtualBox
+    baseurl: http://negativo17.org/repos/spotify/fedora-$releasever/$basearch/
+    enabled: yes
+    gpgkey: http://negativo17.org/repos/RPM-GPG-KEY-slaanesh
+    gpgcheck: yes
+  become: yes
+  become_method: sudo
+- name: Add Chrome repo
+  yum_repository:
+    name: google-chrome
+    description: Google Chrome
+    baseurl: http://dl.google.com/linux/chrome/rpm/stable/x86_64
+    enabled: yes
+    gpgcheck: yes
+  become: yes
+  become_method: sudo
+
+- name: Install rpmfusion-free yum repo
+  dnf:
+    name: http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-{{ ansible_distribution_version }}.noarch.rpm
+    state: present
+  become: yes
+  become_method: sudo
 
 - name: Install libraries using DNF
   dnf: name={{ item }} state=latest
@@ -35,10 +61,8 @@
     - byobu
     - maven
     - VirtualBox-5.1
-    # spotify
-    # google-chrome
-    # slack
-    # atom from a repo
+    - google-chrome
+    - spotify
 
 - name: Install Gnome-Terminal theme
   shell: /bin/bash -c "rm setup-theme.sh ; wget https://raw.githubusercontent.com/chriskempson/tomorrow-theme/master/Gnome-Terminal/setup-theme.sh && chmod +x setup-theme.sh && alias gconftool=gconftool-2 && ./setup-theme.sh"

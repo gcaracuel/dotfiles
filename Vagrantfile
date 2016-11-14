@@ -8,14 +8,15 @@
 
 nodes = [
   {:hostname => 'fedora', :box => 'bertvv/fedora24'},
-  {:hostname => 'osx', :box => 'jhcook/macos-sierra'}
+#  {:hostname => 'osx', :box => 'jhcook/osx-elcapitan-10.11'},
+  {:hostname => 'osx', :box => 'AndrewDryga/vagrant-box-osx'}
 ]
 
 
 Vagrant.configure(2) do |config|
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
-  # https://docs.vagrantup.com.
+  # https://docs.vagrantup.com.s
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
@@ -25,9 +26,29 @@ Vagrant.configure(2) do |config|
       basenode.vm.box = node[:hostname]
       basenode.vm.box = node[:box] ? node[:box] : "bertvv/fedora24"
 
-      basenode.vm.provision :ansible_local do |ansible|
-        ansible.playbook = "ansible/bootstrap.yml"
-        ansible.verbose = "v"
+      if node[:hostname] != 'osx'
+        basenode.vm.provision :ansible_local do |ansible|
+          ansible.playbook = "ansible/bootstrap.yml"
+          ansible.verbose = "v"
+        end
+      else
+        $deps = <<SCRIPT
+easy_install pip
+pip install ansible
+SCRIPT
+        $ansible = <<SCRIPT
+cd ~ &&  git clone https://github.com/gcaracuel/dotfiles.git
+cd dotfiles && ./launch.sh -v
+SCRIPT
+        basenode.vm.provision "shell", inline: $deps
+        basenode.vm.provision "shell", inline: $ansible, privileged: false
+
+
+        config.vm.provider "virtualbox" do |vb|
+           # Display the VirtualBox GUI when booting the machine
+           vb.gui = true
+        end
+
       end
 
       # Disable automatic box update checking. If you disable this, then

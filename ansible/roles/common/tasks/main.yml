@@ -29,8 +29,10 @@
   with_items:
     - virtualenv
     - virtualenvwrapper
-- include: rvm.yml
+    - ipython
+
 - include: nvm.yml
 - include: atom.yml
 - include: vim.yml
 - include: fonts.yml
+- include: rvm.yml
