@@ -16,7 +16,11 @@
     - vim/colors/Tomorrow-Night-Eighties.vim
   tags: dotfiles
 
-- name: Dowloading (custom) oh my zsh
+- name: Installing Antigen
+  git: repo=https://github.com/zsh-users/antigen.git dest=~/.antigen clone=yes update=yes
+  tags: dotfiles
+
+- name: Downloading (custom) oh my zsh
   git: repo=https://github.com/gcaracuel/oh-my-zsh dest=~/.oh-my-zsh/ clone=yes update=yes
   tags: dotfiles
 

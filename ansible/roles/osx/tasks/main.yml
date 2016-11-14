@@ -2,6 +2,9 @@
 - name: Install XCode
   command: xcode-select --install
 
+- name: Install Cask
+  homebrew_tap: tap=caskroom/cask
+
 - name: Install libraries with Homebrew
   homebrew: name={{ item }} state=latest upgrade_all=yes update_homebrew=yes
   with_items:
@@ -30,9 +33,9 @@
     - nvm
     - byobu
 
-- name: Install Cask
-  homebrew_tap: tap=caskroom/cask
-  become: no
+- name: Install Maven
+  homebrew: name=maven state=latest
+
 - name: Install apps with Cask
   homebrew_cask: name={{ item }} state=present
   with_items:
@@ -49,11 +52,8 @@
     - slack
     - java
 
-- name: Install Maven
-  homebrew: name=maven state=latest
+- name: Cleanup Brew packages
+  command: brew cleanup
 
 ## TO-DO
 ## Here install this: https://github.com/chriskempson/tomorrow-theme/tree/master/iTerm2
-
-- name: Cleanup Brew packages
-  command: brew cleanup
