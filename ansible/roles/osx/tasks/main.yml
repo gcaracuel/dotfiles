@@ -1,6 +1,6 @@
 ---
 - name: Install XCode
-  command: xcode-select --install
+  script: {{ playbook_dir }}/roles/osx/files/xcode.sh
 
 - name: Update Homebrew
   homebrew: update_homebrew=yes
@@ -49,11 +49,17 @@
     - slack
     - java
 
+# This requires Java that comes by Cask
 - name: Install Maven
   homebrew: name=maven state=latest
 
 - name: Cleanup Brew packages
   command: brew cleanup
 
-## TO-DO
-## Here install this: https://github.com/chriskempson/tomorrow-theme/tree/master/iTerm2
+- name: Install iterm2
+  mac_pkg: pkg_type=app
+    url=https://iterm2.com/downloads/stable/iTerm2-2_1_4.zip
+    archive_type=zip archive_path=iTerm.app
+  become: yes
+  become_method: sudo
+# TO-DO iTerm2 themes
