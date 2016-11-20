@@ -9,7 +9,7 @@
 echo "
 # Requirements:\n
 #   (Fedora): sudo dnf install ansible git\n
-#   (OSX): sudo easy_install pip && sudo pip install ansible\n"
+#   (OSX): sudo easy_install pip && sudo pip install --upgrade pip && sudo pip install --upgrade ansible\n"
 
 git pull
 cd ansible && ansible-playbook -i inventory bootstrap.yml $1

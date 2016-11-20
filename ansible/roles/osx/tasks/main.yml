@@ -1,5 +1,5 @@
 ---
-- name: Install XCode
+- name: Install/Update XCode
   script: "{{ playbook_dir }}/roles/osx/files/xcode.sh"
 
 - name: Update Homebrew
@@ -14,7 +14,7 @@
     - nmap
     - node
     - python
-#    - python3
+    - python3
     - readline
     - rename
     - ssh-copy-id

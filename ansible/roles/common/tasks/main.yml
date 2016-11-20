@@ -20,12 +20,13 @@
   git: repo=https://github.com/zsh-users/antigen.git dest=~/.antigen clone=yes update=yes
   tags: dotfiles
 
-- name: Downloading (custom) oh my zsh
-  git: repo=https://github.com/gcaracuel/oh-my-zsh dest=~/.oh-my-zsh/ clone=yes update=yes
-  tags: dotfiles
-
 - name: Change shell to ZSH
-  user: shell=/bin/zsh name=root
+  user: shell=/bin/zsh user={{ item }}
+  become: true
+  become_method: sudo
+  with_items:
+    - root
+    - gcaracuel
 
 - include: pip.yml
   with_items:
