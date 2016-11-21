@@ -6,7 +6,7 @@
     baseurl: http://download.virtualbox.org/virtualbox/rpm/fedora/$releasever/$basearch
     enabled: yes
     gpgkey: https://www.virtualbox.org/download/oracle_vbox.asc
-    gpgcheck: yes
+    gpgcheck: no
   become: yes
   become_method: sudo
 - name: Add Spotify repo
@@ -37,7 +37,7 @@
   become_method: sudo
 
 - name: Install libraries using DNF
-  dnf: name={{ item }} state=latest
+  dnf: name={{ item }} state=latest disable_gpg_check=yes
   become: yes
   become_method: sudo
   with_items:
@@ -62,7 +62,8 @@
     - maven
     - VirtualBox-5.1
     - google-chrome
-    - spotify
+    - spotify-client
+    - asciinema
 
 - name: Install Gnome-Terminal theme
   shell: /bin/bash -c "rm setup-theme.sh ; wget https://raw.githubusercontent.com/chriskempson/tomorrow-theme/master/Gnome-Terminal/setup-theme.sh && chmod +x setup-theme.sh && alias gconftool=gconftool-2 && ./setup-theme.sh"

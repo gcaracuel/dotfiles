@@ -19,9 +19,11 @@ antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-completions
 
 # Load the theme.
-antigen theme https://github.com/denysdovhan/spaceship-zsh-theme spaceship
+antigen theme https://github.com/denysdovhan/spaceship-zsh-theme spaceship.zsh-theme
 
 antigen apply
+
+
 
 DEFAULT_USER=$USER
 
@@ -30,8 +32,6 @@ DEFAULT_USER=$USER
 
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:$HOME/.local/bin:$HOME/bin"
 # export MANPATH="/usr/local/man:$MANPATH"
-
-source $ZSH/oh-my-zsh.sh
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8

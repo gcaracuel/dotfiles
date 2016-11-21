@@ -7,7 +7,7 @@
 # you're doing.
 
 nodes = [
-  {:hostname => 'fedora', :box => 'bertvv/fedora24'},
+  {:hostname => 'fedora', :box => 'boxcutter/fedora24'},
 #  {:hostname => 'osx', :box => 'jhcook/osx-elcapitan-10.11'},
   {:hostname => 'osx', :box => 'AndrewDryga/vagrant-box-osx'}
 ]
@@ -27,10 +27,17 @@ Vagrant.configure(2) do |config|
       basenode.vm.box = node[:box] ? node[:box] : "bertvv/fedora24"
 
       if node[:hostname] != 'osx'
+        $deps = <<SCRIPT
+sudo dnf install -y python2-dnf ansible
+SCRIPT
+        basenode.vm.provision "shell", inline: $deps
+
+
         basenode.vm.provision :ansible_local do |ansible|
           ansible.playbook = "ansible/bootstrap.yml"
           ansible.verbose = "v"
         end
+
       else
         $deps = <<SCRIPT
 easy_install pip

@@ -32,6 +32,7 @@
     - gpg
     - nvm
     - byobu
+    - asciinema
 
 # Workaround: This applies to vagrant box I am using to verify
 - file: path=/usr/local/bin/brew-cask state=absent force=yes

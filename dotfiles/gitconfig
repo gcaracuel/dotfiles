@@ -5,7 +5,7 @@
 	helper = cache
 [core]
 	editor = vim
-	excludesfile = /home/gcaracuel/.gitignore_global
+	excludesfile = $HOME/.gitignore_global
 [push]
 	default = simple
 [mergetool]
