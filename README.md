@@ -1,10 +1,10 @@
 # Dotfiles + Dependencies
 
-Requirements will be provisiones using Ansible + dotfiles will be linked to this repository directory.
+Requirements will be provisioned using Ansible + dotfiles will be linked to this repository directory.
 
 So far Fedora/CentOS  +  MacOS Sierra are supported. If a dotfile depends on platform then that single dotfile needs to be moved to platform role and removed from Common role if applies.
 
-Please note this project depens on https://github.com/gcaracuel/oh-my-zsh that's my fork of oh-my-zsh to support my personal theme modifications, feel free to fork this and change roles/common/tasks/main.yml Oh-My-ZSH task to clone standard GitHub project instead of mine :)
+Please note this project comes with my customized configuration... but you can easily change packages + dotfiles (change with_items statements) and paster your dotfiles copies.
 
 ### Usage:
 
@@ -12,7 +12,7 @@ Clone this repository at your home:
 ```bash
 git clone https://github.com/gcaracuel/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
-./launch.sh -v
+./launch.sh
 ```
 
 ### Requirements:
@@ -30,7 +30,7 @@ brew ansible
 * Ansible
 
 ```bash
-sudo dnf install ansible
+sudo dnf install ansible git
 ```
 
 
@@ -38,3 +38,5 @@ sudo dnf install ansible
 Just get up a ['fedora','osx'] vagrant instance. SSH into it and verify.
 
 Verbose Ansible execution may help
+
+Note OSX Vagrant box will clone this repository instead of use the local copy, so changes needs to be pushed to be verified :(

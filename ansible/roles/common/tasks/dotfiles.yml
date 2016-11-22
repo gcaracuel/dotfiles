@@ -19,4 +19,5 @@
   file: src={{ playbook_dir }}/../dotfiles/{{ item }}
         dest=~/.{{ item }}
         state=link
+        force=yes
         follow=yes
