@@ -3,16 +3,18 @@
     general:
       _analyticsUserId: "17bfe8d5-ed5c-4d97-8a99-463362699e85"
   core:
+    telemetryConsent: "no"
     themes: [
       "one-dark-ui"
       "base16-tomorrow-dark-theme"
     ]
   editor:
-    fontFamily: "Inconsolata"
-    fontSize: 13
+    fontFamily: "Meslo"
     invisibles: {}
   "exception-reporting":
     userId: "1958fd12-b0b4-6af7-b0bf-497f7f3267b4"
+  fonts:
+    fontFamily: "Meslo"
   linter:
     errorPanelHeight: 28
   welcome:
