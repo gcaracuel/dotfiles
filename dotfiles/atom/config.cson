@@ -5,8 +5,8 @@
   core:
     telemetryConsent: "no"
     themes: [
-      "one-dark-ui"
-      "Tomorrow-Night-Eighties"
+      "atom-material-ui"
+      "monokai-slate"
     ]
   editor:
     fontFamily: "Meslo"
