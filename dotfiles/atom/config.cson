@@ -6,7 +6,7 @@
     telemetryConsent: "no"
     themes: [
       "one-dark-ui"
-      "base16-tomorrow-dark-theme"
+      "Tomorrow-Night-Eighties"
     ]
   editor:
     fontFamily: "Meslo"
