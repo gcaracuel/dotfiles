@@ -17,6 +17,7 @@ antigen bundle osx
 antigen bundle z
 antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-completions
+antigen bundle bbenne10/goenv
 
 # Load the theme.
 # antigen theme https://github.com/denysdovhan/spaceship-zsh-theme spaceship.zsh-theme
@@ -74,8 +75,8 @@ rvm_silence_path_mismatch_check_flag=1     # This silence a dummy bug when using
 PERL_MB_OPT="--install_base \"/home/gcaracuel/perl5\""; export PERL_MB_OPT;
 PERL_MM_OPT="INSTALL_BASE=/home/gcaracuel/perl5"; export PERL_MM_OPT;
 
-# golang
-export GOPATH=~/Documents/golang_workspace
+# GOENV
+export GO_ENV=~/.goenvs
 
 # JAVA
 export JAVA_HOME=/usr/java/default
