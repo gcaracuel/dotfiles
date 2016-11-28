@@ -15,6 +15,17 @@ antigen bundle git-extras
 antigen bundle npm
 antigen bundle osx
 antigen bundle z
+antigen bundle virtualenv
+antigen bundle virtualenvwrapper
+antigen bundle svn
+antigen bundle sudo
+antigen bundle node
+antigen bundle mvn
+antigen bundle docker
+antigen bundle rvm
+antigen bundle dnf
+antigen bundle sytemd
+
 antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-completions
 antigen bundle bbenne10/goenv
@@ -30,7 +41,6 @@ antigen apply
 DEFAULT_USER=$USER
 
 #ZSH_THEME="spaceship"
-# plugins=(git yum vagrant systemd virtualenv virtualenvwrapper svn sudo pip npm node mvn docker bower z rvm tmux)
 
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:$HOME/.local/bin:$HOME/bin"
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -81,6 +91,9 @@ export GO_ENV=~/.goenvs
 
 # JAVA
 export JAVA_HOME=/usr/java/default
+
+# MVN
+alias mvn="mvn-color"
 
 # Aliases
 alias zshconfig="vim ~/.zshrc"
