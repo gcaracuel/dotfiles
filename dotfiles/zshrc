@@ -42,7 +42,7 @@ DEFAULT_USER=$USER
 
 #ZSH_THEME="spaceship"
 
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:$HOME/.local/bin:$HOME/bin"
+export PATH="/sbin/:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:$HOME/.local/bin:$HOME/bin"
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
@@ -90,7 +90,7 @@ export GOPATH=~/.goenvs/gopath
 export GO_ENV=~/.goenvs
 
 # JAVA
-export JAVA_HOME=/usr/java/default
+export JAVA_HOME=$(/usr/libexec/java_home)
 
 # MVN
 alias mvn="mvn-color"
