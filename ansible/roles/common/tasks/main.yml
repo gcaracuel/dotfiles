@@ -33,6 +33,7 @@
     - virtualenv
     - virtualenvwrapper
     - ipython
+    - thefuck
 
 - include: nvm.yml
 - include: atom.yml

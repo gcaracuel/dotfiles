@@ -18,6 +18,7 @@ antigen bundle z
 antigen bundle virtualenv
 antigen bundle virtualenvwrapper
 antigen bundle svn
+antigen bundle thefuck # This should go before sudo or will override ESC+ESC
 antigen bundle sudo
 antigen bundle node
 antigen bundle mvn
