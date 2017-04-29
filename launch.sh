@@ -6,9 +6,12 @@
 #  (Only update dotfiles)  ./launch.sh  "-v --tags dotfieles"  OR  cd ansible && ansible-playbook -i inventory bootstrap.yml --tags dotfiles
 
 echo "
-# Requirements:\n
-#   (Fedora): sudo dnf install ansible git\n
-#   (OSX): sudo easy_install pip && sudo pip install --upgrade pip && sudo pip install --upgrade ansible\n"
+#### #### ####
+# Requirements:
+#   (Fedora): sudo dnf install ansible git
+#   (OSX): sudo easy_install pip && sudo pip install --upgrade pip && sudo pip install --upgrade ansible
+#### #### ####
+"
 
 git pull
 cd ansible && ansible-playbook -i inventory bootstrap.yml -K -v $1
