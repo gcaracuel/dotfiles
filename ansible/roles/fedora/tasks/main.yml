@@ -73,3 +73,8 @@
 - include: oracle_java.yml
   tags:
     - java
+
+- include: ../common/pip3.yml
+  with_items:
+    - asciinema
+  tags: pip

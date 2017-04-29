@@ -36,10 +36,10 @@
     - thefuck
   tags: pip
 
-- include: pip3.yml
-  with_items:
-    - asciinema
-  tags: pip
+#- include: pip3.yml
+#  with_items:
+#    - asciinema
+#  tags: pip
 
 - include: nvm.yml
 - include: atom.yml
