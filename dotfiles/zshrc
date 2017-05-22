@@ -6,35 +6,32 @@ source ~/.zplug/init.zsh
 zplug "plugins/git",   from:oh-my-zsh
 # Load theme file
 zplug 'gcaracuel/bureau.zsh-theme', as:theme
-zplug "/lib/osx", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
-zplug "/lib/brew", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
-zplug "/lib/dnf", from:oh-my-zsh, if:"[[ $OSTYPE == *linux* ]]"
-zplug "/lib/systemd", from:oh-my-zsh, if:"[[ $OSTYPE == *linux* ]]"
-zplug "/lib/git", from:oh-my-zsh
-zplug "/lib/pip", from:oh-my-zsh
-zplug "/lib/common-aliases", from:oh-my-zsh
-zplug "/lib/git-extras", from:oh-my-zsh
-zplug "/lib/npm", from:oh-my-zsh
-zplug "/lib/z", from:oh-my-zsh
-zplug "/lib/virtualenv", from:oh-my-zsh
-zplug "/lib/virtualenvwrapper", from:oh-my-zsh
-zplug "/lib/svn", from:oh-my-zsh
-zplug "/lib/thefuck", from:oh-my-zsh
-zplug "/lib/sudo", from:oh-my-zsh
-zplug "/lib/node", from:oh-my-zsh
-zplug "/lib/mvn", from:oh-my-zsh
-zplug "/lib/docker", from:oh-my-zsh
+zplug "lib/*", from:oh-my-zsh   # Load oh-my-zsh and then just select plugins
+zplug "plugins/osx", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
+zplug "plugins/brew", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
+zplug "plugins/dnf", from:oh-my-zsh, if:"[[ $OSTYPE == *linux* ]]"
+zplug "plugins/systemd", from:oh-my-zsh, if:"[[ $OSTYPE == *linux* ]]"
+zplug "plugins/git", from:oh-my-zsh
+zplug "plugins/key-bindings", from:oh-my-zsh
+zplug "plugins/pip", from:oh-my-zsh
+zplug "plugins/common-aliases", from:oh-my-zsh
+zplug "plugins/git-extras", from:oh-my-zsh
+zplug "plugins/npm", from:oh-my-zsh
+zplug "plugins/z", from:oh-my-zsh
+zplug "plugins/virtualenv", from:oh-my-zsh
+zplug "plugins/virtualenvwrapper", from:oh-my-zsh
+zplug "plugins/svn", from:oh-my-zsh
+zplug "plugins/thefuck", from:oh-my-zsh
+zplug "plugins/sudo", from:oh-my-zsh
+zplug "plugins/node", from:oh-my-zsh
+zplug "plugins/mvn", from:oh-my-zsh
+zplug "plugins/docker", from:oh-my-zsh
 zplug "zsh-users/zsh-syntax-highlighting"
 zplug "zsh-users/zsh-completions"
 zplug "bbenne10/goenv"
 
 # Install plugins if there are plugins that have not been installed
-if ! zplug check; then
-    printf "Install? [y/N]: "
-    if read -q; then
-        echo; zplug install
-    fi
-fi
+zplug check || zplug install --verbose
 zplug load
 
 # TO UPDATE USE (from time to time): z plug status
