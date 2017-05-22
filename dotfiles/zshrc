@@ -1,46 +1,45 @@
 #
-# Antigen
+# zPlug as package manager
 #
-source $HOME/.antigen/antigen.zsh
+source ~/.zplug/init.zsh
+# Supports oh-my-zsh plugins and the like
+zplug "plugins/git",   from:oh-my-zsh
+# Load theme file
+zplug 'gcaracuel/bureau.zsh-theme', as:theme
+zplug "/lib/osx", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
+zplug "/lib/brew", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
+zplug "/lib/dnf", from:oh-my-zsh, if:"[[ $OSTYPE == *linux* ]]"
+zplug "/lib/systemd", from:oh-my-zsh, if:"[[ $OSTYPE == *linux* ]]"
+zplug "/lib/git", from:oh-my-zsh
+zplug "/lib/pip", from:oh-my-zsh
+zplug "/lib/common-aliases", from:oh-my-zsh
+zplug "/lib/git-extras", from:oh-my-zsh
+zplug "/lib/npm", from:oh-my-zsh
+zplug "/lib/z", from:oh-my-zsh
+zplug "/lib/virtualenv", from:oh-my-zsh
+zplug "/lib/virtualenvwrapper", from:oh-my-zsh
+zplug "/lib/svn", from:oh-my-zsh
+zplug "/lib/thefuck", from:oh-my-zsh
+zplug "/lib/sudo", from:oh-my-zsh
+zplug "/lib/node", from:oh-my-zsh
+zplug "/lib/mvn", from:oh-my-zsh
+zplug "/lib/docker", from:oh-my-zsh
+zplug "zsh-users/zsh-syntax-highlighting"
+zplug "zsh-users/zsh-completions"
+zplug "bbenne10/goenv"
 
-# Load the oh-my-zsh's library.
-antigen use oh-my-zsh
+# Install plugins if there are plugins that have not been installed
+if ! zplug check; then
+    printf "Install? [y/N]: "
+    if read -q; then
+        echo; zplug install
+    fi
+fi
+zplug load
 
-# Bundles from the default repo (robbyrussell's oh-my-zsh).
-antigen bundle git
-antigen bundle pip
-antigen bundle brew
-antigen bundle common-aliases
-antigen bundle git-extras
-antigen bundle npm
-antigen bundle osx
-antigen bundle z
-antigen bundle virtualenv
-antigen bundle virtualenvwrapper
-antigen bundle svn
-antigen bundle thefuck # This should go before sudo or will override ESC+ESC
-antigen bundle sudo
-antigen bundle node
-antigen bundle mvn
-antigen bundle docker
-antigen bundle rvm
-antigen bundle dnf
-antigen bundle sytemd
-antigen bundle zsh-users/zsh-syntax-highlighting
-antigen bundle zsh-users/zsh-completions
-antigen bundle bbenne10/goenv
-
-# Load the theme.
-# antigen theme https://github.com/denysdovhan/spaceship-zsh-theme spaceship.zsh-theme
-antigen theme https://github.com/gcaracuel/bureau.zsh-theme bureau.zsh-theme
-
-antigen apply
-
-
+# TO UPDATE USE (from time to time): z plug status
 
 DEFAULT_USER=$USER
-
-#ZSH_THEME="spaceship"
 
 export PATH="/sbin/:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:$HOME/.local/bin:$HOME/bin"
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -90,7 +89,7 @@ export GOPATH=~/.goenvs/gopath
 export GO_ENV=~/.goenvs
 
 # JAVA
-export JAVA_HOME=$(/usr/libexec/java_home)
+# export JAVA_HOME=$(/usr/libexec/java_home)
 
 # MVN
 alias mvn="mvn-color"

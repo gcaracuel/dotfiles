@@ -16,8 +16,13 @@
     - vim/colors/Tomorrow-Night-Eighties.vim
   tags: dotfiles
 
-- name: Installing Antigen
-  git: repo=https://github.com/zsh-users/antigen.git dest=~/.antigen clone=yes update=yes
+# DEPRECATED  by zPlug / zGen
+#- name: Installing Antigen
+#  git: repo=https://github.com/zsh-users/antigen.git dest=~/.antigen clone=yes update=yes
+#  tags: dotfiles
+
+- name: Installing zPlug
+  git: repo=https://github.com/zplug/zplug dest=~/.zplug clone=yes update=yes
   tags: dotfiles
 
 - name: Change shell to ZSH
@@ -27,6 +32,7 @@
   with_items:
     - root
     - gcaracuel
+  tags: dotfiles
 
 - include: pip.yml
   with_items:
