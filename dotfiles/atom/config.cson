@@ -3,10 +3,12 @@
     general:
       _analyticsUserId: "17bfe8d5-ed5c-4d97-8a99-463362699e85"
   core:
+    disabledPackages: [
+      "autocomplete-plus"
+    ]
     telemetryConsent: "no"
     themes: [
       "atom-material-ui"
-      "monokai-slate"
     ]
   editor:
     fontFamily: "Meslo"
@@ -15,7 +17,6 @@
     userId: "1958fd12-b0b4-6af7-b0bf-497f7f3267b4"
   fonts:
     fontFamily: "Meslo"
-  linter:
-    errorPanelHeight: 28
+  linter: {}
   welcome:
     showOnStartup: false

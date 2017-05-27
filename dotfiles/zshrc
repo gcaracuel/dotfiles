@@ -31,7 +31,7 @@ zplug "zsh-users/zsh-completions"
 zplug "bbenne10/goenv"
 
 # Install plugins if there are plugins that have not been installed
-zplug check || zplug install --verbose
+zplug check || zplug install
 zplug load
 
 # TO UPDATE USE (from time to time): z plug status
