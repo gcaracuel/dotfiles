@@ -2,8 +2,8 @@
 
 
 # usage:
-#  ./launch.sh -v  OR   cd ansible && ansible-playbook -i inventory bootstrap.yml
-#  (Only update dotfiles)  ./launch.sh  "-v --tags dotfiles"  OR  cd ansible && ansible-playbook -i inventory bootstrap.yml --tags dotfiles
+#  ./launch.sh -v  OR   cd ansible && ansible-playbook -K -i inventory bootstrap.yml
+#  (Only update dotfiles)  ./launch.sh  "-v --tags dotfiles"  OR  cd ansible && ansible-playbook -K -i inventory bootstrap.yml --tags dotfiles
 
 echo "
 #### #### ####

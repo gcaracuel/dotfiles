@@ -1,17 +1,19 @@
 "*":
   core:
+    disabledPackages: [
+      "autocomplete-plus"
+    ]
     telemetryConsent: "no"
     themes: [
       "atom-material-ui"
-      "monokai-slate"
     ]
   editor:
     fontFamily: "Meslo"
     fontSize: 15
     scrollSensitivity: 60
     showInvisibles: true
-  "exception-reporting":
-    userId: "0e2c8341-af39-e28b-c236-8788c413366b"
-  linter: {}
+    userId: "1958fd12-b0b4-6af7-b0bf-497f7f3267b4"
+  linter:
+    errorPanelHeight: 28
   welcome:
     showOnStartup: false
