@@ -86,10 +86,15 @@ export GOPATH=~/.goenvs/gopath
 export GO_ENV=~/.goenvs
 
 # JAVA
-# export JAVA_HOME=$(/usr/libexec/java_home)
+case `uname` in
+  Darwin)
+    export JAVA_HOME=$(/usr/libexec/java_home)
+    ;;
+  Linux)
+    export JAVA_HOME=/usr/java/default/
+    ;;
+esac
 
-# MVN
-alias mvn="mvn-color"
 
 # Aliases
 alias zshconfig="vim ~/.zshrc"
@@ -100,6 +105,9 @@ alias b='byobu'
 
 # Vagrant
 export VAGRANT_DEFAULT_PROVIDER=virtualbox
+
+# Ansible
+export ANSIBLE_STDOUT_CALLBACK=debug
 
 
 # Uncomment the following line to use case-sensitive completion.
