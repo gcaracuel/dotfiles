@@ -70,6 +70,13 @@
   args:
     chdir: /tmp
 
+- name: Install Insomnia REST
+  get_url:
+    url: https://builds.insomnia.rest/downloads/linux/latest
+    dest: $HOME/.insomnia/Insomnia.Appimage
+    force: yes
+    mode: 0644
+
 - include: oracle_java.yml
   tags:
     - java

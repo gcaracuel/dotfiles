@@ -53,7 +53,8 @@
     - google-chrome
     - slack
     - java
-    - postman
+#    - postman
+    - insomnia
 
 # This requires Java that comes by Cask
 - name: Install Maven

@@ -13,7 +13,8 @@
     scrollSensitivity: 60
     showInvisibles: true
     userId: "1958fd12-b0b4-6af7-b0bf-497f7f3267b4"
-  linter:
-    errorPanelHeight: 28
+  "exception-reporting":
+    userId: "0f1be34d-d4d7-4a20-87c6-06269a935572"
+  linter: {}
   welcome:
     showOnStartup: false
