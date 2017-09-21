@@ -16,11 +16,6 @@
     - vim/colors/Tomorrow-Night-Eighties.vim
   tags: dotfiles
 
-# DEPRECATED  by zPlug / zGen
-#- name: Installing Antigen
-#  git: repo=https://github.com/zsh-users/antigen.git dest=~/.antigen clone=yes update=yes
-#  tags: dotfiles
-
 - name: Installing zPlug
   git: repo=https://github.com/zplug/zplug dest=~/.zplug clone=yes update=yes
   tags: dotfiles
@@ -41,11 +36,6 @@
     - ipython
     - thefuck
   tags: pip
-
-#- include: pip3.yml
-#  with_items:
-#    - asciinema
-#  tags: pip
 
 - include: nvm.yml
 - include: atom.yml
