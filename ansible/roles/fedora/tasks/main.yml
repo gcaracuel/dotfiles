@@ -31,6 +31,16 @@
   become: yes
   become_method: sudo
 
+- name: Add Golang repo
+  yum_repository:
+    name: go-repo-io
+    description: Go-repo.io
+    baseurl: https://mirror.go-repo.io/centos/$releasever/$basearch/
+    enabled: yes
+    gpgcheck: yes
+  become: yes
+  become_method: sudo
+
 - name: Add Tilix terminal repo
   yum_repository:
     name: heikoada-terminix
@@ -76,6 +86,7 @@
     - google-chrome
     - spotify-client
     - asciinema
+    - golang
     - tilix
 
 - name: Install Gnome-Terminal theme

@@ -42,3 +42,4 @@
 - include: vim.yml
 - include: fonts.yml
 - include: rvm.yml
+- include: golang.yml

@@ -44,12 +44,8 @@ export PATH="/sbin/:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:$HOME
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
-# Preferred editor for local and remote sessions
- if [[ -n $SSH_CONNECTION ]]; then
-   export EDITOR='/usr/bin/vim'
- else
-   export EDITOR='/usr/bin/gvim'
- fi
+# Preferred editor
+export EDITOR='/usr/bin/vim'
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -81,9 +77,12 @@ rvm_silence_path_mismatch_check_flag=1     # This silence a dummy bug when using
 PERL_MB_OPT="--install_base \"/home/gcaracuel/perl5\""; export PERL_MB_OPT;
 PERL_MM_OPT="INSTALL_BASE=/home/gcaracuel/perl5"; export PERL_MM_OPT;
 
-# GOENV
-export GOPATH=~/.goenvs/gopath
-export GO_ENV=~/.goenvs
+# Golang
+export GOPATH="$HOME/go"
+export PATH="$PATH:${GOPATH//://bin:}/bin"
+#     https://github.com/getstream/vg
+command -v vg >/dev/null 2>&1 && eval "$(vg eval --shell zsh)"
+
 
 # JAVA
 case `uname` in
@@ -94,7 +93,6 @@ case `uname` in
     export JAVA_HOME=/usr/java/default/
     ;;
 esac
-
 
 # Aliases
 alias zshconfig="vim ~/.zshrc"
