@@ -55,6 +55,7 @@
     - slack
     - java
     - insomnia
+    - dash
 
 # This requires Java that comes by Cask
 - name: Install Maven
