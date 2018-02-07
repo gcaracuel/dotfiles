@@ -78,7 +78,7 @@
     - tmux
     - wget
     - zsh
-    - https://github.com/atom/atom/releases/download/v1.11.2/atom.x86_64.rpm
+    - https://github.com/atom/atom/releases/download/v1.23.3/atom.x86_64.rpm
     - httpie
     - byobu
     - maven
