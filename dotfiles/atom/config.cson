@@ -1,8 +1,5 @@
 "*":
   core:
-    disabledPackages: [
-      "autocomplete-plus"
-    ]
     telemetryConsent: "no"
     themes: [
       "atom-material-ui"
