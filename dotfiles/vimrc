@@ -11,14 +11,14 @@ Plugin 'VundleVim/Vundle.vim'
 
 "# The bundles you install will be listed here (Using Vundle)
 
-Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
-" Powerline setup
-set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 9
-set laststatus=2
+Plugin 'vim-airline/vim-airline'
+let g:airline_powerline_fonts = 1
 
 Plugin 'tpope/vim-fugitive'
 Plugin 'scrooloose/nerdtree'
 map <F3> :NERDTreeToggle<CR>
+
+Plugin 'syntastic-vim/syntastic'
 
 Plugin 'klen/python-mode'
 " Python-mode
@@ -39,24 +39,12 @@ let g:pymode_rope = 0
 let g:pymode_doc = 1
 let g:pymode_doc_key = 'K'
 
-"Linting
-let g:pymode_lint = 1
-let g:pymode_lint_checker = "pyflakes,pep8"
-" Auto check on save
-let g:pymode_lint_write = 1
-
 " Support virtualenv
 let g:pymode_virtualenv = 1
 
 " Enable breakpoints plugin
 let g:pymode_breakpoint = 1
 let g:pymode_breakpoint_bind = '<leader>b'
-
-" syntax highlighting
-let g:pymode_syntax = 1
-let g:pymode_syntax_all = 1
-let g:pymode_syntax_indent_errors = g:pymode_syntax_all
-let g:pymode_syntax_space_errors = g:pymode_syntax_all
 
 " Don't autofold code
 let g:pymode_folding = 0
@@ -81,12 +69,9 @@ au FileType go nmap <leader>c <Plug>(go-coverage)
 au FileType go nmap <Leader>gd <Plug>(go-doc)
 au FileType go nmap <Leader>gv <Plug>(go-doc-vertical)
 
-
-
+call vundle#end()
 
 "# Other Configuration
-
-filetype plugin indent on
 
 " Make Vim more useful
 set nocompatible
@@ -184,7 +169,7 @@ vnoremap > >gv  " better indentation
 " automatically change window's cwd to file's dir
 set autochdir
 
-" I'm prefer spaces to tabs
+" I prefer spaces to tabs
 set tabstop=4
 set shiftwidth=4
 set expandtab
@@ -199,5 +184,18 @@ if has ('gui_running')
 set listchars=tab:>-,trail:·,extends:>,precedes:<,nbsp:_
 set list
 
-"# Colors!
+" Colors!
 colorscheme Tomorrow-Night-Eighties
+
+" Syntastic settings
+syntax on
+filetype plugin indent on
+
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
