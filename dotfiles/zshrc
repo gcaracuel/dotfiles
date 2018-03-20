@@ -59,14 +59,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh" # OSX
 
 # VirtualEnv
-case `uname` in
-  Darwin)
-    source /usr/local/bin/virtualenvwrapper.sh
-    ;;
-  Linux)
-    source /usr/bin/virtualenvwrapper.sh
-    ;;
-esac
+source /usr/local/bin/virtualenvwrapper.sh
 
 # RVM
 rvm_silence_path_mismatch_check_flag=1     # This silence a dummy bug when using RVM and virtualenv at the same time

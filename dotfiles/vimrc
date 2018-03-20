@@ -18,7 +18,7 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'scrooloose/nerdtree'
 map <F3> :NERDTreeToggle<CR>
 
-Plugin 'syntastic-vim/syntastic'
+Plugin 'vim-syntastic/syntastic'
 
 Plugin 'klen/python-mode'
 " Python-mode

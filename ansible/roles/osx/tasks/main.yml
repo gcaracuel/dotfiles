@@ -4,28 +4,7 @@
 
 - name: Update Homebrew
   homebrew: update_homebrew=yes
-
-# Workaround: This applies to vagrant box I am using to verify
-- file: path=/usr/local/bin/brew-cask state=absent force=yes
-
-- name: Install apps with Cask
-  homebrew_cask: name={{ item }} state=present
-  with_items:
-    - atom
-    - iterm2
-    - macpass
-    - vlc
-    - vagrant
-    - vagrant-manager
-    - github-desktop
-    - virtualbox
-    - spotify
-    - google-chrome
-    - slack
-    - java
-    - insomnia
-    - osxfuse
-
+  
 - name: Install libraries with Homebrew
   homebrew: name={{ item }} state=latest upgrade_all=yes update_homebrew=yes
   with_items:
@@ -56,7 +35,6 @@
     - asciinema
     - asciinema2gif
     - golang
-<<<<<<< Updated upstream
 
 # Workaround: This applies to vagrant box I am using to verify
 - file: path=/usr/local/bin/brew-cask state=absent force=yes
@@ -77,32 +55,9 @@
     - slack
     - java
     - insomnia
-    - dash
-||||||| merged common ancestors
-
-# Workaround: This applies to vagrant box I am using to verify
-- file: path=/usr/local/bin/brew-cask state=absent force=yes
-
-- name: Install apps with Cask
-  homebrew_cask: name={{ item }} state=present
-  with_items:
-    - atom
-    - iterm2
-    - macpass
-    - vlc
-    - vagrant
-    - vagrant-manager
-    - github-desktop
-    - virtualbox
-    - spotify
-    - google-chrome
-    - slack
-    - java
-    - insomnia
-=======
     - bindfs
     - mitmproxy
->>>>>>> Stashed changes
+    - dash
 
 # This requires Java that comes by Cask
 - name: Install Maven
