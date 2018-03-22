@@ -74,6 +74,8 @@ export PATH="$PATH:${GOPATH//://bin:}/bin"
 #     https://github.com/getstream/vg
 command -v vg >/dev/null 2>&1 && eval "$(vg eval --shell zsh)"
 
+# SDK - The Software Development Kit Manager
+[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ] && . "$HOME/.sdkman/bin/sdkman-init.sh"
 
 # JAVA
 case `uname` in

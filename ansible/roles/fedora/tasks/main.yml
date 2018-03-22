@@ -111,3 +111,6 @@
   with_items:
     - asciinema
   tags: pip
+
+- name: Install SDK
+  shell: /bin/bash -c "curl -s "https://get.sdkman.io" | bash"
