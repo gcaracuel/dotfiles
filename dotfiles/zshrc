@@ -83,7 +83,7 @@ case `uname` in
     export JAVA_HOME=$(/usr/libexec/java_home)
     ;;
   Linux)
-    export JAVA_HOME=/usr/java/default/
+    export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
     ;;
 esac
 
