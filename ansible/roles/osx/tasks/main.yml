@@ -4,7 +4,7 @@
 
 - name: Update Homebrew
   homebrew: update_homebrew=yes
-  
+
 - name: Install libraries with Homebrew
   homebrew: name={{ item }} state=latest upgrade_all=yes update_homebrew=yes
   with_items:
@@ -58,6 +58,7 @@
     - bindfs
     - mitmproxy
     - dash
+    - rambox
 
 # This requires Java that comes by Cask
 - name: Install Maven
