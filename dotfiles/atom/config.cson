@@ -5,7 +5,7 @@
       "atom-material-ui"
     ]
   editor:
-    fontFamily: "Meslo"
+    fontFamily: "Meslo Sans, Meslo"
     fontSize: 15
     scrollSensitivity: 60
     showInvisibles: true
@@ -15,5 +15,8 @@
   linter: {}
   "linter-ui-default":
     panelHeight: 81
+  "markdown-preview":
+    useGitHubStyle: true
+  "todo-show": {}
   welcome:
     showOnStartup: false

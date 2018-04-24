@@ -29,6 +29,7 @@ zplug "plugins/docker", from:oh-my-zsh
 zplug "zsh-users/zsh-syntax-highlighting"
 zplug "zsh-users/zsh-completions"
 zplug "bbenne10/goenv"
+zplug "plugins/vault", from:oh-my-zsh
 
 # Install plugins if there are plugins that have not been installed
 zplug check || zplug install
@@ -59,7 +60,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh" # OSX
 
 # VirtualEnv
-source /usr/local/bin/virtualenvwrapper.sh
+[ -s "/usr/local/bin/virtualenvwrapper.sh" ] && . /usr/local/bin/virtualenvwrapper.sh
 
 # RVM
 rvm_silence_path_mismatch_check_flag=1     # This silence a dummy bug when using RVM and virtualenv at the same time
@@ -99,6 +100,15 @@ export VAGRANT_DEFAULT_PROVIDER=virtualbox
 
 # Ansible
 export ANSIBLE_STDOUT_CALLBACK=debug
+
+
+# Load VTE
+. /etc/profile.d/vte.sh
+
+# One-liners repository
+#
+# - remove intermediate docker images:       docker rmi $(docker images -f “dangling=true” -q)
+# - remove exited docker containers:         docker ps -a | grep "Exited" | cut -d ' ' -f 1 | xargs sudo docker rm
 
 
 # Uncomment the following line to use case-sensitive completion.
