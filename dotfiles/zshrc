@@ -6,6 +6,7 @@ source ~/.zplug/init.zsh
 zplug "plugins/git",   from:oh-my-zsh
 # Load theme file
 zplug 'gcaracuel/bureau.zsh-theme', as:theme
+#zplug "$HOME/.oh-my-zsh/themes", as:theme, from:local, use:"bureau.zsh-theme"
 zplug "lib/*", from:oh-my-zsh   # Load oh-my-zsh and then just select plugins
 zplug "plugins/osx", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
 zplug "plugins/brew", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
@@ -30,12 +31,14 @@ zplug "zsh-users/zsh-syntax-highlighting"
 zplug "zsh-users/zsh-completions"
 zplug "bbenne10/goenv"
 zplug "plugins/vault", from:oh-my-zsh
+zplug "plugins/kubectl", from:oh-my-zsh
+zplug "plugins/helm", from:oh-my-zsh
 
 # Install plugins if there are plugins that have not been installed
 zplug check || zplug install
 zplug load
 
-# TO UPDATE USE (from time to time): z plug status
+# TO UPDATE USE (from time to time): zplug status + zplug update
 
 DEFAULT_USER=$USER
 
@@ -100,7 +103,6 @@ export VAGRANT_DEFAULT_PROVIDER=virtualbox
 
 # Ansible
 export ANSIBLE_STDOUT_CALLBACK=debug
-
 
 # Load VTE
 . /etc/profile.d/vte.sh
