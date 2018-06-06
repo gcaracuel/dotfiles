@@ -57,6 +57,9 @@ export EDITOR='/usr/bin/vim'
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
 
+# Theme configuration
+# KUBE_PS1_BINARY="/usr/local/bin/kubectl"    Use this at OSX
+
 # NVM
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
