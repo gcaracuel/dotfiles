@@ -45,20 +45,22 @@
     - atom
     - iterm2
     - macpass
-    - vlc
     - vagrant
     - vagrant-manager
-    - github-desktop
     - virtualbox
     - spotify
     - google-chrome
     - slack
-    - java8
+    - java8 # Will fail without brew cask tap cask/versions
+    - java
     - insomnia
     - bindfs
     - mitmproxy
     - dash
-    - rambox
+    - keepassxc
+#    - rambox
+#    - vlc
+#    - github-desktop
 
 # This requires Java that comes by Cask
 - name: Install Maven

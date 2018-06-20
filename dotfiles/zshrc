@@ -6,7 +6,7 @@ source ~/.zplug/init.zsh
 zplug "plugins/git",   from:oh-my-zsh
 # Load theme file
 zplug 'gcaracuel/bureau.zsh-theme', as:theme
-#zplug "$HOME/.oh-my-zsh/themes", as:theme, from:local, use:"bureau.zsh-theme"
+#zplug "$HOME/Documents/Projects/bureau.zsh-theme", as:theme, from:local, use:"bureau.zsh-theme"
 zplug "lib/*", from:oh-my-zsh   # Load oh-my-zsh and then just select plugins
 zplug "plugins/osx", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
 zplug "plugins/brew", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
@@ -58,7 +58,11 @@ export EDITOR='/usr/bin/vim'
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
 
 # Theme configuration
-# KUBE_PS1_BINARY="/usr/local/bin/kubectl"    Use this at OSX
+BUREAU_THEME_NVM_SHOW="false"
+BUREAU_THEME_JAVA_SHOW="true"
+BUREAU_THEME_VENV_SHOW="true"
+BUREAU_THEME_RUBY_SHOW="false"
+# KUBE_PS1_BINARY="/usr/local/bin/kubectl"    # Use this at OSX
 
 # NVM
 export NVM_DIR="$HOME/.nvm"
@@ -87,7 +91,14 @@ command -v vg >/dev/null 2>&1 && eval "$(vg eval --shell zsh)"
 # JAVA
 case `uname` in
   Darwin)
-    export JAVA_HOME=$(/usr/libexec/java_home)
+    export JAVA_8_HOME=$(/usr/libexec/java_home -v1.8)
+    export JAVA_9_HOME=$(/usr/libexec/java_home -v9)
+    export JAVA_10_HOME=$(/usr/libexec/java_home -v10)
+    alias java8='export JAVA_HOME=$JAVA_8_HOME'
+    alias java9='export JAVA_HOME=$JAVA_9_HOME'
+    alias java10='export JAVA_HOME=$JAVA_10_HOME'
+    #default java8
+    export JAVA_HOME=$JAVA_9_HOME
     ;;
   Linux)
     export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
@@ -108,7 +119,7 @@ export VAGRANT_DEFAULT_PROVIDER=virtualbox
 export ANSIBLE_STDOUT_CALLBACK=debug
 
 # Load VTE
-. /etc/profile.d/vte.sh
+[ -s "/etc/profile.d/vte.sh" ] && \. /etc/profile.d/vte.sh
 
 # One-liners repository
 #
@@ -153,3 +164,4 @@ export ANSIBLE_STDOUT_CALLBACK=debug
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
