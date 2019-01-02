@@ -1,0 +1,22 @@
+---
+- name: Install VSCode addons
+  command: code --install-extension {{ item }}
+  with_items:
+    - vscoss.vscode-ansible
+    - formulahendry.auto-close-tag
+    - vscjava.vscode-java-debug
+    - peterjausovec.vscode-docker
+    - mikestead.dotenv
+    - file-icons.file-icons
+    - ms-vscode.go
+    - vscjava.vscode-java-dependency
+    - vscjava.vscode-java-pack
+    - vscjava.vscode-java-test
+    - wholroyd.jinja
+    - redhat.java
+    - haaaad.ansible
+    - vscjava.vscode-maven
+    - ms-python.python
+    - mauve.terraform
+    - wayou.vscode-todo-highlight
+    - ms-vscode.theme-tomorrowkit

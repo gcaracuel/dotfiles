@@ -38,7 +38,8 @@
   tags: pip
 
 - include: nvm.yml
-- include: atom.yml
+# - include: atom.yml
+- include: vscode.yml
 - include: vim.yml
 - include: fonts.yml
 - include: rvm.yml

@@ -6,4 +6,5 @@
       when: "ansible_os_family == 'Darwin'"
     - role: fedora
       when: "ansible_os_family == 'RedHat'"
+    
     - role: common

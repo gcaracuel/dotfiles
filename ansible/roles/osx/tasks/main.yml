@@ -15,6 +15,7 @@
     - node
     - python
     - python3
+    - autoenv
     - readline
     - rename
     - ssh-copy-id
@@ -35,14 +36,21 @@
     - asciinema
     - asciinema2gif
     - golang
+    - lnav
+    - ncdu
 
 # Workaround: This applies to vagrant box I am using to verify
 - file: path=/usr/local/bin/brew-cask state=absent force=yes
 
+- name: Install fonts Cask repository
+  homebrew_tap:
+    name: homebrew/cask-fonts
+
 - name: Install apps with Cask
   homebrew_cask: name={{ item }} state=present
   with_items:
-    - atom
+#    - atom
+    - visual-studio-code
     - iterm2
     - macpass
     - vagrant
@@ -58,9 +66,10 @@
     - mitmproxy
     - dash
     - keepassxc
+    - spectacle
+    - font-inconsolata
+#    - gitkraken 
 #    - rambox
-#    - vlc
-#    - github-desktop
 
 # This requires Java that comes by Cask
 - name: Install Maven
@@ -73,12 +82,3 @@
   mac_pkg: pkg_type=app url=https://iterm2.com/downloads/stable/iTerm2-2_1_4.zip archive_type=zip archive_path=iTerm.app
   become: yes
   become_method: sudo
-
-- name: Copy iTerm2 configuration # It's will come later from common/role/dotfiles
-  file: src=~/.osx/com.googlecode.iterm2.plist
-        dest=~/Library/Preferences/com.googlecode.iterm2.plist
-        state=link
-        force=yes
-        follow=yes
-
-# TO-DO iTerm2 Theme - https://github.com/chriskempson/tomorrow-theme/tree/master/iTerm2
