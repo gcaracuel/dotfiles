@@ -38,6 +38,8 @@
     - golang
     - lnav
     - ncdu
+    - mitmproxy
+    - bindfs
 
 # Workaround: This applies to vagrant box I am using to verify
 - file: path=/usr/local/bin/brew-cask state=absent force=yes
@@ -49,25 +51,23 @@
 - name: Install apps with Cask
   homebrew_cask: name={{ item }} state=present
   with_items:
-#    - atom
     - visual-studio-code
     - iterm2
     - macpass
     - vagrant
-    - vagrant-manager
     - virtualbox
     - spotify
     - google-chrome
-    - slack
     - java8 # Will fail without brew cask tap cask/versions
     - java
     - insomnia
-    - bindfs
-    - mitmproxy
     - dash
     - keepassxc
     - spectacle
     - font-inconsolata
+    - jetbrains-toolbox
+    - owasp-zap
+    - brave-browser
 #    - gitkraken 
 #    - rambox
 
