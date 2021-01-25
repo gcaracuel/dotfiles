@@ -17,7 +17,7 @@ cd ~/.dotfiles
 
 ### Requirements:
 
-##### MacOS Sierra
+##### MacOS
 * Ansible
 
 ```bash
@@ -44,4 +44,4 @@ Note OSX Vagrant box will clone this repository instead of use the local copy, s
 
 ### Extras:
 * Gnome-terminal / iTerm2 themes from: https://github.com/chriskempson/tomorrow-theme
-* Change terminal font to Meslo (11)
+* Change terminal/iTerm2 font to 'Hack Nerd Font' (15) in iterm2 mark 'use different font for non-ASCII text' set same font and disable Anti-aliased in there

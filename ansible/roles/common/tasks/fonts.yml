@@ -1,10 +1,5 @@
-- name: Cloning Powerline Fonts
-  git: repo=https://github.com/powerline/fonts.git dest=/tmp/fonts/ clone=yes update=yes
+- name: Cloning Nerd Fonts
+  git: repo=https://github.com/ryanoasis/nerd-fonts.git dest=/tmp/fonts/ clone=yes update=yes
 
-- name: Install Powerline Fonts (script)
+- name: Install Nerd Fonts (script)
   command: /tmp/fonts/install.sh
-
-- name: Install Powerline fonts (pip)
-  pip: name=powerline-status
-  become: yes
-  become_method: sudo

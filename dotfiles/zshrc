@@ -21,7 +21,7 @@ zplug "plugins/npm", from:oh-my-zsh
 zplug "plugins/z", from:oh-my-zsh
 zplug "plugins/virtualenv", from:oh-my-zsh
 zplug "plugins/virtualenvwrapper", from:oh-my-zsh
-zplug "plugins/svn", from:oh-my-zsh
+#zplug "plugins/svn", from:oh-my-zsh
 zplug "plugins/thefuck", from:oh-my-zsh
 zplug "plugins/sudo", from:oh-my-zsh
 zplug "plugins/node", from:oh-my-zsh
@@ -29,10 +29,11 @@ zplug "plugins/mvn", from:oh-my-zsh
 zplug "plugins/docker", from:oh-my-zsh
 zplug "zsh-users/zsh-syntax-highlighting"
 zplug "zsh-users/zsh-completions"
-zplug "bbenne10/goenv"
+#zplug "bbenne10/goenv"
 zplug "plugins/vault", from:oh-my-zsh
 zplug "plugins/kubectl", from:oh-my-zsh
 zplug "plugins/helm", from:oh-my-zsh
+#zplug "plugin/dotenv", from:oh-my-zsh
 
 # Install plugins if there are plugins that have not been installed
 zplug check || zplug install
@@ -42,7 +43,10 @@ zplug load
 
 DEFAULT_USER=$USER
 
-export PATH="/sbin/:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:$HOME/.local/bin:$HOME/bin"
+# Enable dotenv plugin
+#ZSH_DOTENV_FILE=.env
+
+export PATH="/usr/local/opt/openssl/bin:/sbin/:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:$HOME/.local/bin:$HOME/bin"
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
@@ -62,15 +66,19 @@ BUREAU_THEME_NVM_SHOW="false"
 BUREAU_THEME_JAVA_SHOW="true"
 BUREAU_THEME_VENV_SHOW="true"
 BUREAU_THEME_RUBY_SHOW="false"
-# KUBE_PS1_BINARY="/usr/local/bin/kubectl"    # Use this at OSX
+BUREAU_THEME_K8S_SHOW="true"
+KUBE_PS1_BINARY="/usr/local/bin/kubectl"    # Use this at OSX
 
 # NVM
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh" # OSX
+#[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh" # OSX
 
 # VirtualEnv
+VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
 [ -s "/usr/local/bin/virtualenvwrapper.sh" ] && . /usr/local/bin/virtualenvwrapper.sh
+#�Auto enable virtualenvs based on .venv file
+[ -s "/usr/local/opt/autoenv/activate.sh" ] && . /usr/local/opt/autoenv/activate.sh
 
 # RVM
 rvm_silence_path_mismatch_check_flag=1     # This silence a dummy bug when using RVM and virtualenv at the same time
@@ -93,12 +101,14 @@ case `uname` in
   Darwin)
     export JAVA_8_HOME=$(/usr/libexec/java_home -v1.8)
     export JAVA_9_HOME=$(/usr/libexec/java_home -v9)
-    export JAVA_10_HOME=$(/usr/libexec/java_home -v10)
+#    export JAVA_10_HOME=$(/usr/libexec/java_home -v10)
+    export JAVA_11_HOME=$(/usr/libexec/java_home -v11)
     alias java8='export JAVA_HOME=$JAVA_8_HOME'
     alias java9='export JAVA_HOME=$JAVA_9_HOME'
-    alias java10='export JAVA_HOME=$JAVA_10_HOME'
-    #default java8
-    export JAVA_HOME=$JAVA_9_HOME
+#    alias java10='export JAVA_HOME=$JAVA_10_HOME'
+    alias java11='export JAVA_HOME=$JAVA_11_HOME'
+    #default java11
+    export JAVA_HOME=$JAVA_11_HOME
     ;;
   Linux)
     export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
@@ -164,4 +174,8 @@ export ANSIBLE_STDOUT_CALLBACK=debug
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# This loads nvm bash_completion
+
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+eval $(thefuck --alias)

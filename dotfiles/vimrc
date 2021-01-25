@@ -181,7 +181,7 @@ if has ('gui_running')
 " Show whitespaces
 " Use <leader>l to activate deactivate
 " MUST be inserted BEFORE the colorscheme command
-set listchars=tab:>-,trail:·,extends:>,precedes:<,nbsp:_
+" set listchars=tab:>-,trail:·,extends:>,precedes:<,nbsp:_
 set list
 
 " Colors!
