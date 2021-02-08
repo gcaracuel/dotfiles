@@ -13,7 +13,6 @@
     - git
     - nmap
     - node
-    - python
     - python3
     - autoenv
     - readline
@@ -34,15 +33,16 @@
     - nvm
     - byobu
     - asciinema
-    - asciinema2gif
     - golang
     - lnav
     - ncdu
-    - tfswitch
+    - warrensbox/tap/tfswitch
     - awscli
     - mitmproxy
     - bindfs
     - kubectx
+    - jq
+    - python-yq
 
 # Workaround: This applies to vagrant box I am using to verify
 - file: path=/usr/local/bin/brew-cask state=absent force=yes
@@ -61,14 +61,13 @@
     - virtualbox
     - spotify
     - google-chrome
-    - java8 # Will fail without brew cask tap cask/versions
     - java
     - insomnia
     - dash
     - keepassxc
     - spectacle
     - font-inconsolata
-    - odio
+#    - odio # this has moved to strimio but not yet a cask available
     - brave-browser
     - owasp-zap
     - font-hack-nerd-font
