@@ -43,6 +43,11 @@
     - kubectx
     - jq
     - python-yq
+    - youtube-dl
+    - ffmpeg
+    - espeak
+    - sox
+    - google-cloud-sdk
 
 # Workaround: This applies to vagrant box I am using to verify
 - file: path=/usr/local/bin/brew-cask state=absent force=yes
