@@ -34,6 +34,7 @@ zplug "plugins/vault", from:oh-my-zsh
 zplug "plugins/kubectl", from:oh-my-zsh
 zplug "plugins/helm", from:oh-my-zsh
 #zplug "plugin/dotenv", from:oh-my-zsh
+zplug "plugin/terraform", from:oh-my-zsh
 
 # Install plugins if there are plugins that have not been installed
 zplug check || zplug install
@@ -62,36 +63,41 @@ export EDITOR='/usr/bin/vim'
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
 
 # Theme configuration
-BUREAU_THEME_NVM_SHOW="false"
-BUREAU_THEME_JAVA_SHOW="true"
-BUREAU_THEME_VENV_SHOW="true"
-BUREAU_THEME_RUBY_SHOW="false"
-BUREAU_THEME_K8S_SHOW="true"
+GAIA_THEME_NVM_SHOW="false"
+GAIA_THEME_JAVA_SHOW="false"
+GAIA_THEME_VENV_SHOW="true"
+GAIA_THEME_RUBY_SHOW="false"
+GAIA_THEME_K8S_SHOW="false"
+GAIA_THEME_GCP_SHOW="true"
+GCP_PS1_BINARY="/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/bin/gcloud" # Overrides gcloud command location
+GAIA_THEME_TF_SHOW="true"
+
+
+
 KUBE_PS1_BINARY="/usr/local/bin/kubectl"    # Use this at OSX
 
 # NVM
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-#[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh" # OSX
-
-# VirtualEnv
-VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
-[ -s "/usr/local/bin/virtualenvwrapper.sh" ] && . /usr/local/bin/virtualenvwrapper.sh
-#�Auto enable virtualenvs based on .venv file
-[ -s "/usr/local/opt/autoenv/activate.sh" ] && . /usr/local/opt/autoenv/activate.sh
+#[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh" # OSX
 
 # RVM
 rvm_silence_path_mismatch_check_flag=1     # This silence a dummy bug when using RVM and virtualenv at the same time
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
-
 PERL_MB_OPT="--install_base \"/home/gcaracuel/perl5\""; export PERL_MB_OPT;
 PERL_MM_OPT="INSTALL_BASE=/home/gcaracuel/perl5"; export PERL_MM_OPT;
+
+# VirtualEnv
+VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
+[ -s "/usr/local/bin/virtualenvwrapper.sh" ] && . /usr/local/bin/virtualenvwrapper.sh
+# Auto enable virtualenvs based on .venv file
+[ -s "/usr/local/opt/autoenv/activate.sh" ] && source /usr/local/opt/autoenv/activate.sh   # changed line to set mountpoint to /
 
 # Golang
 export GOPATH="$HOME/go"
 export PATH="$PATH:${GOPATH//://bin:}/bin"
 #     https://github.com/getstream/vg
-command -v vg >/dev/null 2>&1 && eval "$(vg eval --shell zsh)"
+# command -v vg >/dev/null 2>&1 && eval "$(vg eval --shell zsh)"
 
 # SDK - The Software Development Kit Manager
 [ -s "$HOME/.sdkman/bin/sdkman-init.sh" ] && . "$HOME/.sdkman/bin/sdkman-init.sh"
@@ -100,11 +106,11 @@ command -v vg >/dev/null 2>&1 && eval "$(vg eval --shell zsh)"
 case `uname` in
   Darwin)
 #    export JAVA_11_HOME=$(/usr/libexec/java_home -v11)
-    export JAVA_13_HOME=$(/usr/libexec/java_home -v13)
+    export JAVA_16_HOME=$(/usr/libexec/java_home -v16)
 #    alias java11='export JAVA_HOME=$JAVA_11_HOME'
-    alias java13='export JAVA_HOME=$JAVA_11_HOME'
-    #default java13
-    export JAVA_HOME=$JAVA_13_HOME
+    alias java16='export JAVA_HOME=$JAVA_16_HOME'
+    #default java16
+    export JAVA_HOME=$JAVA_16_HOME
     ;;
   Linux)
     export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
@@ -126,6 +132,10 @@ export ANSIBLE_STDOUT_CALLBACK=debug
 
 # Load VTE
 [ -s "/etc/profile.d/vte.sh" ] && \. /etc/profile.d/vte.sh
+
+# Gcloud
+[ -s "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc" ] && source /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc
+[ -s "/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc" ] && source /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc
 
 # One-liners repository
 #
@@ -171,6 +181,13 @@ export ANSIBLE_STDOUT_CALLBACK=debug
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 # This loads nvm bash_completion
+
+alias twa='terraform apply --var-file=$(terraform workspace show).tfvars'
+alias twp='terraform plan --var-file=$(terraform workspace show).tfvars'
+alias twp='terraform console --var-file=$(terraform workspace show).tfvars'
+
+alias gcloud-config='gcloud config configurations' # Use as gcloud-config list | gcloud-config activate <config-name>
+
 
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 

@@ -4,7 +4,7 @@
 [credential]
 	helper = cache
 [core]
-	editor = vim
+	editor = code --
 	excludesfile = $HOME/.gitignore_global
 [push]
 	default = simple

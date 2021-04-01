@@ -47,7 +47,10 @@
     - ffmpeg
     - espeak
     - sox
-    - google-cloud-sdk
+    - dbeaver-community
+    - microsoft-teams
+    - tunnelbrick
+#    - google-cloud-sdk
 
 # Workaround: This applies to vagrant box I am using to verify
 - file: path=/usr/local/bin/brew-cask state=absent force=yes
@@ -55,6 +58,10 @@
 - name: Install fonts Cask repository
   homebrew_tap:
     name: homebrew/cask-fonts
+
+- name: Install tap cask versions
+  homebrew_tap:
+    name: homebrew/cask-versions
 
 - name: Install apps with Cask
   homebrew_cask: name={{ item }} state=present
@@ -66,7 +73,7 @@
     - virtualbox
     - spotify
     - google-chrome
-    - java
+    - oracle-jdk
     - insomnia
     - dash
     - keepassxc

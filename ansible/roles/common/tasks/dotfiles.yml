@@ -15,6 +15,7 @@
         dest=~/.dotfiles_backups/{{ item }}_{{ ansible_date_time.epoch }}
         follow=yes
   ignore_errors: yes
+
 - name: Link dotfiles - {{ item }}
   file: src={{ playbook_dir }}/../dotfiles/{{ item }}
         dest=~/.{{ item }}

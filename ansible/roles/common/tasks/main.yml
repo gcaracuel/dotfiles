@@ -29,7 +29,7 @@
     - gcaracuel
   tags: dotfiles
 
-- include: pip.yml
+- include: pip3.yml
   with_items:
     - virtualenv
     - virtualenvwrapper
