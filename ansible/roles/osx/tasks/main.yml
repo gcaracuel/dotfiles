@@ -96,6 +96,7 @@
     - jetbrains-toolbox
 #    - gitkraken 
 #    - rambox
+    - lens
 
 # This requires Java that comes by Cask
 # - name: Install Maven
