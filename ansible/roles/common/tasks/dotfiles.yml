@@ -1,45 +1,27 @@
 ---
 - block:
-  - file:
+  - ansible.builtin.file:
       path: ~/.dotfiles_backups/{{ item | dirname }}
       state: directory
       recurse: yes
   - name: Check if {{ item }} is a directory
-    file:
-      path: ~/.{{ item | dirname }}
+    ansible.builtin.file:
+      path: "~/.{{ item | dirname }}"
       state: directory
       recurse: yes
   when: '"/" in "{{ item }}"'
+
 - name: Backup dotfiles - {{ item }}
-  copy: src=~/.{{ item }}
-        dest=~/.dotfiles_backups/{{ item }}_{{ ansible_date_time.epoch }}
-        follow=yes
+  copy: 
+    src: "~/.{{ item }}"
+    dest: "~/.dotfiles_backups/{{ item }}_{{ ansible_date_time.epoch }}"
+    follow: yes
   ignore_errors: yes
 
 - name: Link dotfiles - {{ item }}
-  file: src={{ playbook_dir }}/../dotfiles/{{ item }}
-        dest=~/.{{ item }}
-        state=link
-        force=yes
-        follow=yes
-
-# OSX only
-- name: Copy iTerm2 configuration 
-  file: src=~/.osx/com.googlecode.iterm2.plist
-        dest=~/Library/Preferences/com.googlecode.iterm2.plist
-        state=link
-        force=yes
-        follow=yes
-  when: "ansible_os_family == 'Darwin'"
-
-
-- name: Copy Spectacle configuration 
-  file: src=~/.osx/Spectacle_Shortcuts.json
-        dest=~/Library/Application\ Support/Spectacle/Shortcuts.json
-        state=link
-        force=yes
-        follow=yes
-  when: "ansible_os_family == 'Darwin'"
-
-
-# TO-DO iTerm2 Theme - https://github.com/chriskempson/tomorrow-theme/tree/master/iTerm2
+  ansible.builtin.file: 
+    src: "{{ playbook_dir }}/../dotfiles/{{ item }}"
+    dest: "~/.{{ item }}"
+    state: link
+    force: yes
+    follow: yes

@@ -67,7 +67,7 @@ GAIA_THEME_NVM_SHOW="false"
 GAIA_THEME_JAVA_SHOW="false"
 GAIA_THEME_VENV_SHOW="true"
 GAIA_THEME_RUBY_SHOW="false"
-GAIA_THEME_K8S_SHOW="false"
+GAIA_THEME_K8S_SHOW="true"
 GAIA_THEME_GCP_SHOW="true"
 GCP_PS1_BINARY="/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/bin/gcloud" # Overrides gcloud command location
 GAIA_THEME_TF_SHOW="true"
@@ -105,12 +105,9 @@ export PATH="$PATH:${GOPATH//://bin:}/bin"
 # JAVA
 case `uname` in
   Darwin)
-#    export JAVA_11_HOME=$(/usr/libexec/java_home -v11)
-    export JAVA_16_HOME=$(/usr/libexec/java_home -v16)
-#    alias java11='export JAVA_HOME=$JAVA_11_HOME'
-    alias java16='export JAVA_HOME=$JAVA_16_HOME'
-    #default java16
-    export JAVA_HOME=$JAVA_16_HOME
+    export JAVA_17_HOME=$(/usr/libexec/java_home -v17)
+    alias java17='export JAVA_HOME=$JAVA_16_HOME'
+    export JAVA_HOME=$JAVA_17_HOME
     ;;
   Linux)
     export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
@@ -182,13 +179,26 @@ export ANSIBLE_STDOUT_CALLBACK=debug
 # ZSH_CUSTOM=/path/to/new-custom-folder
 # This loads nvm bash_completion
 
-alias twa='terraform apply --var-file=$(terraform workspace show).tfvars'
-alias twp='terraform plan --var-file=$(terraform workspace show).tfvars'
-alias twp='terraform console --var-file=$(terraform workspace show).tfvars'
+alias twa='terraform apply -var-file=$(terraform workspace show).tfvars'
+alias twp='terraform plan -var-file=$(terraform workspace show).tfvars'
+alias twc='terraform console -var-file=$(terraform workspace show).tfvars'
+alias twd='terraform destroy -var-file=$(terraform workspace show).tfvars'
 
 alias gcloud-config='gcloud config configurations' # Use as gcloud-config list | gcloud-config activate <config-name>
 
 
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
+export PYTHONPATH="/Users/gcaracuel/Projects/Predictiva/datalab/datalab/:$PYTHONPATH"
+
 eval $(thefuck --alias)
+
+source $HOME/Documents/.env
+
+# krew path
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
+# Configure as per https://cloud.google.com/blog/products/containers-kubernetes/kubectl-auth-changes-in-gke
+export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+
+source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"

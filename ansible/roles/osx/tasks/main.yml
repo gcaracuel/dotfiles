@@ -36,21 +36,30 @@
     - golang
     - lnav
     - ncdu
-    - warrensbox/tap/tfswitch
+#    - warrensbox/tap/tfswitch
     - awscli
     - mitmproxy
-    - bindfs
+#    - bindfs
     - kubectx
     - jq
     - python-yq
-    - youtube-dl
+#    - youtube-dl
     - ffmpeg
     - espeak
     - sox
     - dbeaver-community
     - microsoft-teams
-    - tunnelbrick
-#    - google-cloud-sdk
+    - slack
+    - tunnelblick
+#    - tldr
+    - google-cloud-sdk
+    - kind
+    - helm
+    - kubectl
+    - k9s
+    - fluxcd/tap/flux
+    - dive
+  ignore_errors: yes
 
 # Workaround: This applies to vagrant box I am using to verify
 - file: path=/usr/local/bin/brew-cask state=absent force=yes
@@ -73,6 +82,7 @@
     - virtualbox
     - spotify
     - google-chrome
+    - firefox
     - oracle-jdk
     - insomnia
     - dash
@@ -88,13 +98,8 @@
 #    - rambox
 
 # This requires Java that comes by Cask
-- name: Install Maven
-  homebrew: name=maven state=latest
+# - name: Install Maven
+#   homebrew: name=maven state=latest
 
 - name: Cleanup Brew packages
   command: brew cleanup
-
-- name: Install iterm2
-  mac_pkg: pkg_type=app url=https://iterm2.com/downloads/stable/iTerm2-2_1_4.zip archive_type=zip archive_path=iTerm.app
-  become: yes
-  become_method: sudo

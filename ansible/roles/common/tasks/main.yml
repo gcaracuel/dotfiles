@@ -16,6 +16,27 @@
     - vim/colors/Tomorrow-Night-Eighties.vim
   tags: dotfiles
 
+# OSX only
+- name: Copy iTerm2 configuration 
+  ansible.builtin.file: 
+    src: ~/dotfiles/dotfiles/osx/com.googlecode.iterm2.plist
+    dest: ~/Library/Preferences/com.googlecode.iterm2.plist
+    state: link
+    force: yes
+    follow: yes
+  when: "ansible_os_family == 'Darwin'"
+
+- name: Copy Spectacle configuration 
+  ansible.builtin.file: 
+    src: ~/dotfiles/dotfiles/osx/Spectacle_Shortcuts.json
+    dest: "~/Library/Application Support/Spectacle/Shortcuts.json"
+    state: link
+    force: yes
+    follow: yes
+  when: "ansible_os_family == 'Darwin'"
+
+# TO-DO iTerm2 Theme - https://github.com/chriskempson/tomorrow-theme/tree/master/iTerm2
+
 - name: Installing zPlug
   git: repo=https://github.com/zplug/zplug dest=~/.zplug clone=yes update=yes
   tags: dotfiles
