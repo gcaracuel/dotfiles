@@ -6,7 +6,7 @@ source ~/.zplug/init.zsh
 zplug "plugins/git",   from:oh-my-zsh
 # Load theme file
 zplug 'gcaracuel/gaia.zsh-theme', as:theme
-#zplug "$HOME/Documents/Projects/bureau.zsh-theme", as:theme, from:local, use:"bureau.zsh-theme"
+#zplug "$HOME/Projects/personal/gaia.zsh-theme", as:theme, from:local, use:"bureau.zsh-theme"
 zplug "lib/*", from:oh-my-zsh   # Load oh-my-zsh and then just select plugins
 zplug "plugins/osx", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
 zplug "plugins/brew", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
@@ -33,7 +33,7 @@ zplug "zsh-users/zsh-completions"
 zplug "plugins/vault", from:oh-my-zsh
 zplug "plugins/kubectl", from:oh-my-zsh
 zplug "plugins/helm", from:oh-my-zsh
-#zplug "plugin/dotenv", from:oh-my-zsh
+zplug "plugin/dotenv", from:oh-my-zsh
 zplug "plugin/terraform", from:oh-my-zsh
 
 # Install plugins if there are plugins that have not been installed
@@ -45,9 +45,9 @@ zplug load
 DEFAULT_USER=$USER
 
 # Enable dotenv plugin
-#ZSH_DOTENV_FILE=.env
+ZSH_DOTENV_FILE=.env
 
-export PATH="/usr/local/opt/openssl/bin:/sbin/:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:$HOME/.local/bin:$HOME/bin"
+export PATH="$PATH:/usr/local/opt/openssl/bin:/sbin/:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:$HOME/.local/bin:$HOME/bin"
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
@@ -68,13 +68,12 @@ GAIA_THEME_JAVA_SHOW="false"
 GAIA_THEME_VENV_SHOW="true"
 GAIA_THEME_RUBY_SHOW="false"
 GAIA_THEME_K8S_SHOW="true"
-GAIA_THEME_GCP_SHOW="true"
-GCP_PS1_BINARY="/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/bin/gcloud" # Overrides gcloud command location
+GAIA_THEME_GCP_SHOW="false"
 GAIA_THEME_TF_SHOW="true"
 
-
-
+GCP_PS1_BINARY="/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/bin/gcloud" # Overrides gcloud command location
 KUBE_PS1_BINARY="/usr/local/bin/kubectl"    # Use this at OSX
+TF_PS1_BINARY="/opt/homebrew/bin/terraform"
 
 # NVM
 export NVM_DIR="$HOME/.nvm"
@@ -88,7 +87,7 @@ PERL_MB_OPT="--install_base \"/home/gcaracuel/perl5\""; export PERL_MB_OPT;
 PERL_MM_OPT="INSTALL_BASE=/home/gcaracuel/perl5"; export PERL_MM_OPT;
 
 # VirtualEnv
-VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3
+VIRTUALENVWRAPPER_PYTHON=/opt/homebrew/bin/python3
 [ -s "/usr/local/bin/virtualenvwrapper.sh" ] && . /usr/local/bin/virtualenvwrapper.sh
 # Auto enable virtualenvs based on .venv file
 [ -s "/usr/local/opt/autoenv/activate.sh" ] && source /usr/local/opt/autoenv/activate.sh   # changed line to set mountpoint to /
@@ -184,7 +183,7 @@ alias twp='terraform plan -var-file=$(terraform workspace show).tfvars'
 alias twc='terraform console -var-file=$(terraform workspace show).tfvars'
 alias twd='terraform destroy -var-file=$(terraform workspace show).tfvars'
 
-alias gcloud-config='gcloud config configurations' # Use as gcloud-config list | gcloud-config activate <config-name>
+# alias gcloud-config='gcloud config configurations' # Use as gcloud-config list | gcloud-config activate <config-name>
 
 
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
@@ -192,8 +191,6 @@ alias gcloud-config='gcloud config configurations' # Use as gcloud-config list 
 export PYTHONPATH="/Users/gcaracuel/Projects/Predictiva/datalab/datalab/:$PYTHONPATH"
 
 eval $(thefuck --alias)
-
-source $HOME/Documents/.env
 
 # krew path
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
@@ -204,4 +201,5 @@ export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 # Kubeswitch
 INSTALLATION_PATH=$(brew --prefix switch) && source $INSTALLATION_PATH/switch.sh
 
-source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
+
+#source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"

@@ -1,6 +1,8 @@
 [user]
 	email = gcaracuel@user.noreply.github.com
-	name = Guillermo Caracuel
+	name = gcaracuel
+[includeIf "gitdir:~/Projects/work/gitlab"]
+    path = ~/Projects/work/.gitconfig
 [credential]
 	helper = cache
 [core]

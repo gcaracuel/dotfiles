@@ -37,10 +37,6 @@
 
 # TO-DO iTerm2 Theme - https://github.com/chriskempson/tomorrow-theme/tree/master/iTerm2
 
-- name: Installing zPlug
-  git: repo=https://github.com/zplug/zplug dest=~/.zplug clone=yes update=yes
-  tags: dotfiles
-
 - name: Change shell to ZSH
   user: shell=/bin/zsh user={{ item }}
   become: true
@@ -59,7 +55,6 @@
   tags: pip
 
 - include: nvm.yml
-# - include: atom.yml
 - include: vscode.yml
 - include: vim.yml
 - include: fonts.yml
