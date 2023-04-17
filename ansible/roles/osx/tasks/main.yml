@@ -33,6 +33,7 @@
     - nvm
     - byobu
     - vhs
+    - glow
     - golang
     - lnav
     - ncdu
