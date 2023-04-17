@@ -1,8 +1,8 @@
 [user]
 	email = gcaracuel@user.noreply.github.com
 	name = gcaracuel
-[includeIf "gitdir:~/Projects/work/gitlab"]
-    path = ~/Projects/work/.gitconfig
+[includeIf "gitdir:~/Projects/work/gitlab/"]
+    path = ~/Projects/work/gitlab/.gitconfig
 [credential]
 	helper = cache
 [core]
