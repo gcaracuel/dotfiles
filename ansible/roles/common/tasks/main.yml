@@ -19,7 +19,7 @@
 # OSX only
 - name: Copy iTerm2 configuration 
   ansible.builtin.file: 
-    src: ~/dotfiles/dotfiles/osx/com.googlecode.iterm2.plist
+    src: {{ playbook_dir }}/../dotfiles/osx/com.googlecode.iterm2.plist
     dest: ~/Library/Preferences/com.googlecode.iterm2.plist
     state: link
     force: yes

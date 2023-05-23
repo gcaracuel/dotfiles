@@ -1,8 +1,9 @@
 [user]
-	email = gcaracuel@user.noreply.github.com
+	email = 633810+gcaracuel@users.noreply.github.com
 	name = gcaracuel
-[includeIf "gitdir:~/Projects/work/gitlab/"]
-    path = ~/Projects/work/gitlab/.gitconfig
+	signingkey = 1CC792903A54199D
+[commit]
+	gpgsign = true
 [credential]
 	helper = cache
 [core]
@@ -26,3 +27,7 @@
 	defaultBranch = main
 [url "ssh://git@github.com/"]
 	insteadOf = https://github.com/
+# [includeIf "gitdir:~/Projects/work/github/"]
+#         path = ~/Projects/work/github/.gitconfig
+[includeIf "gitdir:~/Projects/work/gitlab/"]
+        path = ~/Projects/work/gitlab/.gitconfig
