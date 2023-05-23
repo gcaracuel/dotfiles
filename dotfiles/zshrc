@@ -4,8 +4,6 @@
 source ~/.zplug/init.zsh
 # Supports oh-my-zsh plugins and the like
 zplug "plugins/git",   from:oh-my-zsh
-# Load theme file
-zplug 'gcaracuel/gaia.zsh-theme', as:theme
 #zplug "$HOME/Projects/personal/gaia.zsh-theme", as:theme, from:local, use:"bureau.zsh-theme"
 zplug "lib/*", from:oh-my-zsh   # Load oh-my-zsh and then just select plugins
 zplug "plugins/osx", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
@@ -21,16 +19,15 @@ zplug "plugins/npm", from:oh-my-zsh
 zplug "plugins/z", from:oh-my-zsh
 zplug "plugins/virtualenv", from:oh-my-zsh
 zplug "plugins/virtualenvwrapper", from:oh-my-zsh
-#zplug "plugins/svn", from:oh-my-zsh
 zplug "plugins/thefuck", from:oh-my-zsh
 zplug "plugins/sudo", from:oh-my-zsh
 zplug "plugins/node", from:oh-my-zsh
-zplug "plugins/mvn", from:oh-my-zsh
+#zplug "plugins/mvn", from:oh-my-zsh
 zplug "plugins/docker", from:oh-my-zsh
 zplug "zsh-users/zsh-syntax-highlighting"
 zplug "zsh-users/zsh-completions"
 #zplug "bbenne10/goenv"
-zplug "plugins/vault", from:oh-my-zsh
+#zplug "plugins/vault", from:oh-my-zsh
 zplug "plugins/kubectl", from:oh-my-zsh
 zplug "plugins/helm", from:oh-my-zsh
 zplug "plugin/dotenv", from:oh-my-zsh
@@ -63,28 +60,22 @@ export EDITOR='/usr/bin/vim'
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
 
 # Theme configuration
-GAIA_THEME_NVM_SHOW="false"
-GAIA_THEME_JAVA_SHOW="false"
-GAIA_THEME_VENV_SHOW="true"
-GAIA_THEME_RUBY_SHOW="false"
-GAIA_THEME_K8S_SHOW="true"
-GAIA_THEME_GCP_SHOW="false"
-GAIA_THEME_TF_SHOW="true"
+# GAIA_THEME_NVM_SHOW="false"
+# GAIA_THEME_JAVA_SHOW="false"
+# GAIA_THEME_VENV_SHOW="true"
+# GAIA_THEME_RUBY_SHOW="false"
+# GAIA_THEME_K8S_SHOW="true"
+# GAIA_THEME_GCP_SHOW="false"
+# GAIA_THEME_TF_SHOW="true"
 
-GCP_PS1_BINARY="/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/bin/gcloud" # Overrides gcloud command location
-KUBE_PS1_BINARY="/usr/local/bin/kubectl"    # Use this at OSX
-TF_PS1_BINARY="/opt/homebrew/bin/terraform"
+# GCP_PS1_BINARY="/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/bin/gcloud" # Overrides gcloud command location
+# KUBE_PS1_BINARY="/usr/local/bin/kubectl"    # Use this at OSX
+# TF_PS1_BINARY="/opt/homebrew/bin/terraform"
 
 # NVM
 export NVM_DIR="$HOME/.nvm"
 #[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh" # OSX
-
-# RVM
-rvm_silence_path_mismatch_check_flag=1     # This silence a dummy bug when using RVM and virtualenv at the same time
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
-PERL_MB_OPT="--install_base \"/home/gcaracuel/perl5\""; export PERL_MB_OPT;
-PERL_MM_OPT="INSTALL_BASE=/home/gcaracuel/perl5"; export PERL_MM_OPT;
 
 # VirtualEnv
 VIRTUALENVWRAPPER_PYTHON=/opt/homebrew/bin/python3
@@ -97,21 +88,6 @@ export GOPATH="$HOME/go"
 export PATH="$PATH:${GOPATH//://bin:}/bin"
 #     https://github.com/getstream/vg
 # command -v vg >/dev/null 2>&1 && eval "$(vg eval --shell zsh)"
-
-# SDK - The Software Development Kit Manager
-[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ] && . "$HOME/.sdkman/bin/sdkman-init.sh"
-
-# JAVA
-case `uname` in
-  Darwin)
-    export JAVA_17_HOME=$(/usr/libexec/java_home -v17)
-    alias java17='export JAVA_HOME=$JAVA_16_HOME'
-    export JAVA_HOME=$JAVA_17_HOME
-    ;;
-  Linux)
-    export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
-    ;;
-esac
 
 # Aliases
 alias zshconfig="vim ~/.zshrc"
@@ -183,13 +159,6 @@ alias twp='terraform plan -var-file=$(terraform workspace show).tfvars'
 alias twc='terraform console -var-file=$(terraform workspace show).tfvars'
 alias twd='terraform destroy -var-file=$(terraform workspace show).tfvars'
 
-# alias gcloud-config='gcloud config configurations' # Use as gcloud-config list | gcloud-config activate <config-name>
-
-
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-
-export PYTHONPATH="/Users/gcaracuel/Projects/Predictiva/datalab/datalab/:$PYTHONPATH"
-
 eval $(thefuck --alias)
 
 # krew path
@@ -198,9 +167,10 @@ export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 # Configure as per https://cloud.google.com/blog/products/containers-kubernetes/kubectl-auth-changes-in-gke
 export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 
+export AWS_PROFILE=default
+
 # Kubeswitch
 INSTALLATION_PATH=$(brew --prefix switch) && source $INSTALLATION_PATH/switch.sh
 
-# This might solve and issue with GPG commit signing when using a new branch
-export GPG_TTY=$(tty)
-#source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.zsh.inc"
+eval "$(starship init zsh)"
+export STARSHIP_CONFIG=~/.starship.toml

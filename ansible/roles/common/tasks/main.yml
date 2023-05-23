@@ -12,7 +12,7 @@
     - gitconfig
     - tmux.conf
     - npmrc
-    - atom/config.cson
+    - starship.toml
     - vim/colors/Tomorrow-Night-Eighties.vim
   tags: dotfiles
 
