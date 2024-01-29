@@ -85,7 +85,7 @@ VIRTUALENVWRAPPER_PYTHON=/opt/homebrew/bin/python3
 [ -s "/usr/local/opt/autoenv/activate.sh" ] && source /usr/local/opt/autoenv/activate.sh   # changed line to set mountpoint to /
 
 # Python
-export PATH="$PATH:/opt/homebrew/opt/python@3.12/libexec/bin"
+export PATH="$PATH:/opt/homebrew/opt/python@3/libexec/bin"
 
 # Golang
 export GOPATH="$HOME/go"

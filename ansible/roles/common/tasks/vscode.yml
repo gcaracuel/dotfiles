@@ -1,24 +1,33 @@
 ---
 - name: Install VSCode addons
-  command: code --install-extension {{ item }}
+  command: code --install-extension {{ item }} # get current list using `code --list-extensions`
   with_items:
-    - vscoss.vscode-ansible
-    - formulahendry.auto-close-tag
-    - vscjava.vscode-java-debug
-    - peterjausovec.vscode-docker
+    - bierner.markdown-mermaid
+    - esbenp.prettier-vscode
+    - file-icons.file-icons 
+    - github.vscode-github-actions
+    - golang.go
+    - Gruntfuggly.todo-tree
+    - hashicorp.terraform
     - mikestead.dotenv
-    - file-icons.file-icons
-    - ms-vscode.go
+    - ms-azuretools.vscode-docker
+    - ms-python.isort
+    - ms-python.python
+    - ms-python.vscode-pylance
+    - ms-toolsai.jupyter
+    - ms-toolsai.jupyter-keymap
+    - ms-toolsai.jupyter-renderers
+    - ms-toolsai.vscode-jupyter-cell-tags
+    - ms-toolsai.vscode-jupyter-slideshow
+    - ms-vscode-remote.remote-containers
+    - ms-vscode.Theme-TomorrowKit
+    - redhat.java
+    - rust-lang.rust-analyzer
+    - VisualStudioExptTeam.intellicode-api-usage-examples
+    - VisualStudioExptTeam.vscodeintellicode
+    - vscjava.vscode-java-debug
     - vscjava.vscode-java-dependency
     - vscjava.vscode-java-pack
     - vscjava.vscode-java-test
-    - wholroyd.jinja
-    - redhat.java
-    - haaaad.ansible
     - vscjava.vscode-maven
-    - ms-python.python
-    - mauve.terraform
-    - wayou.vscode-todo-highlight
-    - ms-vscode.theme-tomorrowkit
-    - acid-gitlab-mr
-    - bierner.markdown-mermaid
+    - wholroyd.jinja
