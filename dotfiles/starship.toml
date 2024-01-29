@@ -54,7 +54,10 @@ format = '[$symbol$context]($style) '
 style = '75'
 symbol = '⎈ '
 disabled = false
-detect_files = ['values.yaml']
+detect_files = ['values.yaml','README.md']
+
+[pulumi]
+symbol = ' '
 
 [aws]
 format = '[$symbol($profile)(/\($region\))]($style) '
@@ -66,7 +69,11 @@ default = 'elenpay'
 [gcloud]
 format = '[$symbol$active]($style) '
 style = 'bold grey'
-symbol = '️🇬️ '
+symbol = '️ '
+
+[azure]
+style = 'bold grey'
+symbol = '️󰠅 '
 
 [git_branch]
 symbol = " "

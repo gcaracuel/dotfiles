@@ -65,6 +65,7 @@
     - pyenv-virtualenv
     - zplug
     - gh
+    - cilium-cli
   ignore_errors: yes
 
 # Workaround: This applies to vagrant box I am using to verify

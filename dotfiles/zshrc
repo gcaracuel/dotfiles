@@ -32,6 +32,7 @@ zplug "plugins/kubectl", from:oh-my-zsh
 zplug "plugins/helm", from:oh-my-zsh
 zplug "plugin/dotenv", from:oh-my-zsh
 zplug "plugin/terraform", from:oh-my-zsh
+zplug "plugin/helm", from:oh-my-zsh
 
 # Install plugins if there are plugins that have not been installed
 zplug check || zplug install
@@ -83,9 +84,14 @@ VIRTUALENVWRAPPER_PYTHON=/opt/homebrew/bin/python3
 # Auto enable virtualenvs based on .venv file
 [ -s "/usr/local/opt/autoenv/activate.sh" ] && source /usr/local/opt/autoenv/activate.sh   # changed line to set mountpoint to /
 
+# Python
+export PATH="$PATH:/opt/homebrew/opt/python@3.12/libexec/bin"
+
 # Golang
 export GOPATH="$HOME/go"
 export PATH="$PATH:${GOPATH//://bin:}/bin"
+
+export GO111MODULE=on
 #     https://github.com/getstream/vg
 # command -v vg >/dev/null 2>&1 && eval "$(vg eval --shell zsh)"
 
