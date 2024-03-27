@@ -1,0 +1,22 @@
+{
+    "workbench.colorTheme": "Default Dark+",
+    "workbench.startupEditor": "none",
+    "security.workspace.trust.untrustedFiles": "open",
+    "editor.fontSize": 13,
+    "[python]": {
+        "editor.formatOnType": true
+    },
+    "git.openRepositoryInParentFolders": "always",
+    "[json]": {
+
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "files.associations": {
+        "*.json": "json"
+    },
+    "workbench.sideBar.location": "right",
+    "editor.fontFamily": "Hack Nerd Font, Hack Nerd Font ,Menlo",
+    "window.zoomLevel": 1,
+    "go.toolsManagement.autoUpdate": true,
+    "terminal.integrated.fontSize": 14
+}

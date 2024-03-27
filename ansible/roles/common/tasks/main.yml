@@ -16,15 +16,26 @@
     - vim/colors/Tomorrow-Night-Eighties.vim
   tags: dotfiles
 
+# Custom destination
+- name: Copy VSCode configuration 
+  ansible.builtin.file: 
+    src: {{ playbook_dir }}/../dotfiles/vscode_settings.json
+    dest: "~/Library/Application Support/Code/User/settings.json"
+    state: link
+    force: yes
+    follow: yes
+  tags: dotfiles
+
 # OSX only
 - name: Copy iTerm2 configuration 
   ansible.builtin.file: 
-    src: {{ playbook_dir }}/../dotfiles/osx/com.googlecode.iterm2.plist
-    dest: ~/Library/Preferences/com.googlecode.iterm2.plist
+    src: {{ playbook_dir }}/../dotfiles/osx/iterm2.json
+    dest: "~/Library/Application Support/iTerm2/DynamicProfiles/gcaracuel.json"
     state: link
     force: yes
     follow: yes
   when: "ansible_os_family == 'Darwin'"
+  tags: dotfiles
 
 - name: Copy Spectacle configuration 
   ansible.builtin.file: 
@@ -34,8 +45,7 @@
     force: yes
     follow: yes
   when: "ansible_os_family == 'Darwin'"
-
-# TO-DO iTerm2 Theme - https://github.com/chriskempson/tomorrow-theme/tree/master/iTerm2
+  tags: dotfiles
 
 - name: Change shell to ZSH
   user: shell=/bin/zsh user={{ item }}
