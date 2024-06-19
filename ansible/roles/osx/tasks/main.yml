@@ -109,7 +109,7 @@
 #   homebrew: name=maven state=latest
 
 - name: Install Github CLI extensions
- command: gh extension install dlvhdr/gh-dash
+  command: gh extension install dlvhdr/gh-dash
 
 - name: Cleanup Brew packages
   command: brew cleanup

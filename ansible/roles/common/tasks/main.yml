@@ -16,20 +16,28 @@
     - vim/colors/Tomorrow-Night-Eighties.vim
   tags: dotfiles
 
-# Custom destination
-- name: Copy VSCode configuration 
+- name: Link VSCode configuration 
   ansible.builtin.file: 
-    src: {{ playbook_dir }}/../dotfiles/vscode_settings.json
+    src: "{{ playbook_dir }}/../dotfiles/vscode_settings.json"
     dest: "~/Library/Application Support/Code/User/settings.json"
     state: link
     force: yes
     follow: yes
   tags: dotfiles
 
+- name: Link Github Dash config
+  ansible.builtin.file: 
+    src: "{{ playbook_dir }}/../dotfiles/gh_dash.yml"
+    dest: "~/.config/gh-dash/config.yml"
+    state: link
+    force: yes
+    follow: yes
+  tags: onlyme
+
 # OSX only
 - name: Copy iTerm2 configuration 
   ansible.builtin.file: 
-    src: {{ playbook_dir }}/../dotfiles/osx/iterm2.json
+    src: "{{ playbook_dir }}/../dotfiles/osx/iterm2.json"
     dest: "~/Library/Application Support/iTerm2/DynamicProfiles/gcaracuel.json"
     state: link
     force: yes

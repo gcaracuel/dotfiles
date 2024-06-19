@@ -23,7 +23,7 @@
 	process = git-lfs filter-process
 	required = true
 [pull]
-	rebase = false
+	rebase = true
 [init]
 	defaultBranch = main
 [url "ssh://git@github.com/"]
