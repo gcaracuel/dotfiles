@@ -51,6 +51,7 @@ defaults:
 keybindings:
   issues: []
   prs: []
-repoPaths: {}
+repoPaths:
+  :owner/:repo: ~/Projects/work/github/:owner/:repo
 pager:
-  diff: ""
+  diff: delta

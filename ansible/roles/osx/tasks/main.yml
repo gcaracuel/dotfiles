@@ -66,6 +66,7 @@
     - zplug
     - gh
     - cilium-cli
+    - git-delta
   ignore_errors: yes
 
 # Workaround: This applies to vagrant box I am using to verify
