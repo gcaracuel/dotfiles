@@ -52,7 +52,7 @@ style = '129'
 [kubernetes]
 format = '[$symbol$context]($style) '
 style = '75'
-symbol = '⎈ '
+symbol = '󱃾 '
 disabled = false
 detect_files = ['values.yaml','README.md']
 
@@ -100,7 +100,7 @@ symbol = " "
 symbol = " "
 [package]
 format = '[$symbol$version]($style) '
-symbol = " "
+symbol = " "
 [python]
 symbol = " "
 [ruby]

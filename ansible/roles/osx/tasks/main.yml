@@ -67,6 +67,8 @@
     - gh
     - cilium-cli
     - git-delta
+    - sheerun/git-squash/git-squash
+    - lusingander/tap/serie
   ignore_errors: yes
 
 # Workaround: This applies to vagrant box I am using to verify
@@ -101,6 +103,7 @@
     - font-hack-nerd-font
     - jetbrains-toolbox
     - docker
+    - gitbutler
     # - android-studio
     # - cocoapods
     # - flutter  
