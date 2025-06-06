@@ -4,7 +4,6 @@
 source ~/.zplug/init.zsh
 # Supports oh-my-zsh plugins and the like
 zplug "plugins/git",   from:oh-my-zsh
-#zplug "$HOME/Projects/personal/gaia.zsh-theme", as:theme, from:local, use:"bureau.zsh-theme"
 zplug "lib/*", from:oh-my-zsh   # Load oh-my-zsh and then just select plugins
 zplug "plugins/osx", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
 zplug "plugins/brew", from:oh-my-zsh, if:"[[ $OSTYPE == *darwin* ]]"
@@ -61,13 +60,7 @@ export EDITOR='/usr/bin/vim'
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
 
 # Theme configuration
-# GAIA_THEME_NVM_SHOW="false"
-# GAIA_THEME_JAVA_SHOW="false"
-# GAIA_THEME_VENV_SHOW="true"
-# GAIA_THEME_RUBY_SHOW="false"
-# GAIA_THEME_K8S_SHOW="true"
-# GAIA_THEME_GCP_SHOW="false"
-# GAIA_THEME_TF_SHOW="true"
+SPACESHIP_KUBECTL_SHOW="true"
 
 # GCP_PS1_BINARY="/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/bin/gcloud" # Overrides gcloud command location
 # KUBE_PS1_BINARY="/usr/local/bin/kubectl"    # Use this at OSX
@@ -101,6 +94,9 @@ alias ohmyzsh="vim ~/.oh-my-zsh"
 
 # BYOBU aliases
 alias b='byobu'
+
+# Zplug
+alias zplug="LC_MESSAGES=en_US.UTF-8 zplug"
 
 # Vagrant
 export VAGRANT_DEFAULT_PROVIDER=virtualbox
@@ -160,10 +156,13 @@ export ANSIBLE_STDOUT_CALLBACK=debug
 # ZSH_CUSTOM=/path/to/new-custom-folder
 # This loads nvm bash_completion
 
-alias twa='terraform apply -var-file=$(terraform workspace show).tfvars'
-alias twp='terraform plan -var-file=$(terraform workspace show).tfvars'
-alias twc='terraform console -var-file=$(terraform workspace show).tfvars'
-alias twd='terraform destroy -var-file=$(terraform workspace show).tfvars'
+
+# With this we will ensure all our commands play well when using Terraform Workspaces so next aliases are not needed anymore
+export TF_CLI_ARGS="-var-file $(terraform workspace show).tfvars"
+# alias twa='terraform apply -var-file=$(terraform workspace show).tfvars'
+# alias twp='terraform plan -var-file=$(terraform workspace show).tfvars'
+# alias twc='terraform console -var-file=$(terraform workspace show).tfvars'
+# alias twd='terraform destroy -var-file=$(terraform workspace show).tfvars'
 
 eval $(thefuck --alias)
 
@@ -180,3 +179,9 @@ INSTALLATION_PATH=$(brew --prefix switch) && source $INSTALLATION_PATH/switch.sh
 
 eval "$(starship init zsh)"
 export STARSHIP_CONFIG=~/.starship.toml
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/guillermo/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/guillermo/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/guillermo/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/guillermo/Downloads/google-cloud-sdk/completion.zsh.inc'; fi

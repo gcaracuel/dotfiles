@@ -29,6 +29,6 @@
 [url "ssh://git@github.com/"]
 	insteadOf = https://github.com/
 # [includeIf "gitdir:~/Projects/work/github/"]
-#         path = ~/Projects/work/github/.gitconfig
+#   path = ~/Projects/work/github/.gitconfig
 [includeIf "gitdir:~/Projects/work/gitlab/"]
-        path = ~/Projects/work/gitlab/.gitconfig
+  path = ~/Projects/work/gitlab/.gitconfig

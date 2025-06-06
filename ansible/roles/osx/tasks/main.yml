@@ -69,6 +69,8 @@
     - git-delta
     - sheerun/git-squash/git-squash
     - lusingander/tap/serie
+    - ollama
+    - krew 
   ignore_errors: yes
 
 # Workaround: This applies to vagrant box I am using to verify
@@ -104,9 +106,20 @@
     - jetbrains-toolbox
     - docker
     - gitbutler
+    - tftarget
     # - android-studio
     # - cocoapods
     # - flutter  
+
+- name: Install Krew plugins
+  shell: /bin/bash -c "kubectl krew install {{ item }}"
+  with_items:
+    - browse-pvc
+    - df-pvc
+    - kubevpn/kubevpn
+    - kvaps/node-shell
+    - np-viewer
+    - oidc-login
 
 # This requires Java that comes by Cask
 # - name: Install Maven
