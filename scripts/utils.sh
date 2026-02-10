@@ -27,6 +27,7 @@ SKIP_PACKAGES=false
 SKIP_STOW=false
 GUM_AVAILABLE=false
 FORCE_BREW=false  # Force using Homebrew even on Linux (for container testing)
+FORCE_STOW=false  # Force stow to adopt existing files (uses --adopt)
 VERBOSE=false     # Enable verbose/debug logging
 
 # Timestamp for this run (used for backups)
@@ -404,6 +405,7 @@ Options:
     --skip-stow         Skip stow, only install packages
     --dry-run           Preview changes without applying them
     --verbose, -v       Enable verbose debug logging to debug.log
+    --force             Force stow to adopt existing files (uses --adopt)
     --force-brew        Force using Homebrew on Linux (for container testing)
     --help              Show this help message
 
@@ -413,6 +415,7 @@ Examples:
     ./main.sh --skip-packages          # Only symlink dotfiles
     ./main.sh --dry-run                # Preview what would happen
     ./main.sh --verbose                # Run with debug logging enabled
+    ./main.sh --force                  # Force override existing dotfiles
     ./main.sh --force-brew             # Force Homebrew usage on Linux (for testing)
 EOF
 }
@@ -438,6 +441,10 @@ parse_args() {
                 ;;
             --verbose|-v)
                 VERBOSE=true
+                shift
+                ;;
+            --force)
+                FORCE_STOW=true
                 shift
                 ;;
             --force-brew)

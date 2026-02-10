@@ -133,6 +133,7 @@ get_file_state() {
 
 # Backup all files that exist in $HOME that stow will manage
 # This backs up EVERY file before stow runs, regardless of conflict status
+# When FORCE_STOW is enabled, files are NOT removed (--adopt handles them)
 backup_existing_dotfiles() {
     local backup_dir
     backup_dir=$(get_backup_dir)
@@ -162,6 +163,12 @@ backup_existing_dotfiles() {
     
     if [[ ${#files_to_backup[@]} -eq 0 ]]; then
         log_info "No existing files to backup"
+        return 0
+    fi
+    
+    # Skip backup if FORCE_STOW is enabled (--adopt will handle files)
+    if [[ "$FORCE_STOW" == true ]]; then
+        log_info "Skipping backup (--force enabled: stow --adopt will import files)"
         return 0
     fi
     
@@ -257,11 +264,27 @@ execute_stow() {
     
     log_step "Running stow..."
     
+    # Build stow command
+    local stow_cmd=(stow --no-folding --target="$HOME" --verbose=1)
+    
+    # Add --adopt flag if FORCE_STOW is enabled
+    if [[ "$FORCE_STOW" == true ]]; then
+        stow_cmd+=(--adopt)
+        log_warning "Using --adopt: existing files will be imported into dotfiles/"
+    fi
+    
+    stow_cmd+=(.)
+    
     # Run stow from the dotfiles directory
     # Using --no-folding to prevent directory folding (symlinking entire directories)
     # This ensures individual file/subdirectory symlinks, preventing untracked files in .config/
-    if (cd "$DOTFILES_DIR" && stow --no-folding --target="$HOME" --verbose=1 . 2>&1); then
+    if (cd "$DOTFILES_DIR" && "${stow_cmd[@]}" 2>&1); then
         log_success "Stow complete"
+        
+        # If --adopt was used, remind user to check git diff
+        if [[ "$FORCE_STOW" == true ]]; then
+            log_warning "Check 'git diff' to review files imported into dotfiles/"
+        fi
     else
         local exit_code=$?
         die "Stow failed" \
