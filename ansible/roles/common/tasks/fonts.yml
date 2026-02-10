@@ -1,5 +1,0 @@
-- name: Cloning Nerd Fonts
-  git: repo=https://github.com/ryanoasis/nerd-fonts.git dest=/tmp/fonts/ clone=yes update=yes
-
-- name: Install Nerd Fonts (script)
-  command: /tmp/fonts/install.sh

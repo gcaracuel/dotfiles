@@ -1,0 +1,40 @@
+# -------------------------------------------------------------------
+# SKHD Example Configuration
+# -------------------------------------------------------------------
+
+# Modifiers: cmd, alt, ctrl, shift, lcmd, lalt, lctrl, lshift, ...
+# Special keys: ret (Enter), space, esc, tab, backspace, ...
+
+# --- Basics ---
+# Reload configuration file
+ctrl + alt + cmd - r : skhd --reload
+
+# --- Window Management (Designed for yabai) ---
+# Focus windows
+alt - h : yabai -m window --focus west
+alt - j : yabai -m window --focus south
+alt - k : yabai -m window --focus north
+alt - l : yabai -m window --focus east
+
+# Swap windows
+shift + alt - h : yabai -m window --swap west
+shift + alt - j : yabai -m window --swap south
+shift + alt - k : yabai -m window --swap north
+shift + alt - l : yabai -m window --swap east
+
+# Toggle window fullscreen
+alt - f : yabai -m window --toggle zoom-parent
+
+# --- Application Specific Rules ---
+# If Chrome is focused, cmd-p triggers 'print'. Otherwise, it's global
+# (This is just an example of context-aware hotkeys)
+# Example: If active window is Finder, use custom command
+# /Applications/Finder.app/Contents/MacOS/Finder : echo "Finder is active"
+
+# --- Other Functionality ---
+# Example: Send a command to change desktop background (requires another tool)
+# cmd + alt - b : /usr/local/bin/switch_background.sh
+
+# --- Mouse Actions ---
+# Example: Alt + drag to move window
+# alt - mouse1 : yabai -m window --move

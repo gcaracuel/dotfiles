@@ -1,6 +1,0 @@
----
-- name: Create golang workspace needed dirs
-  file:
-    path: ~/go/{bin,pkg,src}
-    state: directory
-    mode: 0755 

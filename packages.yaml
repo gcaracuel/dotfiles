@@ -1,0 +1,414 @@
+# packages.yaml - Unified package definitions for dotfiles bootstrap
+# 
+# Schema:
+#   packages: Array of package objects with fields:
+#     - name: Default package name (used if no override)
+#     - description: Human-readable description
+#     - gui: false=CLI (brew/dnf), true=GUI (cask/flatpak)
+#     - work: false=personal, true=work-only
+#     - overrides: Optional OS-specific names
+#       - macos: macOS package name (null = skip on macOS)
+#       - linux: Linux package name (null = skip on Linux)
+#
+# Usage:
+#   ./main.sh                    # Install personal packages (CLI + GUI)
+#   ./main.sh --work             # Include work packages
+#
+# Notes:
+#   - Linux CLI: Installed via DNF (Fedora)
+#   - Linux GUI: Installed via Flatpak (requires Flatpak ID)
+#   - COPR repos (see scripts/prerequisites.sh):
+#     - atim/lazygit, che/nerd-fonts, atim/starship, lihaohong/yazi
+
+packages:
+  # =============================================================================
+  # Navigation & File Management
+  # =============================================================================
+  
+  - name: zoxide
+    description: z command - smarter cd
+    gui: false
+    work: false
+    
+  - name: yazi
+    description: File explorer TUI
+    gui: false
+    work: false
+    
+  - name: fzf
+    description: Fuzzy finder
+    gui: false
+    work: false
+    
+  - name: fd
+    description: find replacement
+    gui: false
+    work: false
+    overrides:
+      linux: fd-find
+  
+  # =============================================================================
+  # Text & Viewing
+  # =============================================================================
+  
+  - name: neovim
+    description: Text editor
+    gui: false
+    work: false
+    
+  - name: bat
+    description: cat replacement with syntax highlighting
+    gui: false
+    work: false
+    
+  - name: ripgrep
+    description: grep replacement
+    gui: false
+    work: false
+
+  - name: jq
+    description: JSON processor
+    gui: false
+    work: false
+
+  # =============================================================================
+  # Terminal & Shell
+  # =============================================================================
+  
+  - name: zsh
+    description: Zsh shell
+    gui: false
+    work: false
+    
+  - name: zsh-autosuggestions
+    description: Zsh plugin
+    gui: false
+    work: false
+    
+  - name: zsh-syntax-highlighting
+    description: Zsh plugin
+    gui: false
+    work: false
+    
+  - name: starship
+    description: Terminal prompt/theme
+    gui: false
+    work: false
+
+  - name: tmux
+    description: Terminal multiplexor
+    gui: false
+    work: false
+
+  - name: ghostty
+    description: Terminal emulator (Use brew cask)
+    gui: true
+    work: false
+  
+  # =============================================================================
+  # Development
+  # =============================================================================
+  
+  - name: lazygit
+    description: Git TUI
+    gui: false
+    work: false
+    # Uses DNF via COPR atim/lazygit on Linux
+  
+  - name: handy
+    description: speech-to-text application that works completely offline
+    gui: false
+    work: false
+    overrides:
+      linux: null
+
+  # =============================================================================
+  # System & Utilities
+  # =============================================================================
+  
+  - name: dust
+    description: du replacement (disk usage)
+    gui: false
+    work: false
+    overrides:
+      linux: du-dust
+      
+  - name: btop
+    description: System monitor (better top)
+    gui: false
+    work: false
+    
+  - name: tldr
+    description: Simplified man pages
+    gui: false
+    work: false
+    overrides:
+      linux: null
+      
+  - name: croc
+    description: File sharing
+    gui: false
+    work: false
+    
+  - name: ttyd
+    description: Terminal share via web
+    gui: false
+    work: false
+    
+  - name: tailscale
+    description: VPN/mesh network
+    gui: false
+    work: false
+    
+  - name: httpie
+    description: HTTP client (better curl)
+    gui: false
+    work: false
+    
+  - name: thefuck
+    description: Command line error correction
+    gui: false
+    work: false
+  
+  # =============================================================================
+  # Fonts
+  # =============================================================================
+  
+  - name: font-hack-nerd-font
+    description: Hack Nerd Font (includes Fira Code on macOS, all fonts on Linux)
+    gui: false
+    work: false
+    overrides:
+      linux: nerd-fonts
+  
+  # =============================================================================
+  # Other CLI
+  # =============================================================================
+  
+  - name: gh
+    description: GitHub CLI
+    gui: false
+    work: false
+    
+  - name: make
+    description: Build automation tool
+    gui: false
+    work: false
+    
+  - name: gcc
+    description: GNU Compiler Collection
+    gui: false
+    work: false
+
+  - name: unzip
+    description: Unzip utility. Required to install some asdf packages like bun
+    gui: false
+    work: false
+  
+  # =============================================================================
+  # GUI Apps - Personal
+  # =============================================================================
+  
+  - name: spotify
+    description: Music streaming
+    gui: true
+    work: false
+    overrides:
+      linux: com.spotify.Client
+      
+  - name: rectangle
+    description: Window management
+    gui: true
+    work: false
+    overrides:
+      linux: null
+
+  - name: visual-studio-code
+    description: Code editor
+    gui: true
+    work: false
+    overrides:
+      linux: com.visualstudio.code
+      
+  - name: vivaldi
+    description: Web browser
+    gui: true
+    work: false
+    overrides:
+      linux: null
+      
+  - name: google-chrome
+    description: Web browser
+    gui: true
+    work: false
+    overrides:
+      linux: null
+      
+  - name: bruno
+    description: Fast API Client
+    gui: true
+    work: false
+    overrides:
+      macos: null
+      linux: com.usebruno.Bruno
+
+  - name: obsidian
+    description: Knowledge base and note-taking application
+    gui: true
+    work: false
+    overrides:
+      macos: null
+      linux: cmd.obsidian.Obsidian
+
+  # =============================================================================
+  # OSX only Packages
+  # =============================================================================
+
+  # - name: FelixKratz/formulae/sketchybar
+  #   description: Custom OSX bar
+  #   gui: false
+  #   work: false
+  #   overrides:
+  #     linux: null
+
+  # - name: koekeishiya/formulae/yabai
+  #   description: OSX tiling window manager
+  #   gui: false
+  #   work: false
+  #   overrides:
+  #     linux: null
+
+  # - name: asmvik/formulae/skhd
+  #   description: OSX hotkey daemon (used with yabai)
+  #   gui: false
+  #   work: false
+  #   overrides:
+  #     linux: null
+
+  - name: danielfoehrkn/switch/switch
+    description: Kubernetes context switcher. It has not install way for Linux
+    gui: false
+    work: false
+    overrides:
+      linux: null
+
+  # =============================================================================
+  # Work Packages
+  # =============================================================================
+  
+  - name: kubectl
+    description: Kubernetes CLI
+    gui: false
+    work: true
+    
+  - name: google-cloud-sdk
+    description: Google Cloud CLI
+    gui: false
+    work: true
+    overrides:
+      linux: google-cloud-cli
+      
+  - name: awscli
+    description: AWS CLI
+    gui: false
+    work: true
+    overrides:
+      linux: awscli2
+      
+  - name: teleport
+    description: Teleport CLI
+    gui: false
+    work: true
+    
+  - name: k9s
+    description: Kubernetes TUI
+    gui: false
+    work: true
+    
+  - name: 1password-cli
+    description: 1Password CLI
+    gui: true
+    work: true
+    overrides:
+      linux: null
+
+# =============================================================================
+# NPM Global Packages (installed via: npm install -g <package>)
+# Requires: nodejs via asdf
+# =============================================================================
+
+npm:
+  - "opencode-ai"                 # AI code assistant 
+  - "@fresh-editor/fresh-editor"  # Fresh Editor CLI
+
+# =============================================================================
+# Pip/UV Packages (installed via: uv pip install <package> or pip install)
+# Requires: python via asdf, prefers uv if available
+# =============================================================================
+
+pip:
+  - jrnl                      # Journal CLI for standups
+
+# =============================================================================
+# Cargo Packages (installed via: cargo install <package>)
+# Requires: rust via asdf
+# Cross-platform install for Rust CLI tools not in package managers
+# =============================================================================
+
+cargo:
+  - eza                       # ls replacement
+  - grex                      # Regex generator
+  - atuin                     # Shell history revamped
+
+# =============================================================================
+# Bun Packages (installed via: bun install -g <package>)
+# Requires: bun via asdf
+# Cross-platform install for JavaScript/TypeScript CLI tools via Bun runtime
+# =============================================================================
+
+bun:
+  - openportal                # Mobile-first web UI for OpenCode
+
+# =============================================================================
+# UV Tools (installed via: uv tool install <name> --from <source>)
+# For CLI tools that need isolated environments (like pipx)
+# Requires: uv via asdf
+# =============================================================================
+
+uv_tools:
+  - name: specify-cli
+    from: "git+https://github.com/github/spec-kit.git"
+
+# =============================================================================
+# VSCode Extensions (installed via: code --install-extension <extension-id>)
+# Requires: VSCode installed (via Flatpak/Cask in GUI packages)
+# =============================================================================
+
+vscode_extensions:
+  - bierner.markdown-mermaid
+  - esbenp.prettier-vscode
+  - file-icons.file-icons
+  - github.vscode-github-actions
+  - golang.go
+  - Gruntfuggly.todo-tree
+  - hashicorp.terraform
+  - mikestead.dotenv
+  - ms-azuretools.vscode-docker
+  - ms-python.isort
+  - ms-python.python
+  - ms-python.vscode-pylance
+  - rust-lang.rust-analyzer
+  - VisualStudioExptTeam.intellicode-api-usage-examples
+  - VisualStudioExptTeam.vscodeintellicode
+  - wholroyd.jinja
+  - Google.geminicodeassist
+  - mvllow.rose-pine
+
+# =============================================================================
+# Kubectl Krew Plugins (installed via: kubectl krew install <plugin>)
+# Requires: kubectl and krew installed
+# =============================================================================
+
+krew_plugins:
+  - kvaps/node-shell            # SSH into cluster nodes without SSH server
+  - browse-pvc                  # Browse and list PVC contents

@@ -1,4 +1,8 @@
-.history
-*.retry
-.vagrant/
+debug.log
+.idea/
+.vscode/
 .DS_Store
+*.log
+*.tmp
+*.bak
+*.swp

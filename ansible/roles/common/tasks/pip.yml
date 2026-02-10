@@ -1,5 +1,0 @@
----
-- name: Install PIP package {{ item }}
-  pip: name={{ item }} state=latest
-  become: yes
-  become_method: sudo

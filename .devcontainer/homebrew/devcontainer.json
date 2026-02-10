@@ -1,0 +1,19 @@
+{
+    "name": "Dotfiles Test - Homebrew (macOS simulation)",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": "../.."
+    },
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+    "workspaceFolder": "/workspace",
+    "remoteUser": "linuxbrew",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "mads-hartmann.bash-ide-vscode",
+                "timonwong.shellcheck"
+            ]
+        }
+    },
+    "postCreateCommand": "echo 'Homebrew container ready - use --system=macos to simulate macOS'"
+}

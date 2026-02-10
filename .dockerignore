@@ -1,0 +1,10 @@
+# Ignore development files that don't need to be in Docker context
+.git
+.gitignore
+*.md
+dev/
+.DS_Store
+
+# Ignore any backup directories
+*.backup
+*-backup/
