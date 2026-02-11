@@ -1,7 +1,7 @@
 
 # ohMyZSH
 export ZSH="$HOME/.oh-my-zsh"
-plugins=(git zoxide dotenv eza zsh-interactive-cd)
+plugins=(git dotenv zsh-interactive-cd)
 
 export PATH="$PATH:/sbin/:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:$HOME/.local/bin:$HOME/bin:$HOME/.asdf/bin"
 
@@ -20,7 +20,7 @@ SPACESHIP_KUBECTL_SHOW="true"
 # -- ZSH plugins ---
 source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
+source $ZSH/oh-my-zsh.sh
 
 # history setup
 HISTFILE=$HOME/.zhistory
@@ -78,5 +78,3 @@ export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"C
 
 # --- Kubeswitch Setup ---
 INSTALLATION_PATH=$(brew --prefix switch) && source $INSTALLATION_PATH/switch.sh
-
-source $ZSH/oh-my-zsh.sh
