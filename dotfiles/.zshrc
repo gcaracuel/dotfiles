@@ -62,6 +62,9 @@ alias ls="eza --icons=always"
 # ---- Zoxide (better cd) ----
 eval "$(zoxide init zsh)"
 alias cd="z"
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
 
 # --- Yazi Setup ---
 function y() {
