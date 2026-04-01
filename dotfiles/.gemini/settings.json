@@ -1,0 +1,63 @@
+{
+  "$schema": "https://raw.githubusercontent.com/google-gemini/gemini-cli/main/schemas/settings.schema.json",
+  "model": {
+    "name": "gemini-2.5-pro",
+    "maxSessionTurns": -1,
+    "compressionThreshold": 0.7
+  },
+  "experimental": {
+    "plan": true
+  },
+  "general": {
+    "preferredEditor": "nvim",
+    "defaultApprovalMode": "plan",
+    "enableNotifications": true,
+    "checkpointing": {
+      "enabled": true
+    },
+    "sessionRetention": {
+      "enabled": true,
+      "maxAge": "30d"
+    },
+    "plan":{
+      "modelRouting": true
+    }
+  },
+  "ui": {
+    "theme": "$HOME/.gemini/themes/rose-pine-moon.json",
+    "inlineThinkingMode": "full",
+    "dynamicWindowTitle": true,
+    "hideBanner": true,
+    "hideTips": true,
+    "showModelInfoInChat": true
+  },
+  "security": {
+    "disableYoloMode": true,
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  },
+  "privacy": {
+    "usageStatisticsEnabled": false
+  },
+  "context": {
+    "fileName": "AGENTS.md",
+    "includeDirectoryTree": true,
+    "fileFiltering": {
+      "respectGitIgnore": true,
+      "respectGeminiIgnore": true,
+      "enableFuzzySearch": true
+    }
+  },
+  "tools": {
+    "useRipgrep": true,
+    "shell": {
+      "showColor": true
+    },
+    "sandbox": "sandbox-exec"
+  },
+  "ide": {
+    "hasSeenNudge": true,
+    "enabled": true
+  }
+}

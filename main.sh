@@ -189,24 +189,26 @@ main() {
 # =============================================================================
 
 print_manual_steps() {
-    local steps=""
-    steps+="Manual Steps Required:"
-    steps+=$'\n'
-    steps+=$'\n'
-    steps+="1. Install Github CLI dash extention:"
-    steps+=$'\n'
-    steps+="   gh extension install mislav/gh-dash"
-    steps+=$'\n'
-    steps+="2. Install tmux plugins"
-    steps+=$'\n'
-    steps+="   Execute tmux and then CRTL-a + I (capital i) to install tmux plugins via tpm"
-    steps+=$'\n'
-    steps+="3. [Optional] Install Nix to use Nix-Shells"
-    steps+=$'\n'
-    steps+="   curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install"
-    steps+=$'\n'
+    log_header "Manual Steps Required"
 
-    log_box "$steps"
+    local manual_steps_file="$SCRIPT_DIR/MANUAL_STEPS.md"
+
+    if [[ ! -f "$manual_steps_file" ]]; then
+        log_warning "MANUAL_STEPS.md not found. Skipping."
+        return
+    fi
+
+    echo "" # Add a newline for spacing
+
+    if [[ "$GUM_AVAILABLE" == true ]]; then
+        # Use gum to render markdown nicely
+        gum format <"$manual_steps_file"
+    else
+        # Fallback to just printing the file with a simple header
+        log_info "Please follow these manual steps:"
+        echo ""
+        cat "$manual_steps_file"
+    fi
 }
 
 # =============================================================================

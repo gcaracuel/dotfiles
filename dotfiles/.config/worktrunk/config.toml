@@ -1,0 +1,10 @@
+# Bare repository (git clone --bare <url> myproject/.git)
+# Creates: ~/code/myproject/feature-auth
+worktree-path = "{{ repo_path }}/../{{ branch | sanitize }}"
+skip-commit-generation-prompt = true
+
+[switch.picker]
+# Pager command for diff preview (overrides git's core.pager)
+pager = "delta --paging=never"
+
+[projects]

@@ -79,5 +79,8 @@ function y() {
 # --- Kubectl Krew --- #
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"C
 
-# --- Kubeswitch Setup ---
+# --- Kubeswitch Setup --- #
 INSTALLATION_PATH=$(brew --prefix switch) && source $INSTALLATION_PATH/switch.sh
+
+# --- WorkTrunk Setup --- #
+if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi

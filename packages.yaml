@@ -71,6 +71,16 @@ packages:
     gui: false
     work: false
 
+  - name: yq
+    description: YAML processor
+    gui: false
+    work: false
+
+  - name: git-delta
+    description: Git diff viewer with syntax highlighting
+    gui: false
+    work: false  
+
   # =============================================================================
   # Terminal & Shell
   # =============================================================================
@@ -292,6 +302,13 @@ packages:
     overrides:
       linux: null
 
+  - name: gromgit/brewtils/taproom
+    description: Brew utilities (like listing outdated packages)
+    gui: false
+    work: false
+    overrides:
+      linux: null 
+
   # =============================================================================
   # Work Packages
   # =============================================================================
@@ -338,7 +355,8 @@ packages:
 # =============================================================================
 
 npm:
-  - "opencode-ai"                 # AI code assistant 
+  - "opencode-ai"                 # AI code assistant
+  - "@google/gemini-cli"          # Gemini AI CLI
   - "@fresh-editor/fresh-editor"  # Fresh Editor CLI
 
 # =============================================================================
@@ -359,6 +377,7 @@ cargo:
   - eza                       # ls replacement
   - grex                      # Regex generator
   - atuin                     # Shell history revamped
+  - worktrunk                 # WorkTrunk CLI for managing git worktrees
 
 # =============================================================================
 # Bun Packages (installed via: bun install -g <package>)

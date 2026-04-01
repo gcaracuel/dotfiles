@@ -1,0 +1,24 @@
+{
+    "rose-pine": {
+        "name": "Rosé Pine",
+        "type": "custom",
+        "Background": "#191724",
+        "Foreground": "#e0def4",
+        "LightBlue": "#e0def4",
+        "AccentBlue": "#eb6f92",
+        "AccentPurple": "#c4a7e7",
+        "AccentCyan": "#31748f",
+        "AccentGreen": "#9ccfd8",
+        "AccentYellow": "#f6c177",
+        "AccentRed": "#ebbcba",
+        "Comment": "#908caa",
+        "Gray": "#6e6a86",
+        "DiffAdded": "#9ccfd8",
+        "DiffRemoved": "#eb6f92",
+        "GradientColors": [
+          "#9ccfd8",
+          "#c4a7e7",
+          "#ebbcba"
+        ]
+    }
+}

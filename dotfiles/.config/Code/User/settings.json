@@ -180,4 +180,8 @@
     "geminicodeassist.updateChannel": "Default",
     "diffEditor.codeLens": true,
     "editor.cursorStyle": "block",
+    "[helm]": {
+        
+    },
+    "chat.viewSessions.orientation": "stacked",
 }

@@ -2,3 +2,5 @@ auto_sync = false
 update_check = false
 sync_address = "http://localhost/none"
 sync_frequency = "24h"
+filter_mode = "host"
+filter_mode_shell_up_key_binding = "session"
