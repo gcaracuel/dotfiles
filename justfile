@@ -1,167 +1,128 @@
-# justfile for dotfiles bootstrap testing
-# Provides container-based testing for different OS environments
-# Requires: just command runner (https://github.com/casey/just)
+# Dotfiles justfile — chezmoi workflow
+# https://just.systems
 
-# Container image names
-fedora_image := "dotfiles-test-fedora"
-homebrew_image := "dotfiles-test-homebrew"
+import 'test.justfile'
 
-# List all available recipes
+REPO_DIR := justfile_directory()
+CHEZMOI_SOURCE := REPO_DIR / "home"
+
+# List available targets
 default:
     @just --list
 
 # =============================================================================
-# PRIMARY TARGETS - Full test runs with verification
+# Setup
 # =============================================================================
 
-# Interactive test selection
-test:
+# Initial setup: install Homebrew (macOS), chezmoi, and link this repo as the source directory
+init:
     #!/usr/bin/env bash
-    echo ""
-    echo "Select test environment:"
-    echo "  1) Fedora (native Linux/DNF)"
-    echo "  2) Homebrew (forced on Linux)"
-    echo ""
-    read -p "Choice [1-2]: " choice
-    case $choice in
-        1) just test-fedora ;;
-        2) just test-brew ;;
-        *) echo "Invalid choice"; exit 1 ;;
+    set -euo pipefail
+
+    OS="$(uname -s)"
+
+    # --- macOS: install Homebrew first if missing ---
+    if [[ "$OS" == "Darwin" ]] && ! command -v brew &>/dev/null; then
+      echo "==> Installing Homebrew..."
+      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      # Add brew to PATH for this session (Apple Silicon path takes precedence)
+      if [[ -f /opt/homebrew/bin/brew ]]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+      elif [[ -f /usr/local/bin/brew ]]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+      fi
+    fi
+
+    # --- Install chezmoi if missing ---
+    if ! command -v chezmoi &>/dev/null; then
+      echo "==> Installing chezmoi..."
+      if command -v brew &>/dev/null; then
+        brew install chezmoi
+      elif command -v pacman &>/dev/null; then
+        sudo pacman -S --needed --noconfirm chezmoi
+      else
+        sh -c "$(curl -fsLS get.chezmoi.io)"
+      fi
+    fi
+
+    # Create symlink from chezmoi source to this repo's home/ dir
+    LINK="${HOME}/.local/share/chezmoi"
+    mkdir -p "$(dirname "$LINK")"
+    if [[ -L "$LINK" ]]; then
+      echo "==> Symlink already exists: $LINK -> $(readlink "$LINK")"
+    elif [[ -d "$LINK" ]]; then
+      echo "ERROR: $LINK exists as a real directory. Move or remove it first." >&2
+      exit 1
+    else
+      ln -sf "{{REPO_DIR}}/home" "$LINK"
+      echo "==> Created: $LINK -> {{REPO_DIR}}/home"
+    fi
+
+    # Initialize chezmoi config (prompts for work mode if not already configured)
+    if [[ ! -f "${HOME}/.config/chezmoi/chezmoi.toml" ]]; then
+      echo "==> Initializing chezmoi config (you'll be prompted for work mode)..."
+      chezmoi init --source "{{CHEZMOI_SOURCE}}"
+    else
+      echo "==> chezmoi config already exists: ${HOME}/.config/chezmoi/chezmoi.toml"
+    fi
+
+    echo "==> Run 'just apply' to apply dotfiles."
+
+# Apply dotfiles (runs chezmoi apply — run 'just init' first on a new machine)
+apply:
+    chezmoi apply --source {{CHEZMOI_SOURCE}}
+
+# Show pending changes without applying
+diff:
+    chezmoi diff --source {{CHEZMOI_SOURCE}}
+
+# Add a file to chezmoi management (e.g. just add ~/.config/foo/bar.toml)
+add FILE:
+    chezmoi add --source {{CHEZMOI_SOURCE}} {{FILE}}
+
+# Edit a chezmoi-managed file
+edit FILE:
+    chezmoi edit --source {{CHEZMOI_SOURCE}} {{FILE}}
+
+# =============================================================================
+# Packages
+# =============================================================================
+
+# Bump the force-run timestamp in a package file (internal helper)
+_bump file:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    f="{{file}}"
+    if grep -q '^# force-run:' "$f"; then
+      sed -i.bak "s/^# force-run: .*/# force-run: $ts/" "$f" && rm -f "$f.bak"
+    else
+      echo "# force-run: $ts" >> "$f"
+    fi
+
+# Force re-run of all package install scripts
+reinstall-packages:
+    just _bump {{REPO_DIR}}/packages/Brewfile
+    just _bump {{REPO_DIR}}/packages/packages.txt
+    just _bump {{REPO_DIR}}/packages/npm-packages.txt
+    just _bump {{REPO_DIR}}/packages/pip-packages.txt
+    just _bump {{REPO_DIR}}/packages/cargo-packages.txt
+    just _bump {{REPO_DIR}}/packages/bun-packages.txt
+    just _bump {{REPO_DIR}}/packages/vscode-extensions.txt
+    just _bump {{REPO_DIR}}/packages/krew-plugins.txt
+    chezmoi apply --source {{CHEZMOI_SOURCE}}
+
+# Force re-run of a specific package manager (e.g. just reinstall cargo)
+# Managers: brew, pacman, npm, pip, cargo, bun, vscode, krew
+reinstall manager:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    case "{{manager}}" in
+      brew)   f="{{REPO_DIR}}/packages/Brewfile" ;;
+      pacman) f="{{REPO_DIR}}/packages/packages.txt" ;;
+      vscode) f="{{REPO_DIR}}/packages/vscode-extensions.txt" ;;
+      *)      f="{{REPO_DIR}}/packages/{{manager}}-packages.txt" ;;
     esac
+    just _bump "$f"
+    chezmoi apply --source {{CHEZMOI_SOURCE}}
 
-# Run full bootstrap in Fedora container
-test-fedora: build-fedora
-    @echo ""
-    @echo "=== Running full bootstrap in Fedora container ==="
-    @echo ""
-    docker run --rm \
-        -v "{{justfile_directory()}}:/workspace" \
-        {{fedora_image}} \
-        bash -c "./main.sh --verbose && ./scripts/verify-install.sh"
-
-# Run full bootstrap in Homebrew container (simulates macOS)
-test-brew: build-homebrew
-    @echo ""
-    @echo "=== Running full bootstrap in Homebrew container (--force-brew) ==="
-    @echo ""
-    docker run --rm \
-        -v "{{justfile_directory()}}:/workspace" \
-        {{homebrew_image}} \
-        bash -c "./main.sh --force-brew --verbose && ./scripts/verify-install.sh"
-
-# =============================================================================
-# DEBUG TARGETS - Keep container running for inspection
-# =============================================================================
-
-# Run Fedora container with container kept alive for debugging
-test-fedora-debug: build-fedora
-    @echo ""
-    @echo "=== Running Fedora container (kept alive for debugging) ==="
-    @echo ""
-    docker run -it \
-        -v "{{justfile_directory()}}:/workspace" \
-        --name dotfiles-fedora-debug \
-        {{fedora_image}} \
-        bash -c "./main.sh --verbose; echo ''; echo 'Container kept alive. Exit shell to stop.'; exec bash"
-    -docker rm dotfiles-fedora-debug 2>/dev/null
-
-# Run Homebrew container with container kept alive for debugging
-test-brew-debug: build-homebrew
-    @echo ""
-    @echo "=== Running Homebrew container (kept alive for debugging) ==="
-    @echo ""
-    docker run -it \
-        -v "{{justfile_directory()}}:/workspace" \
-        --name dotfiles-brew-debug \
-        {{homebrew_image}} \
-        bash -c "./main.sh --force-brew --verbose; echo ''; echo 'Container kept alive. Exit shell to stop.'; exec bash"
-    -docker rm dotfiles-brew-debug 2>/dev/null
-
-# =============================================================================
-# SHELL TARGETS - Open shell in container for manual testing
-# =============================================================================
-
-# Open bash shell in Fedora container for manual testing
-test-fedora-shell: build-fedora
-    @echo ""
-    @echo "=== Opening shell in Fedora container ==="
-    @echo "Run './main.sh' or './main.sh --dry-run' to test"
-    @echo ""
-    docker run --rm -it \
-        -v "{{justfile_directory()}}:/workspace" \
-        {{fedora_image}} \
-        bash
-
-# Open bash shell in Homebrew container for manual testing
-test-brew-shell: build-homebrew
-    @echo ""
-    @echo "=== Opening shell in Homebrew container ==="
-    @echo "Run './main.sh --force-brew' or './main.sh --force-brew --dry-run' to test"
-    @echo ""
-    docker run --rm -it \
-        -v "{{justfile_directory()}}:/workspace" \
-        {{homebrew_image}} \
-        bash
-
-# =============================================================================
-# BUILD TARGETS
-# =============================================================================
-
-# Build Fedora test Docker image
-build-fedora:
-    @echo "Building Fedora test image..."
-    docker build -t {{fedora_image}} -f .devcontainer/fedora/Dockerfile .
-
-# Build Homebrew test Docker image
-build-homebrew:
-    @echo "Building Homebrew test image..."
-    docker build -t {{homebrew_image}} -f .devcontainer/homebrew/Dockerfile .
-
-# =============================================================================
-# CLEANUP
-# =============================================================================
-
-# Remove test container images and debug containers
-clean:
-    @echo "Removing test container images..."
-    -docker rmi {{fedora_image}} 2>/dev/null
-    -docker rmi {{homebrew_image}} 2>/dev/null
-    @echo "Removing any leftover debug containers..."
-    -docker rm dotfiles-fedora-debug 2>/dev/null
-    -docker rm dotfiles-brew-debug 2>/dev/null
-    @echo "Clean complete."
-
-# Remove test images and Docker build cache
-clean-all: clean
-    @echo "Removing Docker build cache..."
-    docker builder prune -f
-    @echo "All clean (images + build cache removed)."
-
-# =============================================================================
-# HELP
-# =============================================================================
-
-# Show detailed help information
-help:
-    @echo ""
-    @echo "Dotfiles Bootstrap - Test Commands (using just)"
-    @echo ""
-    @echo "Primary targets:"
-    @echo "  just test              Interactive test selection"
-    @echo "  just test-fedora       Run full bootstrap in Fedora container"
-    @echo "  just test-brew         Run full bootstrap in Homebrew container (forced on Linux)"
-    @echo ""
-    @echo "Debug targets:"
-    @echo "  just test-fedora-debug Run Fedora, keep container for inspection"
-    @echo "  just test-brew-debug   Run Homebrew, keep container for inspection"
-    @echo ""
-    @echo "Shell targets:"
-    @echo "  just test-fedora-shell Open bash shell in Fedora container"
-    @echo "  just test-brew-shell   Open bash shell in Homebrew container"
-    @echo ""
-    @echo "Cleanup:"
-    @echo "  just clean             Remove test container images"
-    @echo "  just clean-all         Remove images + Docker build cache"
-    @echo ""
-    @echo "Tip: Run 'just' or 'just --list' to see all available recipes"
-    @echo ""

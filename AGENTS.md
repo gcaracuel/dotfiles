@@ -1,492 +1,316 @@
-# dotfiles
+# dotfiles — AGENTS.md
 
-A simple tool to quickly setup my development environment on a new machine or after a fresh OS installation.
+Developer and AI agent guide for this dotfiles repository.
 
 ## Repository Overview
 
-**Project:** Dotfiles Bootstrap Tool  
-**Language:** Bash  
-**Purpose:** Automate development environment setup on new machines
+**Project:** Dotfiles managed with [chezmoi](https://chezmoi.io)  
+**Platforms:** macOS (Homebrew) and Arch Linux (pacman)  
+**Runtime manager:** [Mise](https://mise.jdx.dev) (replaces asdf)  
+**Package definitions:** plain text/TOML files in `packages/`  
+**Dotfiles location:** `home/` (chezmoi source root, symlinked from `~/.local/share/chezmoi`)
 
-### Tech Stack
-- **Language:** Bash 4+ (macOS/Linux compatible)
-- **Style:** `set -euo pipefail` (strict error handling, no undefined variables)
-- **Output:** [gum](https://github.com/charmbracelet/gum) for beautiful terminal UI
-- **Config:** YAML (parsed with `yq`)
-- **Dotfiles:** GNU Stow (symlink management)
-- **Package Managers:** Homebrew (macOS), DNF (Fedora), Flatpak (Linux GUI)
-- **Testing:** Docker devcontainers with justfile orchestration
+---
 
-### Code Style
-- Shellcheck-compliant Bash
-- Functions defined before usage
-- Clear, descriptive variable names (`SCREAMING_SNAKE_CASE` for constants)
-- Comments explain "why", not "what"
-- Error messages include suggestions for resolution
-- Idempotent operations (safe to run multiple times)
+## Directory Structure
+
+```
+dotfiles/
+├── README.md                         # Quick start and reference
+├── MANUAL_STEPS.md                   # Steps that cannot be automated
+├── AGENTS.md                         # This file
+├── justfile                          # Task runner (just)
+│
+├── packages/                         # Human-editable package lists
+│   ├── Brewfile                      # Homebrew formulas + casks
+│   ├── Brewfile.work                 # Work-only brew packages
+│   ├── packages.txt                  # Arch/pacman packages
+│   ├── packages.work.txt             # Work-only pacman packages
+│   ├── npm-packages.txt              # npm globals (via mise node)
+│   ├── pip-packages.txt              # pip/uv packages (via mise python/uv)
+│   ├── cargo-packages.txt            # cargo packages (via mise rust)
+│   ├── bun-packages.txt              # bun globals (via mise bun)
+│   ├── vscode-extensions.txt         # VSCode extension IDs
+│   └── krew-plugins.txt              # kubectl krew plugin names
+│
+├── home/                             # chezmoi source root
+│   ├── .chezmoi.toml.tmpl            # Config template (prompts for .work)
+│   ├── dot_zshrc                     # → ~/.zshrc
+│   ├── dot_gitconfig                 # → ~/.gitconfig
+│   ├── dot_gitignore_global          # → ~/.gitignore_global
+│   ├── dot_tool-versions             # → ~/.tool-versions (asdf compat)
+│   ├── dot_starship.toml             # → ~/.starship.toml
+│   ├── dot_tmux.conf                 # → ~/.tmux.conf
+│   ├── dot_tmux/                     # → ~/.tmux/ (tpm vendored)
+│   ├── dot_gemini/                   # → ~/.gemini/
+│   └── dot_config/
+│       ├── mise/config.toml          # → ~/.config/mise/config.toml (runtimes)
+│       ├── atuin/                    # → ~/.config/atuin/
+│       ├── Code/User/                # → ~/.config/Code/User/
+│       ├── eza/                      # → ~/.config/eza/
+│       ├── gh-dash/                  # → ~/.config/gh-dash/
+│       ├── ghostty/                  # → ~/.config/ghostty/
+│       ├── k9s/                      # → ~/.config/k9s/
+│       ├── nvim/lua/plugins/         # → ~/.config/nvim/lua/plugins/ (overlay on LazyVim)
+│       ├── opencode/                 # → ~/.config/opencode/
+│       ├── worktrunk/                # → ~/.config/worktrunk/
+│       └── yazi/                     # → ~/.config/yazi/
+│
+│   └── .chezmoiscripts/              # Run scripts (executed by chezmoi apply)
+│       ├── run_once_before_00-bootstrap.sh.tmpl      # Install brew/pacman
+│       ├── run_onchange_01-brew-packages.sh.tmpl     # brew bundle + uninstall
+│       ├── run_onchange_02-pacman-packages.sh.tmpl   # pacman -S + uninstall
+│       ├── run_onchange_03-mise-tools.sh.tmpl        # mise install
+│       ├── run_onchange_04-npm-packages.sh.tmpl      # npm -g + uninstall
+│       ├── run_onchange_05-pip-packages.sh.tmpl      # uv tool install + uninstall
+│       ├── run_onchange_06-cargo-packages.sh.tmpl    # cargo install + uninstall
+│       ├── run_onchange_07-bun-packages.sh.tmpl      # bun add -g + uninstall
+│       ├── run_onchange_08-vscode-extensions.sh.tmpl # code --install-extension
+│       ├── run_onchange_09-krew-plugins.sh.tmpl      # krew install
+│       ├── run_once_10-ohmyzsh.sh                    # Oh My Zsh (once)
+│       ├── run_once_11-lazyvim.sh                    # LazyVim starter (once)
+│       └── run_once_99-manual-steps.sh               # Print MANUAL_STEPS.md
+│
+├── archive/                          # Old macOS configs (kept for reference)
+└── .devcontainer/
+    ├── arch/                         # Arch Linux test container
+    └── homebrew/                     # Homebrew test container
+```
+
+---
+
+## How Chezmoi Works Here
+
+### Source root = `home/`
+
+The `home/` directory is the chezmoi source. It is symlinked from `~/.local/share/chezmoi`:
+
+```bash
+~/.local/share/chezmoi -> /path/to/this/repo/home
+```
+
+Run `just init` to create this symlink.
+
+### Dotfile naming convention
+
+Chezmoi uses name prefixes to map files to `$HOME`:
+
+| Source name | Destination |
+|---|---|
+| `dot_zshrc` | `~/.zshrc` |
+| `dot_config/ghostty/config` | `~/.config/ghostty/config` |
+| `dot_tmux/plugins/tpm/` | `~/.tmux/plugins/tpm/` |
+
+### Templates
+
+Files ending in `.tmpl` are Go templates processed by chezmoi. The main config template is `home/.chezmoi.toml.tmpl` which prompts for the `work` boolean on first run and stores it in `~/.config/chezmoi/chezmoi.toml`.
+
+Scripts in `.chezmoiscripts/` that end in `.tmpl` use this to conditionally include work packages:
+
+```bash
+{{ if .chezmoi.config.data.work }}
+# install work packages
+{{ end }}
+```
+
+---
+
+## Script Types
+
+| Prefix | Behavior |
+|---|---|
+| `run_once_` | Runs exactly once per machine (tracked in chezmoi state) |
+| `run_once_before_` | Same but runs before dotfiles are applied |
+| `run_onchange_` | Re-runs whenever the script content changes (the file hash is the trigger) |
+
+### How `run_onchange_` scripts detect file changes
+
+Each `run_onchange_` script embeds a hash comment of its input package file using chezmoi templates:
+
+```bash
+# packages/Brewfile hash: {{ include (joinPath .chezmoi.sourceDir "../packages/Brewfile") | sha256sum }}
+```
+
+When the package file changes, the embedded hash changes → the script content changes → chezmoi re-runs it. **You never need to manually trigger re-runs.**
+
+### Uninstall detection
+
+Each `run_onchange_` script:
+1. Reads the current desired package list
+2. Compares against the last-applied list in `~/.local/share/dotfiles-state/<manager>-installed.txt`
+3. Uninstalls packages present in the state file but missing from the current list
+4. Installs any new packages
+5. Writes the updated state file
+
+**To uninstall a package:** remove it from its list file, then run `just apply`.
+
+---
+
+## Package Manager Rule of Thumb
+
+| What | Where |
+|---|---|
+| System CLI tools available on both macOS + Arch | `packages/Brewfile` + `packages/packages.txt` |
+| GUI applications | `packages/Brewfile` (cask) + `packages/packages.txt` |
+| Work-only tools | `packages/Brewfile.work` + `packages/packages.work.txt` |
+| Programming language runtimes | `home/dot_config/mise/config.toml` |
+| npm global tools | `packages/npm-packages.txt` |
+| Python CLI tools (isolated) | `packages/pip-packages.txt` (uses uv tool install) |
+| Rust CLI tools | `packages/cargo-packages.txt` |
+| Bun global tools | `packages/bun-packages.txt` |
+| VSCode extensions | `packages/vscode-extensions.txt` |
+| kubectl plugins | `packages/krew-plugins.txt` |
+
+**Prefer brew/pacman** when a tool is available natively on both platforms.  
+**Use mise runtimes** for all programming language versions.  
+**Use language package managers via mise** for tools not in brew/pacman on both platforms.
+
+---
+
+## Common Tasks
+
+### Add a brew package
+
+Edit `packages/Brewfile`, add a `brew "name"` or `cask "name"` line, then:
+
+```bash
+just apply
+```
+
+### Add an Arch package
+
+Edit `packages/packages.txt`, add the package name on a new line.
+
+### Add a new dotfile
+
+```bash
+just add ~/.config/foo/bar.toml
+```
+
+This copies the file into `home/` with the correct `dot_` naming and registers it with chezmoi.
+
+### Add a new programming runtime
+
+Edit `home/dot_config/mise/config.toml` under `[tools]`:
+
+```toml
+[tools]
+node = "24.13.0"
+deno = "2.0.0"   # new
+```
+
+Then run `just apply` — chezmoi will re-link the config and `mise install` will run via `run_onchange_03`.
+
+Also update `home/dot_tool-versions` to keep asdf compatibility for coworkers.
+
+### Add a cargo package from git
+
+Edit `packages/cargo-packages.txt` using the `name|git-url` format:
+
+```
+my-tool|https://github.com/example/my-tool.git
+```
+
+### Add a manual step
+
+Edit `MANUAL_STEPS.md`. It is printed automatically after first `chezmoi apply` via `run_once_99-manual-steps.sh`.
+
+---
+
+## Testing
+
+**NEVER run scripts directly on the host machine. Always use containers.**
+
+```bash
+just test             # Interactive: choose Arch or Homebrew
+just test-arch        # Arch Linux container (pacman)
+just test-brew        # Homebrew container (simulates macOS)
+just test-arch-shell  # Interactive shell in Arch container for debugging
+just test-brew-shell  # Interactive shell in Brew container for debugging
+just clean            # Remove test images
+just clean-all        # Remove images + Docker build cache
+```
+
+### Platform note (Apple Silicon)
+
+`archlinux:latest` only provides `x86_64` images. On Apple Silicon, the Arch container runs under Rosetta emulation (`--platform linux/amd64`). This is handled automatically by `just build-arch` and `just test-arch-shell`.
+
+pacman's sandboxing (`alpm` user + seccomp) does not work under Rosetta. The Dockerfile disables it with `DisableSandbox` in `/etc/pacman.conf`. Do not remove this line.
+
+The Homebrew container uses native `arm64` bottles and runs natively on Apple Silicon.
+
+### What the tests validate
+
+**`just test-arch`:**
+- pacman package installation
+- chezmoi dotfile application
+- Arch-specific paths
+
+**`just test-brew`:**
+- Homebrew formula and cask installation
+- chezmoi dotfile application
+- Homebrew paths (simulates macOS environment)
+
+---
+
+## Work Mode
+
+On `chezmoi init` (first run), chezmoi prompts:
+
+> **Include work packages?**
+
+The answer is stored in `~/.config/chezmoi/chezmoi.toml`:
+
+```toml
+[data]
+  work = true
+```
+
+To change it after the fact:
+
+```bash
+chezmoi init  # re-prompts
+# or edit directly:
+chezmoi edit-config
+```
+
+Work packages are defined in:
+- `packages/Brewfile.work` (macOS)
+- `packages/packages.work.txt` (Arch)
+
+---
+
+## Mise vs asdf
+
+Mise is the runtime manager. It is API-compatible with asdf and reads `.tool-versions` files.
+
+- `home/dot_config/mise/config.toml` — primary config, managed as a chezmoi dotfile
+- `home/dot_tool-versions` — kept in `$HOME` for asdf coworker compatibility
+- `.zshrc` uses `eval "$(mise activate zsh)"` instead of asdf PATH setup
+
+The two files must stay in sync when updating runtime versions.
 
 ---
 
 ## Critical Rules for Agents
 
-### 1. Always Run Tests After Changes
+1. **Never test on the host machine.** Always use `just test-arch` or `just test-brew`.
 
-**MANDATORY:** After modifying any script, run devcontainer tests to verify nothing broke.
+2. **Keep package definitions in `packages/` files.** Never hardcode package names in scripts.
 
-```bash
-# Run interactive test selection
-just test
+3. **`run_onchange_` scripts must embed the hash of their input file** so chezmoi knows when to re-run them. Use the pattern:
+   ```
+   # file hash: {{ include (joinPath .chezmoi.sourceDir "../packages/Brewfile") | sha256sum }}
+   ```
 
-# Or run both explicitly
-just test-fedora
-just test-brew
-```
+4. **Maintain idempotency.** All operations must be safe to run multiple times. Check before installing, use `--needed` flags.
 
-**Why:** The script runs on multiple OSes with different package managers. A change that works on macOS might break on Linux and vice versa.
+5. **Both `dot_config/mise/config.toml` and `dot_tool-versions` must stay in sync** when changing runtime versions. Update both files together.
 
-**When to skip:** Only for documentation-only changes (README, PRD, etc.)
+6. **Scripts use `set -euo pipefail`.** Use `count=$((count + 1))` not `((count++))` to avoid exit-code-1 issues with strict mode.
 
-**CRITICAL:** 
-- **NEVER run commands directly on the host machine** for testing or verification
-- **ALWAYS use devcontainers** via `just test-fedora` or `just test-brew`
-- **DO NOT use `docker run` commands** that execute against the host filesystem
-- The devcontainers provide isolated, reproducible test environments
+7. **Error handling:** show error output for failed package installs (first few lines), don't suppress with `&>/dev/null`. Use `|| echo "WARNING: ..."` for non-fatal failures.
 
-**Example - BAD (runs on host):**
-```bash
-./main.sh --dry-run  # Runs on your actual machine!
-```
+8. **Update `MANUAL_STEPS.md`** for anything that cannot be automated.
 
-**Example - GOOD (runs in container):**
-```bash
-just test-fedora     # Runs in isolated Fedora container
-just test-brew       # Runs in isolated Homebrew container
-```
-
----
-
-### 2. Maintain Idempotency
-
-All operations must be safe to run multiple times:
-- Check if package is installed before installing
-- Check if file exists before copying/linking
-- Check if plugin is added before adding
-- Use `|| true` to handle expected failures gracefully
-
-**Bad:**
-```bash
-brew install git
-```
-
-**Good:**
-```bash
-if ! brew list git &>/dev/null; then
-    brew install git
-fi
-```
-
----
-
-### 3. Respect Dry-Run Mode
-
-Every new feature must respect the `--dry-run` flag:
-- Check `if [[ "$DRY_RUN" == true ]]; then`
-- Log what *would* happen with `log_dry_run`
-- Never modify system state in dry-run mode
-- Package manager checks are OK (they're read-only)
-
----
-
-### 4. Use Utility Functions
-
-Don't reinvent the wheel - use existing utilities from `scripts/utils.sh`:
-
-**Logging:**
-- `log_header` - Section headers
-- `log_info` - Informational messages
-- `log_success` - Success with checkmark
-- `log_warning` - Warnings (yellow)
-- `log_error` - Errors (red)
-- `log_step` - Action being performed
-- `log_dry_run` - Dry-run preview
-- `log_box` - Boxed message (for summaries)
-
-**Utilities:**
-- `get_os()` - Get detected (or forced) OS
-- `is_macos()`, `is_linux()`, `is_fedora()`, `is_generic_linux()` - OS checks
-- `command_exists()` - Check if command is in PATH
-- `ensure_dir()` - Create directory if missing
-- `die()` - Exit with error message
-
----
-
-### 5. Follow the Established Patterns
-
-Each script follows a consistent structure:
-
-```bash
-#!/usr/bin/env bash
-# script-name.sh - Brief description
-# Additional context or behavior notes
-
-# Source utils if not already sourced
-if [[ -z "${UTILS_SOURCED:-}" ]]; then
-    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    source "$SCRIPT_DIR/utils.sh"
-fi
-
-# =============================================================================
-# CONFIGURATION
-# =============================================================================
-
-# Constants and configuration arrays at the top
-CONSTANT_NAME="value"
-ARRAY_NAME=(
-    "item1"
-    "item2"
-)
-
-# =============================================================================
-# HELPER FUNCTIONS
-# =============================================================================
-
-helper_function() {
-    # Implementation
-}
-
-# =============================================================================
-# MAIN FUNCTION
-# =============================================================================
-
-main_function() {
-    log_header "Doing Something"
-    
-    if [[ "$DRY_RUN" == true ]]; then
-        log_dry_run "Would do something"
-        return 0
-    fi
-    
-    # Actual work here
-    log_success "Something complete"
-}
-
-# =============================================================================
-# DRY-RUN CHECK
-# =============================================================================
-
-check_something_dry_run() {
-    log_header "SOMETHING"
-    
-    # Show what would happen
-    log_dry_run "Would perform actions..."
-}
-```
-
-### Important Configuration Variables
-
-#### asdf Version Pinning
-
-In `scripts/prerequisites.sh`, the asdf version is controlled by a top-level constant:
-
-```bash
-ASDF_VERSION="v0.17.0"  # Pin to specific version
-# OR
-ASDF_VERSION="latest"    # Always fetch latest release
-```
-
-**Note**: Pre-built binaries are only available from v0.15.0 onwards. If you specify an older version, the download will fail.
-
-The script automatically:
-- Detects system architecture (darwin/linux, amd64/arm64)
-- Downloads pre-built binaries from GitHub releases
-- Installs to `~/.asdf/`
-- Temporarily adds to PATH during script execution
-- Reminds user to add to shell config permanently
-
-**PATH Management Pattern:**
-asdf is added to PATH temporarily during bootstrap, but users must manually add it to their shell config. The script prints a reminder at the end.
-
-#### Python Build Dependencies
-
-In `scripts/asdf.sh`, Python installations require build dependencies (especially OpenSSL):
-
-**Automatic Handling:**
-- `ensure_python_build_deps()` - Installs OpenSSL and build tools before Python installation
-- `get_python_build_env()` - Sets CFLAGS/LDFLAGS to help Python find OpenSSL
-- Called automatically when Python is detected in `.tool-versions`
-
-**Platform-specific dependencies:**
-- **macOS/Homebrew**: `openssl@3` (with CFLAGS pointing to Homebrew's OpenSSL)
-- **Fedora**: `openssl-devel bzip2-devel libffi-devel readline-devel sqlite-devel zlib-devel`
-- **Other Linux**: Shows manual installation instructions for Debian/Arch
-
-**Error Handling:**
-- If Python build fails with SSL errors, provides platform-specific fix suggestions
-- Non-fatal - user can install deps manually and re-run
-
----
-
-### 6. Update Documentation
-
-When adding features, update:
-1. **README.md** - User-facing documentation
-2. **dev/PRD.md** - Technical specification (mark completed when done)
-3. **This file (AGENTS.md)** - If adding new patterns or rules
-4. **packages.yaml comments** - If changing package structure
-
----
-
-### 7. Handle Errors Gracefully
-
-- Use `set -euo pipefail` at script start
-- Provide actionable error messages
-- Use `die()` for fatal errors with suggestions
-- Use `log_warning` for non-fatal issues
-- Avoid cryptic error codes
-- **Show error context when package installations fail**
-
-**Bad:**
-```bash
-npm install -g foo || exit 1
-```
-
-**Bad (suppresses error details):**
-```bash
-if ! npm install -g foo &>/dev/null; then
-    log_warning "Failed to install foo"
-fi
-```
-
-**Good:**
-```bash
-if ! npm install -g foo; then
-    die "Failed to install npm package 'foo'" \
-        "Check your network connection and npm configuration"
-fi
-```
-
-**Best (for non-fatal package installations):**
-```bash
-local error_output
-if error_output=$(npm install -g "$package" 2>&1); then
-    log_success "$package installed"
-else
-    log_warning "Failed to install $package"
-    # Show first 3 lines of error for context
-    local error_preview
-    error_preview=$(echo "$error_output" | head -3 | sed 's/^/  /')
-    echo "$error_preview" >&2
-fi
-```
-
-**Why show error context:**
-- Users need to understand WHY a package failed to install
-- Network issues, missing dependencies, version conflicts, etc.
-- First few lines usually contain the most relevant error information
-- Helps users troubleshoot without needing --verbose flag
-
----
-
-### 8. Counter Arithmetic Safety
-
-**Critical:** Bash arithmetic with `((i++))` returns exit code 1 when value is 0, causing scripts to fail with `set -e`.
-
-**Bad:**
-```bash
-count=0
-((count++))  # Returns 1, script exits!
-```
-
-**Good:**
-```bash
-count=0
-count=$((count + 1))  # Always returns 0
-```
-
----
-
-## Testing Workflow
-
-### Local Development
-```bash
-# 1. Make changes to scripts
-# Use Read, Edit, Write tools to modify files
-
-# 2. ALWAYS test in containers (NEVER on host)
-just test
-# Select option 1 (Fedora) or 2 (Homebrew)
-
-# 3. If issues found, debug in container
-just test-fedora-debug
-# Container stays alive for inspection
-
-# 4. For interactive debugging, use shell target
-just test-fedora-shell
-# Manually run commands inside container
-
-# 5. Clean up
-just clean
-```
-
-**IMPORTANT:** Never run `./main.sh` directly on the host machine for testing. Always use containers.
-
-### What Each Test Validates
-
-**`just test-fedora`:**
-- DNF package installation
-- Flatpak GUI apps
-- asdf with Linux paths
-- npm/pip packages
-- Dotfiles stowing
-
-**`just test-brew`:**
-- Homebrew formula installation on Linux
-- `--force-brew` flag works correctly
-- Tests Homebrew as the primary package manager (simulates macOS environment)
-- asdf with Homebrew paths
-- npm/pip packages
-
-### Manual Validation After Automated Tests
-
-After the automated bootstrap completes successfully, it's recommended to manually validate the environment interactively:
-
-```bash
-# 1. Start an interactive debug shell
-just test-fedora-debug
-# OR
-just test-brew-debug
-
-# 2. Inside the container, switch to zsh (if installed)
-zsh
-
-# If zsh loads without errors, the dotfiles are properly configured!
-# Any errors during zsh startup indicate dotfile configuration issues.
-
-# 3. Test that aliases and tools work correctly:
-
-# Test eza (aliased as ls in zshrc)
-ls
-
-# Test bat (syntax-highlighted file viewer)
-bat README.md
-
-# Test htop (interactive process viewer)
-htop
-# Press 'q' to quit
-
-# 4. Test other commonly used commands from your dotfiles
-# If all commands work without errors, validation is complete!
-```
-
-**Why this matters:**
-- Loading zsh validates `.zshrc`, `.zshenv`, and all shell configurations
-- Testing aliased commands confirms the tools are properly installed and in PATH
-- Interactive validation catches issues that automated tests might miss
-
----
-
-## Common Pitfalls
-
-### 1. Hardcoded Paths
-```bash
-# Bad
-cd ~/Projects/dotfiles
-
-# Good
-cd "$PROJECT_DIR"
-```
-
-### 2. Unquoted Variables
-```bash
-# Bad - breaks with spaces
-cp $file $dest
-
-# Good
-cp "$file" "$dest"
-```
-
-### 3. Assuming OS
-```bash
-# Bad
-brew install git
-
-# Good
-if is_macos; then
-    brew install git
-elif is_fedora; then
-    sudo dnf install -y git
-fi
-```
-
-### 4. Not Handling Missing Files
-```bash
-# Bad
-source ~/.zshrc
-
-# Good
-if [[ -f ~/.zshrc ]]; then
-    source ~/.zshrc
-fi
-```
-
----
-
-## File Organization
-
-```
-dotfiles/
-├── main.sh                 # Entry point - orchestrates everything
-├── packages.yaml           # Package definitions (user-editable)
-├── justfile               # Container testing
-├── AGENTS.md              # This file
-├── README.md              # User documentation
-├── scripts/               # Modular implementation
-│   ├── utils.sh           # Shared utilities (source this first!)
-│   ├── prerequisites.sh   # Auto-install Homebrew, gum, yq, stow
-│   ├── packages.sh        # Parse YAML, install packages
-│   ├── stow.sh            # Backup and stow dotfiles
-│   ├── asdf.sh            # Language runtime management
-│   └── lazyvim.sh         # Neovim configuration
-├── dev/                   # Development documentation
-│   ├── PRD.md             # Product requirements (technical spec)
-│   └── ROADMAP.md         # Future features and ideas
-├── .devcontainer/         # Container testing
-│   ├── fedora/
-│   └── homebrew/
-└── dotfiles/              # User's dotfiles (mirrors $HOME)
-```
-
----
-
-## Quick Reference
-
-### Add a New Package
-1. Edit `packages.yaml`
-2. Add to appropriate section (OS -> category -> type)
-3. Test in containers: `just test`
-
-### Add a New Script
-1. Create `scripts/new-feature.sh`
-2. Follow structure pattern (see section 5)
-3. Source `utils.sh` at the top
-4. Implement main function + dry-run check
-5. Integrate into `main.sh`
-6. Update `README.md` with user-facing docs
-7. Update `dev/PRD.md` with technical details
-8. Test in containers: `just test`
-
-### Add a New CLI Flag
-1. Update `parse_args()` in `scripts/utils.sh`
-2. Add global variable at top of `utils.sh`
-3. Update `show_help()` with documentation
-4. Handle flag in relevant scripts
-5. Update `README.md` options table
-6. Test in containers: `just test`
-
----
-
-## Questions or Improvements?
-
-This is a living document. If you notice patterns that should be documented or rules that should be added, update this file as part of your changes.
-
-**Remember:** The goal is to make the codebase maintainable, testable, and easy to understand for both humans and AI agents.
+9. **Update this file (AGENTS.md)** when adding new scripts, new package list files, or new patterns.

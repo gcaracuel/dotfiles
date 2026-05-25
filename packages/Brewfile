@@ -1,0 +1,90 @@
+# Brewfile — Homebrew packages for macOS and Linux (brew)
+# Edit this file to add/remove packages.
+# Run: chezmoi apply  (triggers run_onchange script automatically)
+
+# --- Taps ---
+tap "danielfoehrkn/switch"
+tap "gromgit/brewtils"
+
+# =============================================================================
+# Navigation & File Management
+# =============================================================================
+brew "zoxide"             # z command - smarter cd
+brew "yazi"               # File explorer TUI
+brew "fzf"                # Fuzzy finder
+brew "fd"                 # find replacement
+
+# =============================================================================
+# Text & Viewing
+# =============================================================================
+brew "neovim"             # Text editor
+brew "bat"                # cat with syntax highlighting
+brew "ripgrep"            # grep replacement
+brew "jq"                 # JSON processor
+brew "yq"                 # YAML processor
+brew "git-delta"          # Git diff viewer
+
+# =============================================================================
+# Terminal & Shell
+# =============================================================================
+brew "zsh"                # Zsh shell
+brew "zsh-autosuggestions"
+brew "zsh-syntax-highlighting"
+brew "starship"           # Terminal prompt
+brew "tmux"               # Terminal multiplexer
+
+# =============================================================================
+# Development
+# =============================================================================
+brew "lazygit"            # Git TUI
+brew "libhandy"           # Handy library
+cask "handy"              # Speech-to-text (offline)
+brew "gh"                 # GitHub CLI
+brew "make"               # Build automation
+brew "gcc"                # GNU Compiler Collection
+brew "unzip"              # Unzip utility
+brew "mise"               # Runtime version manager
+brew "just"               # Command runner (justfile)
+
+# =============================================================================
+# System & Utilities
+# =============================================================================
+brew "dust"               # du replacement
+brew "btop"               # System monitor
+brew "tldr"               # Simplified man pages
+brew "croc"               # File sharing
+brew "ttyd"               # Terminal share via web
+brew "tailscale"          # VPN/mesh network
+brew "httpie"             # HTTP client
+brew "thefuck"            # Command correction
+
+# =============================================================================
+# Fonts (macOS cask)
+# =============================================================================
+cask "font-hack-nerd-font"
+
+# =============================================================================
+# macOS-only CLI
+# =============================================================================
+brew "danielfoehrkn/switch/switch"   # Kubernetes context switcher
+brew "gromgit/brewtils/taproom"      # Brew utilities
+
+# =============================================================================
+# GUI Apps — Personal (macOS casks)
+# =============================================================================
+cask "ghostty"            # Terminal emulator
+cask "spotify"            # Music streaming
+cask "rectangle"          # Window management
+cask "visual-studio-code" # Code editor
+cask "vivaldi"            # Web browser
+cask "google-chrome"      # Web browser
+cask "obsidian"           # Knowledge base / notes
+cask "ollama-app"         # Ollama
+
+# =============================================================================
+# Kubernetes & Cloud CLIs
+# =============================================================================
+brew "kubectl"            # Kubernetes CLI
+cask "gcloud-cli"      # Google Cloud CLI
+brew "awscli"             # AWS CLI
+brew "k9s"                # Kubernetes TUI# force-run: 2026-05-25T21:27:03Z

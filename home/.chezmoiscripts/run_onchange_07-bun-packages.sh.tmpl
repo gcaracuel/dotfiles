@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# run_onchange_07-bun-packages.sh.tmpl
+# Installs/uninstalls global Bun packages via mise (bun runtime).
+# Re-runs whenever bun-packages.txt changes.
+#
+# chezmoi:template:left-delim="{{" right-delim="}}"
+#
+# bun-packages.txt hash: {{ include (joinPath (output "readlink" "-f" .chezmoi.sourceDir | trim) "../packages/bun-packages.txt") | sha256sum }}
+
+set -euo pipefail
+
+REPO_DIR="{{ output "readlink" "-f" .chezmoi.sourceDir | trim }}/.." 
+PACKAGES_FILE="$REPO_DIR/packages/bun-packages.txt"
+STATE_DIR="$HOME/.local/share/dotfiles-state"
+STATE_FILE="$STATE_DIR/bun-installed.txt"
+
+mkdir -p "$STATE_DIR"
+
+# Activate mise for this session
+if command -v mise &>/dev/null; then
+  eval "$(mise activate bash)" 2>/dev/null || true
+fi
+
+if ! command -v bun &>/dev/null; then
+  echo "ERROR: bun not found. Ensure bun is installed via mise." >&2
+  exit 1
+fi
+
+# Parse package list (strip comments, blank lines, inline comments)
+parse_packages() {
+  grep -v '^\s*#' "$1" | grep -v '^\s*$' | awk '{print $1}' || true
+}
+
+DESIRED=$(parse_packages "$PACKAGES_FILE")
+
+# --- Uninstall removed packages ---
+if [[ -f "$STATE_FILE" ]]; then
+  REMOVED=$(comm -23 <(sort "$STATE_FILE") <(echo "$DESIRED" | sort) || true)
+  if [[ -n "$REMOVED" ]]; then
+    echo "==> [bun] Uninstalling removed packages:"
+    while IFS= read -r pkg; do
+      echo "    - $pkg"
+      bun remove -g "$pkg" || echo "    WARNING: could not uninstall $pkg" >&2
+    done <<< "$REMOVED"
+  fi
+fi
+
+# --- Install desired packages ---
+echo "==> [bun] Installing global packages..."
+while IFS= read -r pkg; do
+  [[ -z "$pkg" ]] && continue
+  echo "    + $pkg"
+  if ! bun add -g "$pkg"; then
+    echo "    WARNING: failed to install $pkg" >&2
+  fi
+done <<< "$DESIRED"
+
+echo "$DESIRED" | sort > "$STATE_FILE"
+echo "==> [bun] Done."

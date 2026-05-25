@@ -26,32 +26,15 @@ For the tmux configuration to be fully functional, you need to install the plugi
 
 ---
 
-### 3. Install Gemini CLI extensions
-
-```bash
-gemini extentions install @gemini-cli-extensions/conductor
-gemini extentions install @gemini-cli-extensions/code-review
-gemini extentions install @gemini-cli-extensions/security
-gemini extentions install @gemini-cli-extensions/jules
-```
-
----
-
-### 4. Ensure worktrunk shell config
+### 3. Ensure worktrunk shell config
 
 ```bash
 wt config shell install
 ```
 
-### 5. OpenSpec agent config
-
-```bash
-openspec config profile
-```
-
 ---
 
-### 5. [Optional] Install Nix
+### 4. [Optional] Install Nix
 
 If you plan to use `nix-shell` for per-project isolated environments, you can install Nix.
 

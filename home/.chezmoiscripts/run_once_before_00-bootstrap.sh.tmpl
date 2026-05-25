@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# run_once_before_00-bootstrap.sh.tmpl
+# Bootstraps the package manager on first run.
+# On macOS: installs Homebrew if missing.
+# On Arch Linux: ensures pacman is available and system is up to date.
+# This runs BEFORE dotfiles are applied.
+
+set -euo pipefail
+
+OS="$(uname -s)"
+
+echo "==> [bootstrap] Detecting OS: $OS"
+
+if [[ "$OS" == "Darwin" ]]; then
+  # ---- macOS: ensure Homebrew ----
+  if ! command -v brew &>/dev/null; then
+    echo "==> [bootstrap] Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    # Add brew to PATH for this session
+    if [[ -f /opt/homebrew/bin/brew ]]; then
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [[ -f /usr/local/bin/brew ]]; then
+      eval "$(/usr/local/bin/brew shellenv)"
+    fi
+  else
+    echo "==> [bootstrap] Homebrew already installed."
+  fi
+
+  # Ensure mise is available
+  if ! command -v mise &>/dev/null; then
+    echo "==> [bootstrap] Installing mise via Homebrew..."
+    brew install mise
+  fi
+
+elif [[ "$OS" == "Linux" ]]; then
+  # ---- Arch Linux: ensure pacman and base tools ----
+  if ! command -v pacman &>/dev/null; then
+    echo "ERROR: pacman not found. Only Arch Linux is supported on Linux." >&2
+    exit 1
+  fi
+
+  echo "==> [bootstrap] Updating pacman package database..."
+  sudo pacman -Sy --noconfirm
+
+  # Ensure base-devel and git are available (needed for AUR and builds)
+  sudo pacman -S --needed --noconfirm base-devel git curl
+
+  # Ensure mise is available
+  if ! command -v mise &>/dev/null; then
+    echo "==> [bootstrap] Installing mise via pacman..."
+    sudo pacman -S --needed --noconfirm mise
+  fi
+else
+  echo "ERROR: Unsupported OS: $OS" >&2
+  exit 1
+fi
+
+echo "==> [bootstrap] Done."

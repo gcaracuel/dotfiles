@@ -1,0 +1,5 @@
+# packages.work.txt — Work-only Arch Linux (pacman) packages
+# Installed when chezmoi data.work == true
+# Run: chezmoi apply  (triggers run_onchange script automatically)
+
+# teleport — install via AUR: yay -S teleport

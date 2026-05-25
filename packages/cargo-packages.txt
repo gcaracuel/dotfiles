@@ -1,0 +1,15 @@
+# cargo-packages.txt — Rust packages installed via mise (rust runtime)
+# One package per line. Lines starting with # are comments.
+# Edit this file to add/remove packages.
+# Run: chezmoi apply  (triggers run_onchange script automatically)
+#
+# Format:
+#   <crate-name>                  — install from crates.io
+#   <name>|<git-url>              — install from git repository
+
+eza                                              # ls replacement
+grex                                             # Regex generator
+atuin                                            # Shell history revamped
+worktrunk                                        # Git worktree manager
+rtk|https://github.com/rtk-ai/rtk.git           # AI CLI for code generation
+# force-run: 2026-05-25T21:41:49Z
