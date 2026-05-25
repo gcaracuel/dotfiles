@@ -16,6 +16,21 @@ STATE_FILE="$STATE_DIR/cargo-installed.txt"
 
 mkdir -p "$STATE_DIR"
 
+# Detect if this is a forced reinstall (check if force-run timestamp changed in last 5 seconds)
+FORCE_REINSTALL=false
+if grep -q '^# force-run:' "$PACKAGES_FILE"; then
+  FORCE_TS=$(grep '^# force-run:' "$PACKAGES_FILE" | sed 's/^# force-run: //')
+  # If timestamp is very recent (within 5 seconds), this is likely a forced reinstall
+  if command -v date &>/dev/null; then
+    NOW_EPOCH=$(date +%s)
+    FORCE_EPOCH=$(date -d "$FORCE_TS" +%s 2>/dev/null || date -j -f "%Y-%m-%dT%H:%M:%SZ" "$FORCE_TS" +%s 2>/dev/null || echo 0)
+    if [[ $((NOW_EPOCH - FORCE_EPOCH)) -lt 5 ]]; then
+      FORCE_REINSTALL=true
+      echo "==> [cargo] Detected force reinstall request"
+    fi
+  fi
+fi
+
 # Activate mise for this session
 if command -v mise &>/dev/null; then
   eval "$(mise activate bash)" 2>/dev/null || true
@@ -51,26 +66,51 @@ if [[ -f "$STATE_FILE" ]]; then
 fi
 
 # --- Install desired packages ---
-echo "==> [cargo] Installing packages..."
+echo "==> [cargo] Checking packages..."
+installed_count=0
+skipped_count=0
+
 while IFS= read -r entry; do
   [[ -z "$entry" ]] && continue
   name="${entry%%|*}"
   git_url="${entry#*|}"
 
+  # Check if package is already installed (skip check if force reinstall)
+  if [[ "$FORCE_REINSTALL" == "false" ]] && cargo install --list | grep -q "^${name} v"; then
+    echo "    ✓ $name (already installed)"
+    skipped_count=$((skipped_count + 1))
+    continue
+  fi
+
+  FORCE_FLAG=""
+  if [[ "$FORCE_REINSTALL" == "true" ]]; then
+    FORCE_FLAG="--force"
+  fi
+
   if [[ "$name" == "$git_url" ]]; then
     # No git URL — install from crates.io
     echo "    + $name (crates.io)"
-    if ! cargo install "$name"; then
+    if cargo install $FORCE_FLAG "$name"; then
+      installed_count=$((installed_count + 1))
+    else
       echo "    WARNING: failed to install $name" >&2
     fi
   else
     # Git URL provided
     echo "    + $name (git: $git_url)"
-    if ! cargo install --git "$git_url"; then
+    if cargo install $FORCE_FLAG --git "$git_url"; then
+      installed_count=$((installed_count + 1))
+    else
       echo "    WARNING: failed to install $name from git" >&2
     fi
   fi
 done < <(parse_entries "$PACKAGES_FILE")
+
+if [[ $installed_count -eq 0 ]] && [[ $skipped_count -gt 0 ]]; then
+  echo "==> [cargo] All packages already installed, skipped compilation."
+elif [[ $installed_count -gt 0 ]]; then
+  echo "==> [cargo] Installed $installed_count package(s)."
+fi
 
 echo "$DESIRED_NAMES" | sort > "$STATE_FILE"
 echo "==> [cargo] Done."
