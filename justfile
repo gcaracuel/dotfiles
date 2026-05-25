@@ -1,7 +1,7 @@
 # Dotfiles justfile — chezmoi workflow
 # https://just.systems
 
-import 'test.just'
+import 'test.justfile'
 
 REPO_DIR := justfile_directory()
 CHEZMOI_SOURCE := REPO_DIR / "home"
