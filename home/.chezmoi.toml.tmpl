@@ -1,0 +1,4 @@
+{{- $work := promptBoolOnce . "work" "Include work-only packages (tools only needed on work machines)" -}}
+
+[data]
+  work = {{ $work }}

@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# run_onchange_09-krew-plugins.sh.tmpl
+# Installs/uninstalls kubectl krew plugins.
+# Re-runs whenever krew-plugins.txt changes.
+#
+# chezmoi:template:left-delim="{{" right-delim="}}"
+#
+# krew-plugins.txt hash: {{ include (joinPath (output "readlink" "-f" .chezmoi.sourceDir | trim) "../packages/krew-plugins.txt") | sha256sum }}
+
+set -euo pipefail
+
+REPO_DIR="{{ output "readlink" "-f" .chezmoi.sourceDir | trim }}/.." 
+PACKAGES_FILE="$REPO_DIR/packages/krew-plugins.txt"
+STATE_DIR="$HOME/.local/share/dotfiles-state"
+STATE_FILE="$STATE_DIR/krew-installed.txt"
+
+mkdir -p "$STATE_DIR"
+
+# Ensure krew is in PATH
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
+if ! command -v kubectl &>/dev/null; then
+  echo "==> [krew] kubectl not found, skipping."
+  exit 0
+fi
+
+if ! command -v kubectl-krew &>/dev/null && ! kubectl krew version &>/dev/null 2>&1; then
+  echo "==> [krew] krew not installed. Installing..."
+  OS="$(uname | tr '[:upper:]' '[:lower:]')"
+  ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')"
+  KREW="krew-${OS}_${ARCH}"
+  TMP_DIR="$(mktemp -d)"
+  curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz" \
+    --output-dir "$TMP_DIR"
+  tar zxvf "$TMP_DIR/${KREW}.tar.gz" -C "$TMP_DIR"
+  "$TMP_DIR/${KREW}" install krew
+  rm -rf "$TMP_DIR"
+fi
+
+# Parse plugin list (strip comments, blank lines)
+parse_plugins() {
+  grep -v '^\s*#' "$1" | grep -v '^\s*$' | awk '{print $1}' || true
+}
+
+DESIRED=$(parse_plugins "$PACKAGES_FILE")
+
+# --- Uninstall removed plugins ---
+if [[ -f "$STATE_FILE" ]]; then
+  REMOVED=$(comm -23 <(sort "$STATE_FILE") <(echo "$DESIRED" | sort) || true)
+  if [[ -n "$REMOVED" ]]; then
+    echo "==> [krew] Uninstalling removed plugins:"
+    while IFS= read -r plugin; do
+      echo "    - $plugin"
+      kubectl krew uninstall "$plugin" || echo "    WARNING: could not uninstall $plugin" >&2
+    done <<< "$REMOVED"
+  fi
+fi
+
+# --- Install desired plugins ---
+echo "==> [krew] Installing plugins..."
+kubectl krew update
+while IFS= read -r plugin; do
+  [[ -z "$plugin" ]] && continue
+  echo "    + $plugin"
+  kubectl krew install "$plugin" || echo "    WARNING: failed to install $plugin" >&2
+done <<< "$DESIRED"
+
+echo "$DESIRED" | sort > "$STATE_FILE"
+echo "==> [krew] Done."

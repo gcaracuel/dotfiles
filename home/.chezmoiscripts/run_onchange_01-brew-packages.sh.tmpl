@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+# run_onchange_01-brew-packages.sh.tmpl
+# Installs/uninstalls Homebrew packages using Brewfile.
+# Re-runs whenever Brewfile or Brewfile.work content changes.
+#
+# chezmoi:template:left-delim="{{" right-delim="}}"
+#
+# Brewfile hash: {{ include (joinPath (output "readlink" "-f" .chezmoi.sourceDir | trim) "../packages/Brewfile") | sha256sum }}
+{{- if (.work | default false) }}
+# Brewfile.work hash: {{ include (joinPath (output "readlink" "-f" .chezmoi.sourceDir | trim) "../packages/Brewfile.work") | sha256sum }}
+{{- end }}
+
+set -euo pipefail
+
+# Only run on macOS
+if [[ "$(uname -s)" != "Darwin" ]]; then
+  echo "==> [brew] Skipping — not macOS."
+  exit 0
+fi
+
+# Ensure brew is in PATH (Apple Silicon)
+if [[ -f /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+REPO_DIR="{{ output "readlink" "-f" .chezmoi.sourceDir | trim }}/.." 
+BREWFILE="$REPO_DIR/packages/Brewfile"
+STATE_DIR="$HOME/.local/share/dotfiles-state"
+STATE_FILE="$STATE_DIR/brew-installed.txt"
+
+mkdir -p "$STATE_DIR"
+
+echo "==> [brew] Running brew bundle..."
+brew bundle --file="$BREWFILE"
+
+  {{ if (.work | default false) -}}
+echo "==> [brew] Installing work packages..."
+brew bundle --file="$REPO_DIR/packages/Brewfile.work"
+{{- end }}
+
+# --- Uninstall packages removed from Brewfile ---
+# Parse current desired packages from Brewfiles
+# Uses sed to extract quoted package names — BSD grep compatible (no -P)
+current_packages() {
+  grep -E '^(brew|cask) ' "$BREWFILE" | sed 's/^[^"]*"//;s/".*//' || true
+{{ if (.work | default false) -}}
+  grep -E '^(brew|cask) ' "$REPO_DIR/packages/Brewfile.work" | sed 's/^[^"]*"//;s/".*//' || true
+  {{- end }}
+}
+
+if [[ -f "$STATE_FILE" ]]; then
+  # Find packages in old state but not in current desired set
+  CURRENT=$(current_packages | sort)
+  OLD=$(sort "$STATE_FILE")
+  REMOVED=$(comm -23 <(echo "$OLD") <(echo "$CURRENT") || true)
+
+  if [[ -n "$REMOVED" ]]; then
+    echo "==> [brew] Uninstalling removed packages:"
+    while IFS= read -r pkg; do
+      echo "    - $pkg"
+      if brew list --formula | grep -q "^${pkg}$" 2>/dev/null; then
+        brew uninstall --ignore-dependencies "$pkg" || echo "    WARNING: could not uninstall $pkg"
+      elif brew list --cask | grep -q "^${pkg}$" 2>/dev/null; then
+        brew uninstall --cask "$pkg" || echo "    WARNING: could not uninstall cask $pkg"
+      fi
+    done <<< "$REMOVED"
+  fi
+fi
+
+# Save current state
+current_packages | sort > "$STATE_FILE"
+
+echo "==> [brew] Done."

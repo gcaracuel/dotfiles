@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+# run_onchange_02-pacman-packages.sh.tmpl
+# Installs/uninstalls Arch Linux packages using packages.txt.
+# Re-runs whenever packages.txt or packages.work.txt content changes.
+#
+# chezmoi:template:left-delim="{{" right-delim="}}"
+#
+# packages.txt hash: {{ include (joinPath (output "readlink" "-f" .chezmoi.sourceDir | trim) "../packages/packages.txt") | sha256sum }}
+{{- if (.work | default false) }}
+# packages.work.txt hash: {{ include (joinPath (output "readlink" "-f" .chezmoi.sourceDir | trim) "../packages/packages.work.txt") | sha256sum }}
+{{- end }}
+
+set -euo pipefail
+
+# Only run on Linux with pacman
+if [[ "$(uname -s)" != "Linux" ]] || ! command -v pacman &>/dev/null; then
+  echo "==> [pacman] Skipping — not Arch Linux."
+  exit 0
+fi
+
+REPO_DIR="{{ output "readlink" "-f" .chezmoi.sourceDir | trim }}/.." 
+PACKAGES_FILE="$REPO_DIR/packages/packages.txt"
+STATE_DIR="$HOME/.local/share/dotfiles-state"
+STATE_FILE="$STATE_DIR/pacman-installed.txt"
+
+mkdir -p "$STATE_DIR"
+
+# Parse package list (strip comments and blank lines)
+parse_packages() {
+  local file="$1"
+  grep -v '^\s*#' "$file" | grep -v '^\s*$' | awk '{print $1}' || true
+}
+
+DESIRED=$(parse_packages "$PACKAGES_FILE")
+{{ if (.work | default false) -}}
+DESIRED_WORK=$(parse_packages "$REPO_DIR/packages/packages.work.txt")
+ALL_DESIRED=$(printf '%s\n%s' "$DESIRED" "$DESIRED_WORK" | sort -u)
+{{- else -}}
+ALL_DESIRED=$(echo "$DESIRED" | sort -u)
+{{- end }}
+
+# --- Uninstall removed packages ---
+if [[ -f "$STATE_FILE" ]]; then
+  REMOVED=$(comm -23 <(sort "$STATE_FILE") <(echo "$ALL_DESIRED" | sort) || true)
+  if [[ -n "$REMOVED" ]]; then
+    echo "==> [pacman] Uninstalling removed packages:"
+    while IFS= read -r pkg; do
+      echo "    - $pkg"
+      sudo pacman -R --noconfirm "$pkg" || echo "    WARNING: could not remove $pkg"
+    done <<< "$REMOVED"
+  fi
+fi
+
+# --- Install desired packages ---
+echo "==> [pacman] Installing packages..."
+# shellcheck disable=SC2086
+sudo pacman -S --needed --noconfirm $ALL_DESIRED
+
+# Save state
+echo "$ALL_DESIRED" | sort > "$STATE_FILE"
+
+echo "==> [pacman] Done."

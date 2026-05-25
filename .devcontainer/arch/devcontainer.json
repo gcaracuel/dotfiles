@@ -1,5 +1,5 @@
 {
-  "name": "Homebrew Test",
+  "name": "Arch Linux Test",
   "build": {
     "dockerfile": "Dockerfile"
   },
@@ -7,5 +7,5 @@
   "mounts": [
     "source=${localWorkspaceFolder},target=/workspace,type=bind"
   ],
-  "remoteUser": "linuxbrew"
+  "remoteUser": "testuser"
 }

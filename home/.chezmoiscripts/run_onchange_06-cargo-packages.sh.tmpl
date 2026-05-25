@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# run_onchange_06-cargo-packages.sh.tmpl
+# Installs/uninstalls Rust packages via mise (rust/cargo runtime).
+# Re-runs whenever cargo-packages.txt changes.
+#
+# chezmoi:template:left-delim="{{" right-delim="}}"
+#
+# cargo-packages.txt hash: {{ include (joinPath (output "readlink" "-f" .chezmoi.sourceDir | trim) "../packages/cargo-packages.txt") | sha256sum }}
+
+set -euo pipefail
+
+REPO_DIR="{{ output "readlink" "-f" .chezmoi.sourceDir | trim }}/.." 
+PACKAGES_FILE="$REPO_DIR/packages/cargo-packages.txt"
+STATE_DIR="$HOME/.local/share/dotfiles-state"
+STATE_FILE="$STATE_DIR/cargo-installed.txt"
+
+mkdir -p "$STATE_DIR"
+
+# Activate mise for this session
+if command -v mise &>/dev/null; then
+  eval "$(mise activate bash)" 2>/dev/null || true
+fi
+
+if ! command -v cargo &>/dev/null; then
+  echo "ERROR: cargo not found. Ensure rust is installed via mise." >&2
+  exit 1
+fi
+
+# Parse package list (strip comments, blank lines, inline comments)
+# Returns just the package name (before any | separator)
+parse_packages() {
+  grep -v '^\s*#' "$1" | grep -v '^\s*$' | awk '{print $1}' | cut -d'|' -f1 || true
+}
+
+parse_entries() {
+  grep -v '^\s*#' "$1" | grep -v '^\s*$' | awk '{print $1}' || true
+}
+
+DESIRED_NAMES=$(parse_packages "$PACKAGES_FILE")
+
+# --- Uninstall removed packages ---
+if [[ -f "$STATE_FILE" ]]; then
+  REMOVED=$(comm -23 <(sort "$STATE_FILE") <(echo "$DESIRED_NAMES" | sort) || true)
+  if [[ -n "$REMOVED" ]]; then
+    echo "==> [cargo] Uninstalling removed packages:"
+    while IFS= read -r pkg; do
+      echo "    - $pkg"
+      cargo uninstall "$pkg" || echo "    WARNING: could not uninstall $pkg" >&2
+    done <<< "$REMOVED"
+  fi
+fi
+
+# --- Install desired packages ---
+echo "==> [cargo] Installing packages..."
+while IFS= read -r entry; do
+  [[ -z "$entry" ]] && continue
+  name="${entry%%|*}"
+  git_url="${entry#*|}"
+
+  if [[ "$name" == "$git_url" ]]; then
+    # No git URL — install from crates.io
+    echo "    + $name (crates.io)"
+    if ! cargo install "$name"; then
+      echo "    WARNING: failed to install $name" >&2
+    fi
+  else
+    # Git URL provided
+    echo "    + $name (git: $git_url)"
+    if ! cargo install --git "$git_url"; then
+      echo "    WARNING: failed to install $name from git" >&2
+    fi
+  fi
+done < <(parse_entries "$PACKAGES_FILE")
+
+echo "$DESIRED_NAMES" | sort > "$STATE_FILE"
+echo "==> [cargo] Done."

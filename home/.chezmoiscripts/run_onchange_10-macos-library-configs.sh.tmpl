@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# run_onchange_10-macos-library-configs.sh.tmpl
+# On macOS, some apps read from ~/Library/Application Support/ instead of ~/.config/.
+# This script copies managed configs to their macOS-specific locations.
+# Re-runs whenever the relevant source files change.
+#
+# chezmoi:template:left-delim="{{" right-delim="}}"
+#
+# settings.json hash: {{ include (joinPath (output "readlink" "-f" .chezmoi.sourceDir | trim) "dot_config/Code/User/settings.json") | sha256sum }}
+
+set -euo pipefail
+
+# Only run on macOS
+if [[ "$(uname -s)" != "Darwin" ]]; then
+  exit 0
+fi
+
+echo "==> [macos] Syncing configs to ~/Library/Application Support/..."
+
+# VSCode: ~/.config/Code/User/settings.json -> ~/Library/Application Support/Code/User/settings.json
+VSCODE_SRC="$HOME/.config/Code/User/settings.json"
+VSCODE_DST="$HOME/Library/Application Support/Code/User/settings.json"
+if [[ -f "$VSCODE_SRC" ]]; then
+  mkdir -p "$(dirname "$VSCODE_DST")"
+  cp "$VSCODE_SRC" "$VSCODE_DST"
+  echo "    copied: VSCode settings.json"
+fi
+
+echo "==> [macos] Done."

@@ -1,0 +1,6 @@
+# Brewfile.work — Work-only Homebrew packages
+# Installed when chezmoi data.work == true
+# Run: chezmoi apply  (triggers run_onchange script automatically)
+
+brew "teleport"                   # Teleport CLI
+cask "1password-cli"              # 1Password CLI

@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# run_onchange_08-vscode-extensions.sh.tmpl
+# Installs/uninstalls VSCode extensions.
+# Re-runs whenever vscode-extensions.txt changes.
+#
+# chezmoi:template:left-delim="{{" right-delim="}}"
+#
+# vscode-extensions.txt hash: {{ include (joinPath (output "readlink" "-f" .chezmoi.sourceDir | trim) "../packages/vscode-extensions.txt") | sha256sum }}
+
+set -euo pipefail
+
+REPO_DIR="{{ output "readlink" "-f" .chezmoi.sourceDir | trim }}/.." 
+PACKAGES_FILE="$REPO_DIR/packages/vscode-extensions.txt"
+STATE_DIR="$HOME/.local/share/dotfiles-state"
+STATE_FILE="$STATE_DIR/vscode-installed.txt"
+
+mkdir -p "$STATE_DIR"
+
+if ! command -v code &>/dev/null; then
+  echo "==> [vscode] 'code' CLI not found, skipping extension install."
+  exit 0
+fi
+
+# Parse extension list (strip comments, blank lines)
+parse_extensions() {
+  grep -v '^\s*#' "$1" | grep -v '^\s*$' | awk '{print $1}' || true
+}
+
+DESIRED=$(parse_extensions "$PACKAGES_FILE" | tr '[:upper:]' '[:lower:]' | sort)
+
+# --- Uninstall removed extensions ---
+if [[ -f "$STATE_FILE" ]]; then
+  REMOVED=$(comm -23 <(sort "$STATE_FILE") <(echo "$DESIRED") || true)
+  if [[ -n "$REMOVED" ]]; then
+    echo "==> [vscode] Uninstalling removed extensions:"
+    while IFS= read -r ext; do
+      echo "    - $ext"
+      code --uninstall-extension "$ext" || echo "    WARNING: could not uninstall $ext" >&2
+    done <<< "$REMOVED"
+  fi
+fi
+
+# --- Install desired extensions ---
+INSTALLED=$(code --list-extensions 2>/dev/null | tr '[:upper:]' '[:lower:]' | sort)
+
+echo "==> [vscode] Installing extensions..."
+while IFS= read -r ext; do
+  [[ -z "$ext" ]] && continue
+  if echo "$INSTALLED" | grep -qx "$ext"; then
+    echo "    = $ext (already installed)"
+  else
+    echo "    + $ext"
+    code --install-extension "$ext" --force || echo "    WARNING: failed to install $ext" >&2
+  fi
+done < <(parse_extensions "$PACKAGES_FILE")
+
+parse_extensions "$PACKAGES_FILE" | tr '[:upper:]' '[:lower:]' | sort > "$STATE_FILE"
+echo "==> [vscode] Done."

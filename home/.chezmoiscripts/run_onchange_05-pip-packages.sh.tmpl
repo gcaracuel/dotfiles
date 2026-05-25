@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+# run_onchange_05-pip-packages.sh.tmpl
+# Installs/uninstalls Python packages via mise (uv/python runtime).
+# Prefers uv tool install for isolated environments; falls back to pip.
+# Re-runs whenever pip-packages.txt changes.
+#
+# chezmoi:template:left-delim="{{" right-delim="}}"
+#
+# pip-packages.txt hash: {{ include (joinPath (output "readlink" "-f" .chezmoi.sourceDir | trim) "../packages/pip-packages.txt") | sha256sum }}
+
+set -euo pipefail
+
+REPO_DIR="{{ output "readlink" "-f" .chezmoi.sourceDir | trim }}/.." 
+PACKAGES_FILE="$REPO_DIR/packages/pip-packages.txt"
+STATE_DIR="$HOME/.local/share/dotfiles-state"
+STATE_FILE="$STATE_DIR/pip-installed.txt"
+
+mkdir -p "$STATE_DIR"
+
+# Activate mise for this session
+if command -v mise &>/dev/null; then
+  eval "$(mise activate bash)" 2>/dev/null || true
+fi
+
+# Parse package list (strip comments, blank lines, inline comments)
+parse_packages() {
+  grep -v '^\s*#' "$1" | grep -v '^\s*$' | awk '{print $1}' || true
+}
+
+DESIRED=$(parse_packages "$PACKAGES_FILE")
+
+# Prefer uv tool install (isolated), fall back to pip
+install_pkg() {
+  local pkg="$1"
+  if command -v uv &>/dev/null; then
+    uv tool install "$pkg" || echo "    WARNING: failed to install $pkg via uv" >&2
+  elif command -v pip3 &>/dev/null; then
+    pip3 install --user "$pkg" || echo "    WARNING: failed to install $pkg via pip3" >&2
+  else
+    echo "    WARNING: neither uv nor pip3 found, skipping $pkg" >&2
+  fi
+}
+
+uninstall_pkg() {
+  local pkg="$1"
+  if command -v uv &>/dev/null; then
+    uv tool uninstall "$pkg" || echo "    WARNING: could not uninstall $pkg" >&2
+  elif command -v pip3 &>/dev/null; then
+    pip3 uninstall -y "$pkg" || echo "    WARNING: could not uninstall $pkg" >&2
+  fi
+}
+
+# --- Uninstall removed packages ---
+if [[ -f "$STATE_FILE" ]]; then
+  REMOVED=$(comm -23 <(sort "$STATE_FILE") <(echo "$DESIRED" | sort) || true)
+  if [[ -n "$REMOVED" ]]; then
+    echo "==> [pip] Uninstalling removed packages:"
+    while IFS= read -r pkg; do
+      echo "    - $pkg"
+      uninstall_pkg "$pkg"
+    done <<< "$REMOVED"
+  fi
+fi
+
+# --- Install desired packages ---
+echo "==> [pip] Installing packages..."
+while IFS= read -r pkg; do
+  [[ -z "$pkg" ]] && continue
+  echo "    + $pkg"
+  install_pkg "$pkg"
+done <<< "$DESIRED"
+
+echo "$DESIRED" | sort > "$STATE_FILE"
+echo "==> [pip] Done."

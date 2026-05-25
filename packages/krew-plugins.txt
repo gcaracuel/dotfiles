@@ -1,0 +1,11 @@
+# krew-plugins.txt — kubectl krew plugins
+# One plugin per line. Lines starting with # are comments.
+# Edit this file to add/remove plugins.
+# Run: chezmoi apply  (triggers run_onchange script automatically)
+#
+# Format:
+#   <plugin>           — official krew plugin
+#   <owner>/<plugin>   — custom index plugin
+
+kvaps/node-shell    # SSH into cluster nodes without SSH server
+browse-pvc          # Browse and list PVC contents

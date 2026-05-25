@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# run_once_99-manual-steps.sh.tmpl
+# Prints MANUAL_STEPS.md after the first full chezmoi apply.
+# Content is embedded at template render time — no file path resolution needed.
+
+set -euo pipefail
+
+# The content of MANUAL_STEPS.md is embedded directly by chezmoi at apply time.
+CONTENT=$(cat << 'MANUAL_STEPS_EOF'
+{{ include (joinPath (output "readlink" "-f" .chezmoi.sourceDir | trim) "../MANUAL_STEPS.md") }}
+MANUAL_STEPS_EOF
+)
+
+echo ""
+if command -v glow &>/dev/null; then
+  echo "$CONTENT" | glow -
+else
+  echo "============================================================"
+  echo "  Setup complete! Some steps require manual action."
+  echo "============================================================"
+  echo ""
+  echo "$CONTENT"
+  echo ""
+  echo "============================================================"
+fi

@@ -6,3 +6,5 @@ debug.log
 *.tmp
 *.bak
 *.swp
+packages/Brewfile.lock.json
+packages/Brewfile.work.lock.json

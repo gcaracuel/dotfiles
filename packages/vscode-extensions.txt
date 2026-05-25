@@ -1,0 +1,22 @@
+# vscode-extensions.txt — VSCode extensions
+# One extension ID per line. Lines starting with # are comments.
+# Edit this file to add/remove extensions.
+# Run: chezmoi apply  (triggers run_onchange script automatically)
+
+bierner.markdown-mermaid
+esbenp.prettier-vscode
+file-icons.file-icons
+github.vscode-github-actions
+golang.go
+Gruntfuggly.todo-tree
+hashicorp.terraform
+mikestead.dotenv
+ms-azuretools.vscode-docker
+ms-python.isort
+ms-python.python
+ms-python.vscode-pylance
+rust-lang.rust-analyzer
+VisualStudioExptTeam.intellicode-api-usage-examples
+VisualStudioExptTeam.vscodeintellicode
+wholroyd.jinja
+mvllow.rose-pine

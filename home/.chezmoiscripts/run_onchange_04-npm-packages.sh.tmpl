@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# run_onchange_04-npm-packages.sh.tmpl
+# Installs/uninstalls global npm packages via mise (node runtime).
+# Re-runs whenever npm-packages.txt changes.
+#
+# chezmoi:template:left-delim="{{" right-delim="}}"
+#
+# npm-packages.txt hash: {{ include (joinPath (output "readlink" "-f" .chezmoi.sourceDir | trim) "../packages/npm-packages.txt") | sha256sum }}
+
+set -euo pipefail
+
+REPO_DIR="{{ output "readlink" "-f" .chezmoi.sourceDir | trim }}/.." 
+PACKAGES_FILE="$REPO_DIR/packages/npm-packages.txt"
+STATE_DIR="$HOME/.local/share/dotfiles-state"
+STATE_FILE="$STATE_DIR/npm-installed.txt"
+
+mkdir -p "$STATE_DIR"
+
+# Activate mise for this session
+if command -v mise &>/dev/null; then
+  eval "$(mise activate bash)" 2>/dev/null || true
+fi
+
+if ! command -v npm &>/dev/null; then
+  echo "ERROR: npm not found. Ensure node is installed via mise." >&2
+  exit 1
+fi
+
+# Parse package list (strip comments, blank lines, inline comments)
+parse_packages() {
+  grep -v '^\s*#' "$1" | grep -v '^\s*$' | awk '{print $1}' || true
+}
+
+DESIRED=$(parse_packages "$PACKAGES_FILE")
+
+# --- Uninstall removed packages ---
+if [[ -f "$STATE_FILE" ]]; then
+  REMOVED=$(comm -23 <(sort "$STATE_FILE") <(echo "$DESIRED" | sort) || true)
+  if [[ -n "$REMOVED" ]]; then
+    echo "==> [npm] Uninstalling removed packages:"
+    while IFS= read -r pkg; do
+      echo "    - $pkg"
+      npm uninstall -g "$pkg" || echo "    WARNING: could not uninstall $pkg"
+    done <<< "$REMOVED"
+  fi
+fi
+
+# --- Install desired packages ---
+echo "==> [npm] Installing global packages..."
+while IFS= read -r pkg; do
+  [[ -z "$pkg" ]] && continue
+  echo "    + $pkg"
+  if ! npm install -g "$pkg"; then
+    echo "    WARNING: failed to install $pkg" >&2
+  fi
+done <<< "$DESIRED"
+
+echo "$DESIRED" | sort > "$STATE_FILE"
+echo "==> [npm] Done."

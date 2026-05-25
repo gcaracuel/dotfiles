@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# run_onchange_03-mise-tools.sh.tmpl
+# Installs runtime versions defined in ~/.config/mise/config.toml via mise.
+# Re-runs whenever mise config.toml changes.
+#
+# chezmoi:template:left-delim="{{" right-delim="}}"
+#
+# mise config hash: {{ include (joinPath .chezmoi.sourceDir "dot_config/mise/config.toml") | sha256sum }}
+
+set -euo pipefail
+
+# Ensure mise is in PATH
+if ! command -v mise &>/dev/null; then
+  echo "ERROR: mise not found. Run bootstrap first." >&2
+  exit 1
+fi
+
+echo "==> [mise] Installing runtimes from ~/.config/mise/config.toml..."
+mise install --yes
+
+echo "==> [mise] Done."
