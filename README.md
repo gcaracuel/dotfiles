@@ -1,8 +1,10 @@
 # dotfiles
 
-Personal development environment managed with [chezmoi](https://chezmoi.io).
+Personal dotfiles config and packages to bootstrap my environment. Managed with [chezmoi](https://chezmoi.io).
 
 Supports **macOS** (Homebrew) and **Arch Linux** (pacman).
+
+
 
 ---
 
