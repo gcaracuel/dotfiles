@@ -43,23 +43,18 @@ cd ~/Projects/github/gcaracuel/dotfiles
 just init
 ```
 
-On macOS this will install Homebrew first if it is missing, then install chezmoi, then create the symlink:
-`~/.local/share/chezmoi → <this-repo>/home`
+This will:
+1. Install Homebrew (macOS only, if missing)
+2. Install chezmoi
+3. Create the symlink: `~/.local/share/chezmoi → <this-repo>/home`
+4. Initialize chezmoi config (prompts for work mode)
 
-On Arch Linux it installs chezmoi via pacman.
-
-### 3. Initialise chezmoi config (prompts for work mode)
-
-```bash
-chezmoi init --source $PWD/home
-```
-
-This processes `.chezmoi.toml.tmpl` and writes `~/.config/chezmoi/chezmoi.toml` with your answers. You will be asked:
+You will be asked:
 > **Include work packages?**
 
-Only needs to be run once per machine. To change the answer later: `chezmoi init` again or `chezmoi edit-config`.
+To change the work mode later: `chezmoi init` again or `chezmoi edit-config`.
 
-### 4. Apply
+### 3. Apply
 
 ```bash
 just apply
@@ -129,14 +124,23 @@ just edit ~/.foo    # Edit a managed dotfile
 
 ---
 
-## Migrating from the old stow-based setup
+## Force reinstall packages
 
-If you have existing stow symlinks pointing at the old `dotfiles/` directory:
+Package install scripts only re-run when their source file changes (using `run_onchange_` scripts). To force a re-run without editing files (useful for upgrading packages to latest versions or troubleshooting):
 
 ```bash
-just init     # installs Homebrew + chezmoi, creates symlink
-just migrate  # runs chezmoi init (prompts work mode), removes old stow symlinks, applies chezmoi
+just reinstall-packages           # Force re-run ALL package managers
+just reinstall brew               # Force re-run Homebrew only
+just reinstall pacman             # Force re-run pacman only
+just reinstall npm                # Force re-run npm globals only
+just reinstall pip                # Force re-run pip/uv packages only
+just reinstall cargo              # Force re-run cargo packages only
+just reinstall bun                # Force re-run bun globals only
+just reinstall vscode             # Force re-run VSCode extensions only
+just reinstall krew               # Force re-run kubectl krew plugins only
 ```
+
+This bumps a `# force-run:` timestamp in the package file, triggering chezmoi to re-run the install script.
 
 ---
 

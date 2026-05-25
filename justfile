@@ -57,6 +57,15 @@ init:
       ln -sf "{{REPO_DIR}}/home" "$LINK"
       echo "==> Created: $LINK -> {{REPO_DIR}}/home"
     fi
+
+    # Initialize chezmoi config (prompts for work mode if not already configured)
+    if [[ ! -f "${HOME}/.config/chezmoi/chezmoi.toml" ]]; then
+      echo "==> Initializing chezmoi config (you'll be prompted for work mode)..."
+      chezmoi init --source "{{CHEZMOI_SOURCE}}"
+    else
+      echo "==> chezmoi config already exists: ${HOME}/.config/chezmoi/chezmoi.toml"
+    fi
+
     echo "==> Run 'just apply' to apply dotfiles."
 
 # Apply dotfiles (runs chezmoi apply — run 'just init' first on a new machine)
