@@ -1,4 +1,99 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["opencode-gemini-auth@latest"]
+  "plugin": [],
+
+  "tui": {
+    "compact_mode": false
+  },
+
+  // Active defaults — Claude Sonnet 4-5 for planning, Haiku 3-5 for build/general agents
+  // "agent": {
+  //   "plan": {
+  //     "model": "github-copilot/Claude Sonnet 4.5"
+  //   },
+  //   "build": {
+  //     "model": "github-copilot/Claude Haiku 4.5"
+  //   }
+  // },
+
+  // Alternative: Uncomment to use Ollama with Kimi K2.5 for planning and DeepSeek for agents
+  // "agent": {
+  //   "plan": {
+  //     "model": "ollama/kimik-2.5"
+  //   },
+  //   "build": {
+  //     "model": "ollama/deepseek-v3.2"
+  //   }
+  // },
+
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama Cloud",
+      "options": {
+        "baseURL": "https://ollama.com/v1"
+      },
+      "models": {
+        // Primary thinking/planning model — extended reasoning budget, full verbosity
+        "kimik-2.6": {
+          "options": {
+            "temperature": 1.0, // Higher temp suits exploratory reasoning
+            "thinking": { "type": "enabled", "budgetTokens": 32000 },
+            "textVerbosity": "high",
+            "num_ctx": 32768, // Large context for deep planning sessions
+            "num_predict": 16384
+          }
+        },
+        // Main agent/execution model — low temp for precise, deterministic outputs
+        "deepseek-v4-flash": {
+          "options": {
+            "temperature": 0.5, // Moderate temp to balance creativity and reliability
+            "top_p": 0.95,
+            "num_ctx": 32768,
+            "num_predict": 16384,
+            "textVerbosity": "low"
+          }
+        },
+        // Secondary agent model — slightly lower temp to counter its tendency for hallucination
+        "minimax-m2.7": {
+          "options": {
+            "temperature": 0.1,
+            "presencePenalty": 0.2,
+            "maxTokens": 8192,
+            "num_ctx": 16384,
+            "textVerbosity": "low"
+          }
+        },
+        // Last resort model for when free layer not available
+        "qwen3-coder-next": {
+          "options": {
+            "temperature": 0.1,
+            "presencePenalty": 0.2,
+            "maxTokens": 8192,
+            "num_ctx": 16384,
+            "textVerbosity": "low"
+          }
+        }
+      }
+    },
+    // GitHub Copilot — Claude Sonnet is the primary model here
+    "github-copilot": {
+      "models": {
+        "claude-sonnet-4-5": {
+          "options": {
+            "temperature": 0.2, // Low temp for consistent, high-quality code generation
+            "topP": 1
+          }
+        },
+        // Haiku — fast and cheap, tuned for documentation: concise output, slight creative freedom
+        "claude-haiku-3-5": {
+          "options": {
+            "temperature": 0.5, // A touch of flexibility for natural-sounding docs
+            "topP": 0.9,
+            "textVerbosity": "low" // Keep responses tight and to the point
+          }
+        }
+      }
+    }
+  }
 }

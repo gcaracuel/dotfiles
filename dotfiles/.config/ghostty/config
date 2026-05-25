@@ -1,5 +1,5 @@
 term = xterm-256color
-theme = dark:rose-pine-moon,light:rose-pine-dawn
+theme = dark:Rose Pine Moon,light:Rose Pine Dawn
 
 macos-icon = xray
 macos-titlebar-style = tabs

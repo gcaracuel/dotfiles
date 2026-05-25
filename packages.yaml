@@ -132,6 +132,19 @@ packages:
     overrides:
       linux: null
 
+  - name: ollama
+    description: Run large language models locally with Ollama
+    gui: false
+    work: false
+    # Uses DNF via COPR mwprado/ollama on Linux
+
+  - name: ollama-app
+    description: Ollama GUI for managing local LLMs
+    gui: true
+    work: false
+    overrides:
+      linux: null
+
   # =============================================================================
   # System & Utilities
   # =============================================================================
@@ -358,6 +371,7 @@ npm:
   - "opencode-ai"                 # AI code assistant
   - "@google/gemini-cli"          # Gemini AI CLI
   - "@fresh-editor/fresh-editor"  # Fresh Editor CLI
+  - "@fission-ai/openspec"        # OpenSpec CLI
 
 # =============================================================================
 # Pip/UV Packages (installed via: uv pip install <package> or pip install)
@@ -371,13 +385,18 @@ pip:
 # Cargo Packages (installed via: cargo install <package>)
 # Requires: rust via asdf
 # Cross-platform install for Rust CLI tools not in package managers
+#
+# Format:
+#   - <package>              # Install from crates.io
+#   - <name>|<git-url>       # Install from git repository
 # =============================================================================
 
 cargo:
-  - eza                       # ls replacement
-  - grex                      # Regex generator
-  - atuin                     # Shell history revamped
-  - worktrunk                 # WorkTrunk CLI for managing git worktrees
+  - eza                                    # ls replacement
+  - grex                                   # Regex generator
+  - atuin                                  # Shell history revamped
+  - worktrunk                              # WorkTrunk CLI for managing git worktrees
+  - rtk|https://github.com/rtk-ai/rtk.git  # AI CLI for code generation and assistance
 
 # =============================================================================
 # Bun Packages (installed via: bun install -g <package>)
@@ -394,9 +413,7 @@ bun:
 # Requires: uv via asdf
 # =============================================================================
 
-uv_tools:
-  - name: specify-cli
-    from: "git+https://github.com/github/spec-kit.git"
+uv_tools: []
 
 # =============================================================================
 # VSCode Extensions (installed via: code --install-extension <extension-id>)

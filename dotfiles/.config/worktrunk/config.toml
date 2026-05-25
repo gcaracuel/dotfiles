@@ -1,4 +1,7 @@
-# Bare repository (git clone --bare <url> myproject/.git)
+# Bare repository 
+#   git clone --bare <url> myproject/.git
+#   cd .git
+#   git remote add upstream <url>
 # Creates: ~/code/myproject/feature-auth
 worktree-path = "{{ repo_path }}/../{{ branch | sanitize }}"
 skip-commit-generation-prompt = true

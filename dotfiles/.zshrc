@@ -1,7 +1,8 @@
 
 # ohMyZSH
 export ZSH="$HOME/.oh-my-zsh"
-plugins=(git dotenv zsh-interactive-cd)
+# plugins=(git dotenv zsh-interactive-cd)
+plugins=(git zsh-interactive-cd)
 
 export PATH="$PATH:/sbin/:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:$HOME/.local/bin:$HOME/bin:$HOME/.asdf/bin"
 
@@ -84,3 +85,6 @@ INSTALLATION_PATH=$(brew --prefix switch) && source $INSTALLATION_PATH/switch.sh
 
 # --- WorkTrunk Setup --- #
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
+# wt aliases
+alias wt-stale='wt list --format json | jq -r '"'"'.[] | select(.main_state == "integrated") | .branch'"'"' | while read b; do echo "Would remove: $b (merged to main)"; done; wt list --format json | jq -r '"'"'.[] | select(.is_main == false and .main_state != "integrated") | .branch'"'"' | while read b; do pr=$(gh pr view "$b" --json state --jq '"'"'.state'"'"' 2>/dev/null); [ "$pr" = "CLOSED" ] || [ "$pr" = "MERGED" ] && echo "Would remove: $b (PR $pr)"; done'
+alias wt-clean='wt list --format json | jq -r '"'"'.[] | select(.main_state == "integrated") | .branch'"'"' > /tmp/wt_rm.txt; wt list --format json | jq -r '"'"'.[] | select(.is_main == false and .main_state != "integrated") | .branch'"'"' | while read b; do pr=$(gh pr view "$b" --json state --jq '"'"'.state'"'"' 2>/dev/null); [ "$pr" = "CLOSED" ] || [ "$pr" = "MERGED" ] && echo "$b" >> /tmp/wt_rm.txt; done; if [ -s /tmp/wt_rm.txt ]; then echo "Stale:"; sed '"'"'s/^/  /'"'"' /tmp/wt_rm.txt; read -q "?Remove? [y/N] "; echo; if [[ "$REPLY" =~ ^[Yy]$ ]]; then xargs -I{} wt remove {} -y < /tmp/wt_rm.txt; fi; else echo "None found."; fi; rm -f /tmp/wt_rm.txt'

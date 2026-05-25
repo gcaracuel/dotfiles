@@ -60,6 +60,7 @@ FEDORA_COPR_REPOS=(
     "atim/starship"      # starship prompt
     "lihaohong/yazi"     # yazi file manager
     "scottames/ghostty"  # ghostty terminal emulator
+    "mwprado/ollama"     # ollama local LLMs
 )
 
 # Check if a COPR repo is enabled

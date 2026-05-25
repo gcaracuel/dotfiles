@@ -184,4 +184,5 @@
         
     },
     "chat.viewSessions.orientation": "stacked",
+    "diffEditor.renderSideBySide": false,
 }

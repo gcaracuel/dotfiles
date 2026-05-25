@@ -521,9 +521,16 @@ is_cargo_available() {
 }
 
 # Check if a cargo package is installed
+# Handles both simple name and "name|from" format
 is_cargo_package_installed() {
     local package="$1"
-    cargo install --list 2>/dev/null | grep -q "^${package}\b"
+    local pkg_name="$package"
+    
+    if [[ "$package" == *"|"* ]]; then
+        pkg_name="${package%%|*}"
+    fi
+    
+    cargo install --list 2>/dev/null | grep -q "^${pkg_name}\b"
 }
 
 # Check if bun is available in PATH
@@ -538,6 +545,7 @@ is_bun_package_installed() {
 }
 
 # Load cargo packages from packages.yaml into CARGO_PACKAGES array
+# Supports both simple package names and "name|from" format for git repos
 # Returns: 0 on success (even if no packages), 1 if YAML file not found
 load_cargo_packages() {
     CARGO_PACKAGES=()
@@ -618,26 +626,50 @@ install_cargo_packages() {
     local would_install=0
     
     for package in "${CARGO_PACKAGES[@]}"; do
+        local pkg_name="$package"
+        local pkg_source=""
+        
+        if [[ "$package" == *"|"* ]]; then
+            pkg_name="${package%%|*}"
+            pkg_source="${package#*|}"
+        fi
+        
         if [[ "$DRY_RUN" == true ]]; then
-            if is_cargo_package_installed "$package"; then
-                log_success "$package (installed)"
+            if is_cargo_package_installed "$pkg_name"; then
+                log_success "$pkg_name (installed)"
                 installed=$((installed + 1))
             else
-                log_dry_run "$package (would install via cargo)"
+                if [[ -n "$pkg_source" ]]; then
+                    log_dry_run "$pkg_name (would install from $pkg_source)"
+                else
+                    log_dry_run "$pkg_name (would install via cargo)"
+                fi
                 would_install=$((would_install + 1))
             fi
         else
-            if is_cargo_package_installed "$package"; then
-                log_success "$package (already installed)"
+            if is_cargo_package_installed "$pkg_name"; then
+                log_success "$pkg_name (already installed)"
                 installed=$((installed + 1))
             else
-                log_step "Installing cargo package: $package"
+                log_step "Installing cargo package: $pkg_name"
                 local error_output
-                if error_output=$(cargo install "$package" 2>&1); then
-                    log_success "$package installed"
+                local install_success=false
+                
+                if [[ -n "$pkg_source" ]]; then
+                    if error_output=$(cargo install "$pkg_name" --git "$pkg_source" 2>&1); then
+                        install_success=true
+                    fi
+                else
+                    if error_output=$(cargo install "$pkg_name" 2>&1); then
+                        install_success=true
+                    fi
+                fi
+                
+                if [[ "$install_success" == true ]]; then
+                    log_success "$pkg_name installed"
                     installed=$((installed + 1))
                 else
-                    log_warning "Failed to install $package"
+                    log_warning "Failed to install $pkg_name"
                     # Show first 3 lines of error for context
                     local error_preview
                     error_preview=$(echo "$error_output" | head -3 | sed 's/^/  /')

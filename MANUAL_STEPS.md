@@ -43,6 +43,12 @@ gemini extentions install @gemini-cli-extensions/jules
 wt config shell install
 ```
 
+### 5. OpenSpec agent config
+
+```bash
+openspec config profile
+```
+
 ---
 
 ### 5. [Optional] Install Nix
