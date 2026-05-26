@@ -69,6 +69,7 @@ dotfiles/
 │       ├── run_onchange_09-krew-plugins.sh.tmpl      # krew install
 │       ├── run_once_10-ohmyzsh.sh                    # Oh My Zsh (once)
 │       ├── run_once_11-lazyvim.sh                    # LazyVim starter (once)
+│       ├── run_onchange_10-macos-library-configs.sh.tmpl # macOS Library symlinks (VSCode, k9s)
 │       └── run_once_99-manual-steps.sh               # Print MANUAL_STEPS.md
 │
 ├── archive/                          # Old macOS configs (kept for reference)
@@ -143,6 +144,22 @@ Each `run_onchange_` script:
 5. Writes the updated state file
 
 **To uninstall a package:** remove it from its list file, then run `just apply`.
+
+### macOS Library Application Support symlinks
+
+Some macOS applications read configuration from `~/Library/Application Support/` instead of `~/.config/`. The `run_onchange_10-macos-library-configs.sh.tmpl` script handles this by creating symlinks or copying files from `~/.config/` to the macOS-specific location.
+
+**Current mappings:**
+- **VSCode:** `~/.config/Code/User/settings.json` → `~/Library/Application Support/Code/User/settings.json` (copied)
+- **k9s:** `~/.config/k9s/config.yaml` → `~/Library/Application Support/k9s/config.yaml` (symlinked)
+- **k9s:** `~/.config/k9s/skins/` → `~/Library/Application Support/k9s/skins` (symlinked)
+
+The script embeds hashes of the source files and re-runs whenever they change. This keeps the macOS-specific locations in sync with the chezmoi-managed dotfiles.
+
+**To add a new macOS Library mapping:**
+1. Add a hash line at the top of the script for change detection
+2. Add the copy/symlink logic in the script body
+3. Test with `just apply`
 
 ---
 

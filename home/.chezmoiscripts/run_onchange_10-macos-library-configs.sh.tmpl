@@ -7,6 +7,8 @@
 # chezmoi:template:left-delim="{{" right-delim="}}"
 #
 # settings.json hash: {{ include (joinPath (output "readlink" "-f" .chezmoi.sourceDir | trim) "dot_config/Code/User/settings.json") | sha256sum }}
+# k9s config.yaml hash: {{ include (joinPath (output "readlink" "-f" .chezmoi.sourceDir | trim) "dot_config/k9s/config.yaml") | sha256sum }}
+# k9s rose-pine-moon.yaml hash: {{ include (joinPath (output "readlink" "-f" .chezmoi.sourceDir | trim) "dot_config/k9s/skins/rose-pine-moon.yaml") | sha256sum }}
 
 set -euo pipefail
 
@@ -24,6 +26,24 @@ if [[ -f "$VSCODE_SRC" ]]; then
   mkdir -p "$(dirname "$VSCODE_DST")"
   cp "$VSCODE_SRC" "$VSCODE_DST"
   echo "    copied: VSCode settings.json"
+fi
+
+# k9s: symlink ~/.config/k9s/config.yaml -> ~/Library/Application Support/k9s/config.yaml
+K9S_CONFIG_SRC="$HOME/.config/k9s/config.yaml"
+K9S_CONFIG_DST="$HOME/Library/Application Support/k9s/config.yaml"
+if [[ -f "$K9S_CONFIG_SRC" ]]; then
+  mkdir -p "$(dirname "$K9S_CONFIG_DST")"
+  ln -sf "$K9S_CONFIG_SRC" "$K9S_CONFIG_DST"
+  echo "    symlinked: k9s config.yaml"
+fi
+
+# k9s: symlink ~/.config/k9s/skins/ -> ~/Library/Application Support/k9s/skins
+K9S_SKINS_SRC="$HOME/.config/k9s/skins"
+K9S_SKINS_DST="$HOME/Library/Application Support/k9s/skins"
+if [[ -d "$K9S_SKINS_SRC" ]]; then
+  mkdir -p "$(dirname "$K9S_SKINS_DST")"
+  ln -sf "$K9S_SKINS_SRC" "$K9S_SKINS_DST"
+  echo "    symlinked: k9s skins/"
 fi
 
 echo "==> [macos] Done."
