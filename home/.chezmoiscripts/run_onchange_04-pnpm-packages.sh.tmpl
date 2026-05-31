@@ -46,14 +46,33 @@ if [[ -f "$STATE_FILE" ]]; then
 fi
 
 # --- Install desired packages ---
-echo "==> [pnpm] Installing global packages..."
+echo "==> [pnpm] Checking packages..."
+# pnpm list -g --depth=0 outputs lines like: <name> <version> ...
+INSTALLED=$(pnpm list -g --depth=0 2>/dev/null | awk 'NR>1 {print $1}' || true)
+installed_count=0
+skipped_count=0
+
 while IFS= read -r pkg; do
   [[ -z "$pkg" ]] && continue
-  echo "    + $pkg"
-  if ! pnpm add -g "$pkg"; then
-    echo "    WARNING: failed to install $pkg" >&2
+
+  if echo "$INSTALLED" | grep -q "^${pkg}$"; then
+    echo "    ✓ $pkg (already installed)"
+    skipped_count=$((skipped_count + 1))
+  else
+    echo "    + $pkg"
+    if pnpm add -g "$pkg"; then
+      installed_count=$((installed_count + 1))
+    else
+      echo "    WARNING: failed to install $pkg" >&2
+    fi
   fi
 done <<< "$DESIRED"
+
+if [[ $installed_count -eq 0 ]] && [[ $skipped_count -gt 0 ]]; then
+  echo "==> [pnpm] All packages already installed."
+elif [[ $installed_count -gt 0 ]]; then
+  echo "==> [pnpm] Installed $installed_count package(s)."
+fi
 
 echo "$DESIRED" | sort > "$STATE_FILE"
 echo "==> [pnpm] Done."

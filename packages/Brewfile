@@ -75,6 +75,7 @@ brew "gromgit/brewtils/taproom"      # Brew utilities
 cask "ghostty"            # Terminal emulator
 cask "spotify"            # Music streaming
 cask "rectangle"          # Window management
+cask "raycast"            # Launcher & productivity
 cask "visual-studio-code" # Code editor
 cask "vivaldi"            # Web browser
 cask "google-chrome"      # Web browser
