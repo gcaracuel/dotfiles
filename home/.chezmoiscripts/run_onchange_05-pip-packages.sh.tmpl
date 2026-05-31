@@ -63,12 +63,36 @@ if [[ -f "$STATE_FILE" ]]; then
 fi
 
 # --- Install desired packages ---
-echo "==> [pip] Installing packages..."
+echo "==> [pip] Checking packages..."
+installed_count=0
+skipped_count=0
+
+# Get list of installed packages
+if command -v uv &>/dev/null; then
+  INSTALLED=$(uv tool list 2>/dev/null | grep -v '^$' | awk '{print $1}' || true)
+else
+  INSTALLED=$(pip3 list --user 2>/dev/null | tail -n +3 | awk '{print $1}' || true)
+fi
+
 while IFS= read -r pkg; do
   [[ -z "$pkg" ]] && continue
-  echo "    + $pkg"
-  install_pkg "$pkg"
+  
+  if echo "$INSTALLED" | grep -q "^${pkg}$"; then
+    echo "    ✓ $pkg (already installed)"
+    skipped_count=$((skipped_count + 1))
+  else
+    echo "    + $pkg"
+    if install_pkg "$pkg"; then
+      installed_count=$((installed_count + 1))
+    fi
+  fi
 done <<< "$DESIRED"
+
+if [[ $installed_count -eq 0 ]] && [[ $skipped_count -gt 0 ]]; then
+  echo "==> [pip] All packages already installed."
+elif [[ $installed_count -gt 0 ]]; then
+  echo "==> [pip] Installed $installed_count package(s)."
+fi
 
 echo "$DESIRED" | sort > "$STATE_FILE"
 echo "==> [pip] Done."

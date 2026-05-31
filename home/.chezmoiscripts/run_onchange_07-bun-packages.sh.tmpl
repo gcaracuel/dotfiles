@@ -46,14 +46,32 @@ if [[ -f "$STATE_FILE" ]]; then
 fi
 
 # --- Install desired packages ---
-echo "==> [bun] Installing global packages..."
+echo "==> [bun] Checking packages..."
+INSTALLED=$(bun pm ls -g 2>/dev/null | grep -v '^$' | awk '{print $1}' | cut -d'@' -f1 || true)
+installed_count=0
+skipped_count=0
+
 while IFS= read -r pkg; do
   [[ -z "$pkg" ]] && continue
-  echo "    + $pkg"
-  if ! bun add -g "$pkg"; then
-    echo "    WARNING: failed to install $pkg" >&2
+  
+  if echo "$INSTALLED" | grep -q "^${pkg}$"; then
+    echo "    ✓ $pkg (already installed)"
+    skipped_count=$((skipped_count + 1))
+  else
+    echo "    + $pkg"
+    if bun add -g "$pkg"; then
+      installed_count=$((installed_count + 1))
+    else
+      echo "    WARNING: failed to install $pkg" >&2
+    fi
   fi
 done <<< "$DESIRED"
+
+if [[ $installed_count -eq 0 ]] && [[ $skipped_count -gt 0 ]]; then
+  echo "==> [bun] All packages already installed."
+elif [[ $installed_count -gt 0 ]]; then
+  echo "==> [bun] Installed $installed_count package(s)."
+fi
 
 echo "$DESIRED" | sort > "$STATE_FILE"
 echo "==> [bun] Done."
