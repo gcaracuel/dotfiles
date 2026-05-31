@@ -12,9 +12,15 @@ This extension provides a nice dashboard for GitHub in your terminal.
 gh extension install mislav/gh-dash
 ```
 
+### 2. Disable Github CLI telemetry
+
+```bash
+gh config set telemetry disabled
+```
+
 ---
 
-### 2. Install Tmux Plugins
+### 3. Install Tmux Plugins
 
 For the tmux configuration to be fully functional, you need to install the plugins managed by `tpm` (Tmux Plugin Manager).
 
@@ -26,7 +32,7 @@ For the tmux configuration to be fully functional, you need to install the plugi
 
 ---
 
-### 3. Ensure worktrunk shell config
+### 4. Ensure worktrunk shell config
 
 ```bash
 wt config shell install

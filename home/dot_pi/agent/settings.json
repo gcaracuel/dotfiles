@@ -1,0 +1,8 @@
+{
+  "npmCommand": ["pnpm"],
+  "packages": [
+    "git:github.com/dbachelder/pi-btw@742f0ee7721ea8dcc9fc8d5ff62719a108ee662e",
+    "git:github.com/aliou/pi-guardrails@a9ac037b729f50d32bb8b151139a5f2d926416ab",
+    "git:github.com/MasuRii/pi-rtk-optimizer@f98235021c70a9d91c680f0e99a862f96aa068c6"
+  ]
+}

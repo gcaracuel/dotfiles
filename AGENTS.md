@@ -26,7 +26,7 @@ dotfiles/
 │   ├── Brewfile.work                 # Work-only brew packages
 │   ├── packages.txt                  # Arch/pacman packages
 │   ├── packages.work.txt             # Work-only pacman packages
-│   ├── npm-packages.txt              # npm globals (via mise node)
+│   ├── pnpm-packages.txt             # pnpm globals (via mise node + pnpm)
 │   ├── pip-packages.txt              # pip/uv packages (via mise python/uv)
 │   ├── cargo-packages.txt            # cargo packages (via mise rust)
 │   ├── bun-packages.txt              # bun globals (via mise bun)
@@ -55,13 +55,14 @@ dotfiles/
 │       ├── opencode/                 # → ~/.config/opencode/
 │       ├── worktrunk/                # → ~/.config/worktrunk/
 │       └── yazi/                     # → ~/.config/yazi/
+│   ├── dot_pi/agent/settings.json    # → ~/.pi/agent/settings.json (Pi Agent config)
 │
 │   └── .chezmoiscripts/              # Run scripts (executed by chezmoi apply)
 │       ├── run_once_before_00-bootstrap.sh.tmpl      # Install brew/pacman
 │       ├── run_onchange_01-brew-packages.sh.tmpl     # brew bundle + uninstall
 │       ├── run_onchange_02-pacman-packages.sh.tmpl   # pacman -S + uninstall
 │       ├── run_onchange_03-mise-tools.sh.tmpl        # mise install
-│       ├── run_onchange_04-npm-packages.sh.tmpl      # npm -g + uninstall
+│       ├── run_onchange_04-pnpm-packages.sh.tmpl # pnpm -g + uninstall
 │       ├── run_onchange_05-pip-packages.sh.tmpl      # uv tool install + uninstall
 │       ├── run_onchange_06-cargo-packages.sh.tmpl    # cargo install + uninstall
 │       ├── run_onchange_07-bun-packages.sh.tmpl      # bun add -g + uninstall
@@ -171,7 +172,7 @@ The script embeds hashes of the source files and re-runs whenever they change. T
 | GUI applications | `packages/Brewfile` (cask) + `packages/packages.txt` |
 | Work-only tools | `packages/Brewfile.work` + `packages/packages.work.txt` |
 | Programming language runtimes | `home/dot_config/mise/config.toml` |
-| npm global tools | `packages/npm-packages.txt` |
+| npm/pnpm global tools | `packages/pnpm-packages.txt` |
 | Python CLI tools (isolated) | `packages/pip-packages.txt` (uses uv tool install) |
 | Rust CLI tools | `packages/cargo-packages.txt` |
 | Bun global tools | `packages/bun-packages.txt` |

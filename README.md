@@ -72,7 +72,7 @@ just apply
 | `run_onchange_01` | `brew bundle` — installs/uninstalls Homebrew packages |
 | `run_onchange_02` | `pacman -S` — installs/uninstalls Arch packages |
 | `run_onchange_03` | `mise install` — installs runtimes (node, python, rust, go, bun, ...) |
-| `run_onchange_04-07` | npm / pip / cargo / bun global packages |
+| `run_onchange_04-07` | pnpm / pip / cargo / bun global packages |
 | `run_onchange_08` | VSCode extensions |
 | `run_onchange_09` | kubectl krew plugins |
 | `run_once_10` | Oh My Zsh |
@@ -92,7 +92,7 @@ Dotfiles in `home/` are symlinked to `$HOME` by chezmoi.
 | Arch/pacman packages | `packages/packages.txt` |
 | Arch work packages | `packages/packages.work.txt` |
 | Programming runtimes (node, python, rust...) | `home/dot_config/mise/config.toml` |
-| npm global packages | `packages/npm-packages.txt` |
+| pnpm global packages | `packages/pnpm-packages.txt` |
 | pip packages | `packages/pip-packages.txt` |
 | cargo packages | `packages/cargo-packages.txt` |
 | bun packages | `packages/bun-packages.txt` |
@@ -109,7 +109,7 @@ After editing any file, run `just apply` to sync.
 
 - **Homebrew / pacman** — system CLI tools and GUI apps available on both platforms
 - **Mise** — programming language runtimes (node, python, rust, go, bun, terraform...)
-- **npm / pip / cargo / bun via Mise** — language-specific tooling not in brew/pacman
+- **npm / pip / cargo / bun via Mise** — language-specific tooling not in brew/pacman; pnpm is used instead of npm
 - **`.tool-versions`** — kept in `$HOME` for asdf coworker compatibility (auto-linked by chezmoi)
 
 ---
@@ -169,3 +169,29 @@ You can also view it directly:
 ```bash
 cat MANUAL_STEPS.md
 ```
+
+---
+
+## Future work
+
+### Fork Pi Agent extensions
+
+The Pi Agent extensions are currently pinned to upstream SHAs in `home/dot_pi/agent/settings.json`:
+
+| Extension | Current upstream |
+|---|---|
+| `pi-btw` | `github.com/dbachelder/pi-btw` |
+| `pi-guardrails` | `github.com/aliou/pi-guardrails` |
+| `pi-rtk-optimizer` | `github.com/MasuRii/pi-rtk-optimizer` |
+
+To own these extensions long-term (custom modifications, controlled updates, no dependency on upstream availability):
+
+1. Fork each repo into your own GitHub account (e.g. `github.com/gcaracuel/pi-btw`)
+2. Update the `packages` entries in `home/dot_pi/agent/settings.json` to point at your forks
+3. Pin to a commit SHA on your fork:
+   ```json
+   "git:github.com/gcaracuel/pi-btw@<sha>"
+   ```
+4. To update a pinned extension after making changes to a fork, get the new SHA and update the entry, then run `chezmoi apply`
+
+This approach gives you full control over extension behaviour and eliminates the risk of breaking upstream changes.

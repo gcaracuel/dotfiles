@@ -1,7 +1,0 @@
-# npm-packages.txt — Global npm packages installed via mise (node runtime)
-# One package per line. Lines starting with # are comments.
-# Edit this file to add/remove packages.
-# Run: chezmoi apply  (triggers run_onchange script automatically)
-
-opencode-ai                  # AI code assistant
-# force-run: 2026-05-25T21:20:04Z
