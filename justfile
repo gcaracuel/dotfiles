@@ -100,8 +100,12 @@ init-ci:
 
     # Regenerate chezmoi config from template with work=false, no TTY required
     echo "==> Initializing chezmoi config (CI mode, work=false)..."
-    chezmoi init --source "{{CHEZMOI_SOURCE}}" --config-data '{"work":false}'
-    echo "==> Run 'chezmoi apply' to apply dotfiles."
+    CHEZMOI_WORK=false chezmoi init --source "{{CHEZMOI_SOURCE}}"
+    # Apply dotfiles first (ensures configs like mise/config.toml exist before scripts run)
+    chezmoi apply --source "{{CHEZMOI_SOURCE}}" --exclude scripts
+    # Then run scripts (mise install, pnpm install, etc. can now find their configs)
+    chezmoi apply --source "{{CHEZMOI_SOURCE}}" --include scripts
+    echo "==> Done."
 
 # Apply dotfiles (runs chezmoi apply — run 'just init' first on a new machine)
 apply:

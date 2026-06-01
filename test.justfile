@@ -22,7 +22,7 @@ test-arch: test-build-arch
       -v {{REPO_DIR}}:/workspace \
       -w /workspace \
       dotfiles-test-arch \
-      bash -c "just init-ci && chezmoi apply --source /workspace/home"
+      bash -c "just init-ci"
 
 # Run Homebrew container test
 # --config-data supplies work=false so promptBoolOnce is skipped in non-interactive containers.
@@ -31,7 +31,7 @@ test-brew: test-build-brew
       -v {{REPO_DIR}}:/workspace \
       -w /workspace \
       dotfiles-test-brew \
-      bash -c "just init-ci && chezmoi apply --source /workspace/home"
+      bash -c "just init-ci"
 
 # Open interactive shell in Arch container (for debugging)
 test-arch-shell: test-build-arch

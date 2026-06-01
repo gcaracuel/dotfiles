@@ -16,13 +16,27 @@ STATE_FILE="$STATE_DIR/pnpm-installed.txt"
 
 mkdir -p "$STATE_DIR"
 
-# Activate mise for this session
-if command -v mise &>/dev/null; then
-  eval "$(mise activate bash)" 2>/dev/null || true
+# Ensure brew-installed tools (including mise) are on PATH
+for brew_prefix in /opt/homebrew /home/linuxbrew/.linuxbrew /usr/local; do
+  if [[ -f "$brew_prefix/bin/brew" ]]; then
+    eval "$("$brew_prefix/bin/brew" shellenv)" 2>/dev/null || true
+    break
+  fi
+done
+
+if ! command -v mise &>/dev/null; then
+  echo "ERROR: mise not found. Run bootstrap first." >&2
+  exit 1
 fi
 
-if ! command -v pnpm &>/dev/null; then
-  echo "ERROR: pnpm not found. Ensure pnpm is installed via mise." >&2
+# Ensure pnpm is installed via mise (guards against script 03 running before mise config was linked)
+mise install pnpm --yes 2>/dev/null || true
+
+# Use mise exec to run pnpm so shim PATH setup is not required
+PNPM="mise exec -- pnpm"
+
+if ! mise exec -- pnpm --version &>/dev/null; then
+  echo "ERROR: pnpm not found in mise. Ensure pnpm is configured in mise config." >&2
   exit 1
 fi
 
@@ -40,7 +54,7 @@ if [[ -f "$STATE_FILE" ]]; then
     echo "==> [pnpm] Uninstalling removed packages:"
     while IFS= read -r pkg; do
       echo "    - $pkg"
-      pnpm remove -g "$pkg" || echo "    WARNING: could not uninstall $pkg"
+      $PNPM remove -g "$pkg" || echo "    WARNING: could not uninstall $pkg"
     done <<< "$REMOVED"
   fi
 fi
@@ -48,7 +62,7 @@ fi
 # --- Install desired packages ---
 echo "==> [pnpm] Checking packages..."
 # pnpm list -g --depth=0 outputs lines like: <name> <version> ...
-INSTALLED=$(pnpm list -g --depth=0 2>/dev/null | awk 'NR>1 {print $1}' || true)
+INSTALLED=$($PNPM list -g --depth=0 2>/dev/null | awk 'NR>1 {print $1}' || true)
 installed_count=0
 skipped_count=0
 
@@ -60,7 +74,7 @@ while IFS= read -r pkg; do
     skipped_count=$((skipped_count + 1))
   else
     echo "    + $pkg"
-    if pnpm add -g "$pkg"; then
+    if $PNPM add -g "$pkg"; then
       installed_count=$((installed_count + 1))
     else
       echo "    WARNING: failed to install $pkg" >&2

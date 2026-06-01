@@ -1,4 +1,11 @@
-{{- $work := promptBoolOnce . "work" "Include work-only packages (tools only needed on work machines)" -}}
+{{- $work := false -}}
+{{- if hasKey . "work" -}}
+{{-   $work = .work -}}
+{{- else if env "CHEZMOI_WORK" -}}
+{{-   $work = env "CHEZMOI_WORK" | eq "true" -}}
+{{- else -}}
+{{-   $work = promptBoolOnce . "work" "Include work-only packages (tools only needed on work machines)" -}}
+{{- end -}}
 
 [data]
   work = {{ $work }}
