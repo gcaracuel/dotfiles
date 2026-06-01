@@ -11,8 +11,8 @@ OS="$(uname -s)"
 
 echo "==> [bootstrap] Detecting OS: $OS"
 
-if [[ "$OS" == "Darwin" ]]; then
-  # ---- macOS: ensure Homebrew ----
+if [[ "$OS" == "Darwin" ]] || command -v brew &>/dev/null; then
+  # ---- macOS or Linux with Homebrew (e.g. test container) ----
   if ! command -v brew &>/dev/null; then
     echo "==> [bootstrap] Installing Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"

@@ -68,6 +68,41 @@ init:
 
     echo "==> Run 'just apply' to apply dotfiles."
 
+# Non-interactive init for CI/containers: regenerates chezmoi config with work=false (no TTY needed)
+init-ci:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    # --- Install chezmoi if missing ---
+    if ! command -v chezmoi &>/dev/null; then
+      echo "==> Installing chezmoi..."
+      if command -v brew &>/dev/null; then
+        brew install chezmoi
+      elif command -v pacman &>/dev/null; then
+        sudo pacman -S --needed --noconfirm chezmoi
+      else
+        sh -c "$(curl -fsLS get.chezmoi.io)"
+      fi
+    fi
+
+    # Create symlink from chezmoi source to this repo's home/ dir
+    LINK="${HOME}/.local/share/chezmoi"
+    mkdir -p "$(dirname "$LINK")"
+    if [[ -L "$LINK" ]]; then
+      echo "==> Symlink already exists: $LINK -> $(readlink "$LINK")"
+    elif [[ -d "$LINK" ]]; then
+      echo "ERROR: $LINK exists as a real directory. Move or remove it first." >&2
+      exit 1
+    else
+      ln -sf "{{REPO_DIR}}/home" "$LINK"
+      echo "==> Created: $LINK -> {{REPO_DIR}}/home"
+    fi
+
+    # Regenerate chezmoi config from template with work=false, no TTY required
+    echo "==> Initializing chezmoi config (CI mode, work=false)..."
+    chezmoi init --source "{{CHEZMOI_SOURCE}}" --config-data '{"work":false}'
+    echo "==> Run 'chezmoi apply' to apply dotfiles."
+
 # Apply dotfiles (runs chezmoi apply — run 'just init' first on a new machine)
 apply:
     chezmoi apply --source {{CHEZMOI_SOURCE}}
