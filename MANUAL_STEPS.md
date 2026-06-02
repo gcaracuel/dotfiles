@@ -62,4 +62,17 @@ If you plan to use `nix-shell` for per-project isolated environments, you can in
 
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+
+---
+
+### 6. Configure Bitwarden CLI for EU server
+
+If your Bitwarden account is hosted on the EU instance, set the server URL before logging in:
+
+```bash
+bw config server https://vault.bitwarden.eu
+bw login
+```
+
+On subsequent logins, use `bw unlock` instead of `bw login`.
 ```
