@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# run_onchange_12-pi-agent-builds.sh.tmpl
+# Ensures pnpm build scripts are approved for pi agent extension directories.
+# Re-runs whenever pi agent settings.json (which defines extensions) changes.
+#
+# chezmoi:template:left-delim="{{" right-delim="}}"
+#
+# settings.json hash: {{ include (joinPath .chezmoi.sourceDir "dot_pi/agent/settings.json") | sha256sum }}
+
+set -euo pipefail
+
+PI_AGENT_GIT_DIR="$HOME/.pi/agent/git"
+
+if [[ ! -d "$PI_AGENT_GIT_DIR" ]]; then
+  echo "==> [pi-builds] Pi agent git directory not found, skipping."
+  exit 0
+fi
+
+echo "==> [pi-builds] Checking pi extension build approvals..."
+
+fixed_count=0
+while IFS= read -r -d '' yaml_file; do
+  dir_name=$(basename "$(dirname "$yaml_file")")
+  
+  # Check if file has any "set this to true or false" placeholders
+  if grep -q 'set this to true or false' "$yaml_file" 2>/dev/null; then
+    echo "    → Fixing allowBuilds in $(dirname "$yaml_file" | sed "s|$HOME/|~/|")"
+    # Replace placeholder values with true (macOS BSD sed needs -E, GNU sed uses -E too)
+    if sed -E -i '' 's/: +set this to true or false$/: true/' "$yaml_file" 2>/dev/null || \
+       sed -E -i 's/: +set this to true or false$/: true/' "$yaml_file" 2>/dev/null; then
+      fixed_count=$((fixed_count + 1))
+    else
+      echo "    WARNING: failed to fix $yaml_file" >&2
+    fi
+  fi
+done < <(find "$PI_AGENT_GIT_DIR" -name 'pnpm-workspace.yaml' -print0 2>/dev/null)
+
+if [[ $fixed_count -gt 0 ]]; then
+  echo "==> [pi-builds] Approved builds in $fixed_count extension(s)."
+else
+  echo "==> [pi-builds] All builds already approved."
+fi

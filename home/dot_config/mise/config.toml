@@ -13,6 +13,7 @@
 
 [tools]
 node      = "24.13.0"
+pnpm      = "latest"
 python    = "3.12.9"
 rust      = "1.95.0"
 uv        = "0.9.28"

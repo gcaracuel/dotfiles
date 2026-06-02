@@ -1,0 +1,130 @@
+#!/usr/bin/env bash
+# run_onchange_04-pnpm-packages.sh.tmpl
+# Installs/uninstalls global pnpm packages via mise (node + pnpm runtime).
+# Re-runs whenever pnpm-packages.txt changes.
+#
+# chezmoi:template:left-delim="{{" right-delim="}}"
+#
+# pnpm-packages.txt hash: {{ include (joinPath (output "readlink" "-f" .chezmoi.sourceDir | trim) "../packages/pnpm-packages.txt") | sha256sum }}
+# postinstall-allowlist.txt hash: {{ include (joinPath (output "readlink" "-f" .chezmoi.sourceDir | trim) "../packages/postinstall-allowlist.txt") | sha256sum }}
+
+set -euo pipefail
+
+REPO_DIR="{{ output "readlink" "-f" .chezmoi.sourceDir | trim }}/.."
+PACKAGES_FILE="$REPO_DIR/packages/pnpm-packages.txt"
+STATE_DIR="$HOME/.local/share/dotfiles-state"
+STATE_FILE="$STATE_DIR/pnpm-installed.txt"
+
+mkdir -p "$STATE_DIR"
+
+# Ensure brew-installed tools (including mise) are on PATH
+for brew_prefix in /opt/homebrew /home/linuxbrew/.linuxbrew /usr/local; do
+  if [[ -f "$brew_prefix/bin/brew" ]]; then
+    eval "$("$brew_prefix/bin/brew" shellenv)" 2>/dev/null || true
+    break
+  fi
+done
+
+if ! command -v mise &>/dev/null; then
+  echo "ERROR: mise not found. Run bootstrap first." >&2
+  exit 1
+fi
+
+# Ensure pnpm is installed via mise (guards against script 03 running before mise config was linked)
+if ! mise install pnpm --yes; then
+  echo "WARNING: 'mise install pnpm' failed; attempting to continue..." >&2
+fi
+
+# Set PNPM_HOME and ensure it is on PATH so pnpm does not error about missing bin dir
+export PNPM_HOME="${PNPM_HOME:-$HOME/.local/share/pnpm}"
+export PATH="$PNPM_HOME/bin:$PATH"
+mkdir -p "$PNPM_HOME/bin"
+
+# Use mise exec to run pnpm so shim PATH setup is not required
+PNPM="mise exec pnpm -- pnpm"
+
+if ! mise exec pnpm -- pnpm --version &>/dev/null; then
+  echo "ERROR: pnpm not found in mise. Ensure pnpm is configured in mise config." >&2
+  exit 1
+fi
+
+# Parse package list (strip comments, blank lines, inline comments)
+parse_packages() {
+  grep -v '^\s*#' "$1" | grep -v '^\s*$' | awk '{print $1}' || true
+}
+
+DESIRED=$(parse_packages "$PACKAGES_FILE")
+
+# --- Uninstall removed packages ---
+if [[ -f "$STATE_FILE" ]]; then
+  REMOVED=$(comm -23 <(sort "$STATE_FILE") <(echo "$DESIRED" | sort) || true)
+  if [[ -n "$REMOVED" ]]; then
+    echo "==> [pnpm] Uninstalling removed packages:"
+    while IFS= read -r pkg; do
+      echo "    - $pkg"
+      $PNPM remove -g "$pkg" || echo "    WARNING: could not uninstall $pkg"
+    done <<< "$REMOVED"
+  fi
+fi
+
+# --- Install desired packages ---
+echo "==> [pnpm] Checking packages..."
+# pnpm list -g --depth=0 outputs lines like: <name> <version> ...
+INSTALLED=$($PNPM list -g --depth=0 2>/dev/null | awk 'NR>1 {print $1}' || true)
+installed_count=0
+skipped_count=0
+
+while IFS= read -r pkg; do
+  [[ -z "$pkg" ]] && continue
+
+  if echo "$INSTALLED" | grep -q "^${pkg}$"; then
+    echo "    ✓ $pkg (already installed)"
+    skipped_count=$((skipped_count + 1))
+  else
+    echo "    + $pkg"
+    if $PNPM add -g "$pkg"; then
+      installed_count=$((installed_count + 1))
+    else
+      echo "    WARNING: failed to install $pkg" >&2
+    fi
+  fi
+done <<< "$DESIRED"
+
+if [[ $installed_count -eq 0 ]] && [[ $skipped_count -gt 0 ]]; then
+  echo "==> [pnpm] All packages already installed."
+elif [[ $installed_count -gt 0 ]]; then
+  echo "==> [pnpm] Installed $installed_count package(s)."
+fi
+
+echo "$DESIRED" | sort > "$STATE_FILE"
+
+# Run postinstall for allowlisted packages (pnpm does not run postinstall scripts for global installs)
+ALLOWLIST_FILE="$REPO_DIR/packages/postinstall-allowlist.txt"
+if [ -f "$ALLOWLIST_FILE" ]; then
+  GLOBAL_ROOT=$($PNPM root -g 2>/dev/null || true)
+  if [ -n "$GLOBAL_ROOT" ]; then
+    while IFS= read -r line; do
+      line="${line%%#*}"          # strip inline comments
+      line="${line#"${line%%[![:space:]]*}"}"  # trim leading whitespace
+      line="${line%"${line##*[![:space:]]}"}"  # trim trailing whitespace
+      [[ -z "$line" ]] && continue
+      pkg="$line"
+
+      if echo "$DESIRED" | grep -q "^${pkg}$"; then
+        PKG_DIR=$(find "$GLOBAL_ROOT" -maxdepth 4 -path "*/node_modules/$pkg" -type l 2>/dev/null | head -1 || true)
+        if [ -n "$PKG_DIR" ]; then
+          # Resolve symlink to get the real package directory
+          PKG_DIR=$(cd "$PKG_DIR" && pwd -P 2>/dev/null || true)
+          # Extract postinstall command from package.json and run it
+          POSTINSTALL_CMD=$(node -e "try{const p=require('${PKG_DIR}/package.json');console.log(p.scripts?p.scripts.postinstall:'')}catch(e){}" 2>/dev/null || true)
+          if [ -n "$POSTINSTALL_CMD" ]; then
+            echo "==> [pnpm] Running postinstall for $pkg..."
+            (cd "$PKG_DIR" && eval "$POSTINSTALL_CMD") || echo "    WARNING: postinstall failed for $pkg"
+          fi
+        fi
+      fi
+    done < "$ALLOWLIST_FILE"
+  fi
+fi
+
+echo "==> [pnpm] Done."

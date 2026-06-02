@@ -52,6 +52,7 @@ ttyd
 tailscale
 httpie
 thefuck
+bitwarden-cli
 
 # =============================================================================
 # Fonts

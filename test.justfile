@@ -15,21 +15,23 @@ test:
 
 # Run Arch Linux container test
 # Note: --platform linux/amd64 required (Arch has no arm64 image, runs via Rosetta on Apple Silicon)
+# --config-data supplies work=false so promptBoolOnce is skipped in non-interactive containers.
 test-arch: test-build-arch
     docker run --rm \
       --platform linux/amd64 \
       -v {{REPO_DIR}}:/workspace \
       -w /workspace \
       dotfiles-test-arch \
-      bash -c "just init && chezmoi apply && bash home/.chezmoiscripts/run_once_before_00-bootstrap.sh.tmpl"
+      bash -c "just init-ci"
 
 # Run Homebrew container test
+# --config-data supplies work=false so promptBoolOnce is skipped in non-interactive containers.
 test-brew: test-build-brew
     docker run --rm \
       -v {{REPO_DIR}}:/workspace \
       -w /workspace \
       dotfiles-test-brew \
-      bash -c "just init && chezmoi apply"
+      bash -c "just init-ci"
 
 # Open interactive shell in Arch container (for debugging)
 test-arch-shell: test-build-arch

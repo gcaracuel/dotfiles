@@ -1,0 +1,82 @@
+{
+  "$schema": "https://raw.githubusercontent.com/earendil-works/pi/main/packages/coding-agent/src/modes/interactive/theme/theme-schema.json",
+  "name": "rose-pine",
+  "vars": {
+    "primary": "#9580aa",
+    "secondary": "#8fbcdc",
+    "accent": "#7eadd5",
+    "success": "#98b484",
+    "warning": "#b8897a",
+    "error": "#e65665",
+    "text": "#c8cdd6",
+    "text-muted": "#848a94",
+    "bg": "#191b24",
+    "bg-subtle": "#1f2430",
+    "bg-highlight": "#2a303c",
+    "border": "#2f3849"
+  },
+  "colors": {
+    "accent": "primary",
+    "border": "border",
+    "borderAccent": "secondary",
+    "borderMuted": "bg-highlight",
+    "success": "success",
+    "error": "error",
+    "warning": "warning",
+    "muted": "text-muted",
+    "dim": "#6e7075",
+    "text": "text",
+    "thinkingText": "text-muted",
+
+    "selectedBg": "bg-highlight",
+    "userMessageBg": "bg-subtle",
+    "userMessageText": "text",
+    "customMessageBg": "bg-highlight",
+    "customMessageText": "text",
+    "customMessageLabel": "accent",
+    "toolPendingBg": "bg-subtle",
+    "toolSuccessBg": "bg-subtle",
+    "toolErrorBg": "bg-subtle",
+    "toolTitle": "secondary",
+    "toolOutput": "text",
+
+    "mdHeading": "accent",
+    "mdLink": "secondary",
+    "mdLinkUrl": "text-muted",
+    "mdCode": "secondary",
+    "mdCodeBlock": "text",
+    "mdCodeBlockBorder": "border",
+    "mdQuote": "text-muted",
+    "mdQuoteBorder": "accent",
+    "mdHr": "border",
+    "mdListBullet": "accent",
+
+    "toolDiffAdded": "success",
+    "toolDiffRemoved": "error",
+    "toolDiffContext": "text-muted",
+
+    "syntaxComment": "text-muted",
+    "syntaxKeyword": "accent",
+    "syntaxFunction": "secondary",
+    "syntaxVariable": "accent",
+    "syntaxString": "success",
+    "syntaxNumber": "#d0789d",
+    "syntaxType": "primary",
+    "syntaxOperator": "primary",
+    "syntaxPunctuation": "text-muted",
+
+    "thinkingOff": "border",
+    "thinkingMinimal": "bg-highlight",
+    "thinkingLow": "bg-highlight",
+    "thinkingMedium": "bg-highlight",
+    "thinkingHigh": "bg-highlight",
+    "thinkingXhigh": "bg-highlight",
+
+    "bashMode": "success"
+  },
+  "export": {
+    "pageBg": "#191b24",
+    "cardBg": "#1f2430",
+    "infoBg": "#2a303c"
+  }
+}

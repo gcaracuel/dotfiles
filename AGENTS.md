@@ -26,10 +26,11 @@ dotfiles/
 │   ├── Brewfile.work                 # Work-only brew packages
 │   ├── packages.txt                  # Arch/pacman packages
 │   ├── packages.work.txt             # Work-only pacman packages
-│   ├── npm-packages.txt              # npm globals (via mise node)
+│   ├── pnpm-packages.txt             # pnpm globals (via mise node + pnpm)
 │   ├── pip-packages.txt              # pip/uv packages (via mise python/uv)
 │   ├── cargo-packages.txt            # cargo packages (via mise rust)
 │   ├── bun-packages.txt              # bun globals (via mise bun)
+│   ├── postinstall-allowlist.txt     # pnpm global packages allowed to run postinstall
 │   ├── vscode-extensions.txt         # VSCode extension IDs
 │   └── krew-plugins.txt              # kubectl krew plugin names
 │
@@ -55,13 +56,18 @@ dotfiles/
 │       ├── opencode/                 # → ~/.config/opencode/
 │       ├── worktrunk/                # → ~/.config/worktrunk/
 │       └── yazi/                     # → ~/.config/yazi/
+│   ├── dot_pi/agent/                  # → ~/.pi/agent/ (Pi Agent config)
+│   │   ├── settings.json              #     ~/.pi/agent/settings.json
+│   │   ├── models.json                #     ~/.pi/agent/models.json
+│   │   └── themes/
+│   │       └── rose-pine.json         #     ~/.pi/agent/themes/rose-pine.json
 │
 │   └── .chezmoiscripts/              # Run scripts (executed by chezmoi apply)
 │       ├── run_once_before_00-bootstrap.sh.tmpl      # Install brew/pacman
 │       ├── run_onchange_01-brew-packages.sh.tmpl     # brew bundle + uninstall
 │       ├── run_onchange_02-pacman-packages.sh.tmpl   # pacman -S + uninstall
 │       ├── run_onchange_03-mise-tools.sh.tmpl        # mise install
-│       ├── run_onchange_04-npm-packages.sh.tmpl      # npm -g + uninstall
+│       ├── run_onchange_04-pnpm-packages.sh.tmpl # pnpm -g + uninstall
 │       ├── run_onchange_05-pip-packages.sh.tmpl      # uv tool install + uninstall
 │       ├── run_onchange_06-cargo-packages.sh.tmpl    # cargo install + uninstall
 │       ├── run_onchange_07-bun-packages.sh.tmpl      # bun add -g + uninstall
@@ -70,6 +76,7 @@ dotfiles/
 │       ├── run_once_10-ohmyzsh.sh                    # Oh My Zsh (once)
 │       ├── run_once_11-lazyvim.sh                    # LazyVim starter (once)
 │       ├── run_onchange_10-macos-library-configs.sh.tmpl # macOS Library symlinks (VSCode, k9s)
+│       ├── run_onchange_12-pi-agent-builds.sh.tmpl       # Approve pnpm builds in pi extensions
 │       └── run_once_99-manual-steps.sh               # Print MANUAL_STEPS.md
 │
 ├── archive/                          # Old macOS configs (kept for reference)
@@ -161,6 +168,16 @@ The script embeds hashes of the source files and re-runs whenever they change. T
 2. Add the copy/symlink logic in the script body
 3. Test with `just apply`
 
+### Pi Agent pnpm build approvals
+
+The `run_onchange_12-pi-agent-builds.sh.tmpl` script ensures pnpm build scripts are approved for pi agent extension directories. When the pi agent clones extensions (configured in `home/dot_pi/agent/settings.json`) and runs `pnpm install`, pnpm 11.x may block build scripts for certain packages. This script scans all `pnpm-workspace.yaml` files under `~/.pi/agent/git/` and replaces any `set this to true or false` placeholders with `true`.
+
+The script re-runs whenever `home/dot_pi/agent/settings.json` changes (its hash is embedded for change detection).
+
+**To approve builds for a new package:**
+1. Add the package to the global `onlyBuiltDependencies` list or wait for the pi agent to detect it
+2. If the placeholder appears, the script will auto-fix it on the next `just apply`
+
 ---
 
 ## Package Manager Rule of Thumb
@@ -171,7 +188,7 @@ The script embeds hashes of the source files and re-runs whenever they change. T
 | GUI applications | `packages/Brewfile` (cask) + `packages/packages.txt` |
 | Work-only tools | `packages/Brewfile.work` + `packages/packages.work.txt` |
 | Programming language runtimes | `home/dot_config/mise/config.toml` |
-| npm global tools | `packages/npm-packages.txt` |
+| npm/pnpm global tools | `packages/pnpm-packages.txt` |
 | Python CLI tools (isolated) | `packages/pip-packages.txt` (uses uv tool install) |
 | Rust CLI tools | `packages/cargo-packages.txt` |
 | Bun global tools | `packages/bun-packages.txt` |
@@ -219,6 +236,16 @@ deno = "2.0.0"   # new
 Then run `just apply` — chezmoi will re-link the config and `mise install` will run via `run_onchange_03`.
 
 Also update `home/dot_tool-versions` to keep asdf compatibility for coworkers.
+
+### Add a pnpm package with a postinstall script
+
+Some pnpm global packages (like `opencode-ai`) have a `postinstall` script that downloads native binaries. Pnpm does not run postinstall scripts for global installs.
+
+To allow a package to run its postinstall, add it to `packages/postinstall-allowlist.txt`:
+
+```
+opencode-ai
+```
 
 ### Add a cargo package from git
 
@@ -311,9 +338,9 @@ The two files must stay in sync when updating runtime versions.
 
 ## Critical Rules for Agents
 
-1. **Never test on the host machine.** Always use `just test-arch` or `just test-brew`.
-
-2. **Keep package definitions in `packages/` files.** Never hardcode package names in scripts.
+1. **Never commit changes to git** unless explicitly asked by the user. Always show the diff and ask for confirmation if the user didn't explicitly request the commit.
+2. **Never test on the host machine.** Always use `just test-arch` or `just test-brew`.
+3. **Keep package definitions in `packages/` files.** Never hardcode package names in scripts.
 
 3. **`run_onchange_` scripts must embed the hash of their input file** so chezmoi knows when to re-run them. Use the pattern:
    ```
