@@ -54,6 +54,10 @@ if command -v thefuck &>/dev/null; then eval $(thefuck --alias); fi
 # ----- Mise (runtime version manager) -----
 if command -v mise &>/dev/null; then eval "$(mise activate zsh)"; fi
 
+# ----- pnpm global binaries -----
+export PNPM_HOME="$HOME/.local/share/pnpm"
+export PATH="$PNPM_HOME/bin:$PATH"
+
 # ----- fzf -----
 eval "$(fzf --zsh)"
 export FZF_DEFAULT_OPTS="
