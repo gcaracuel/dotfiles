@@ -107,8 +107,9 @@ init-ci:
     chezmoi apply --source "{{CHEZMOI_SOURCE}}" --include scripts
     echo "==> Done."
 
-# Apply dotfiles (runs chezmoi apply — run 'just init' first on a new machine)
+# Apply dotfiles (runs chezmoi diff then apply — run 'just init' first on a new machine)
 apply:
+    chezmoi diff --source {{CHEZMOI_SOURCE}} || true
     chezmoi apply --source {{CHEZMOI_SOURCE}} --force
 
 # Show pending changes without applying
