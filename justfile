@@ -109,7 +109,7 @@ init-ci:
 
 # Apply dotfiles (runs chezmoi apply — run 'just init' first on a new machine)
 apply:
-    chezmoi apply --source {{CHEZMOI_SOURCE}}
+    chezmoi apply --source {{CHEZMOI_SOURCE}} --force
 
 # Show pending changes without applying
 diff:
