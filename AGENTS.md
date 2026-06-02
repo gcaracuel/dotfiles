@@ -30,6 +30,7 @@ dotfiles/
 │   ├── pip-packages.txt              # pip/uv packages (via mise python/uv)
 │   ├── cargo-packages.txt            # cargo packages (via mise rust)
 │   ├── bun-packages.txt              # bun globals (via mise bun)
+│   ├── postinstall-allowlist.txt     # pnpm global packages allowed to run postinstall
 │   ├── vscode-extensions.txt         # VSCode extension IDs
 │   └── krew-plugins.txt              # kubectl krew plugin names
 │
@@ -55,7 +56,11 @@ dotfiles/
 │       ├── opencode/                 # → ~/.config/opencode/
 │       ├── worktrunk/                # → ~/.config/worktrunk/
 │       └── yazi/                     # → ~/.config/yazi/
-│   ├── dot_pi/agent/settings.json    # → ~/.pi/agent/settings.json (Pi Agent config)
+│   ├── dot_pi/agent/                  # → ~/.pi/agent/ (Pi Agent config)
+│   │   ├── settings.json              #     ~/.pi/agent/settings.json
+│   │   ├── models.json                #     ~/.pi/agent/models.json
+│   │   └── themes/
+│   │       └── rose-pine.json         #     ~/.pi/agent/themes/rose-pine.json
 │
 │   └── .chezmoiscripts/              # Run scripts (executed by chezmoi apply)
 │       ├── run_once_before_00-bootstrap.sh.tmpl      # Install brew/pacman
@@ -220,6 +225,16 @@ deno = "2.0.0"   # new
 Then run `just apply` — chezmoi will re-link the config and `mise install` will run via `run_onchange_03`.
 
 Also update `home/dot_tool-versions` to keep asdf compatibility for coworkers.
+
+### Add a pnpm package with a postinstall script
+
+Some pnpm global packages (like `opencode-ai`) have a `postinstall` script that downloads native binaries. Pnpm does not run postinstall scripts for global installs.
+
+To allow a package to run its postinstall, add it to `packages/postinstall-allowlist.txt`:
+
+```
+opencode-ai
+```
 
 ### Add a cargo package from git
 

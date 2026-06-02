@@ -6,6 +6,7 @@
 # chezmoi:template:left-delim="{{" right-delim="}}"
 #
 # pnpm-packages.txt hash: {{ include (joinPath (output "readlink" "-f" .chezmoi.sourceDir | trim) "../packages/pnpm-packages.txt") | sha256sum }}
+# postinstall-allowlist.txt hash: {{ include (joinPath (output "readlink" "-f" .chezmoi.sourceDir | trim) "../packages/postinstall-allowlist.txt") | sha256sum }}
 
 set -euo pipefail
 
@@ -96,4 +97,34 @@ elif [[ $installed_count -gt 0 ]]; then
 fi
 
 echo "$DESIRED" | sort > "$STATE_FILE"
+
+# Run postinstall for allowlisted packages (pnpm does not run postinstall scripts for global installs)
+ALLOWLIST_FILE="$REPO_DIR/packages/postinstall-allowlist.txt"
+if [ -f "$ALLOWLIST_FILE" ]; then
+  GLOBAL_ROOT=$($PNPM root -g 2>/dev/null || true)
+  if [ -n "$GLOBAL_ROOT" ]; then
+    while IFS= read -r line; do
+      line="${line%%#*}"          # strip inline comments
+      line="${line#"${line%%[![:space:]]*}"}"  # trim leading whitespace
+      line="${line%"${line##*[![:space:]]}"}"  # trim trailing whitespace
+      [[ -z "$line" ]] && continue
+      pkg="$line"
+
+      if echo "$DESIRED" | grep -q "^${pkg}$"; then
+        PKG_DIR=$(find "$GLOBAL_ROOT" -maxdepth 4 -path "*/node_modules/$pkg" -type l 2>/dev/null | head -1 || true)
+        if [ -n "$PKG_DIR" ]; then
+          # Resolve symlink to get the real package directory
+          PKG_DIR=$(cd "$PKG_DIR" && pwd -P 2>/dev/null || true)
+          # Extract postinstall command from package.json and run it
+          POSTINSTALL_CMD=$(node -e "try{const p=require('${PKG_DIR}/package.json');console.log(p.scripts?p.scripts.postinstall:'')}catch(e){}" 2>/dev/null || true)
+          if [ -n "$POSTINSTALL_CMD" ]; then
+            echo "==> [pnpm] Running postinstall for $pkg..."
+            (cd "$PKG_DIR" && eval "$POSTINSTALL_CMD") || echo "    WARNING: postinstall failed for $pkg"
+          fi
+        fi
+      fi
+    done < "$ALLOWLIST_FILE"
+  fi
+fi
+
 echo "==> [pnpm] Done."

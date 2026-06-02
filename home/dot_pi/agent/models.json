@@ -1,5 +1,62 @@
 {
   "providers": {
+    "ollama-cloud": {
+      "models": [
+        {
+          "id": "deepseek-v4-flash",
+          "name": "DeepSeek V4 Flash",
+          "reasoning": true,
+          "input": ["text"],
+          "contextWindow": 128000,
+          "maxTokens": 32000,
+          "cost": { "input": 0.1, "output": 0.8, "cacheRead": 0.05, "cacheWrite": 0.1 }
+        },
+        {
+          "id": "gemma4",
+          "name": "Gemma 4",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 262144,
+          "maxTokens": 16384,
+          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 }
+        },
+        {
+          "id": "minimax-m3",
+          "name": "MiniMax M3",
+          "reasoning": true,
+          "input": ["text"],
+          "contextWindow": 128000,
+          "maxTokens": 32000,
+          "cost": { "input": 0.5, "output": 1.0, "cacheRead": 0.25, "cacheWrite": 0.5 }
+        },
+        {
+          "id": "qwen3.6",
+          "name": "Qwen 3.6",
+          "reasoning": true,
+          "input": ["text"],
+          "contextWindow": 32768,
+          "maxTokens": 8192,
+          "cost": { "input": 0.2, "output": 0.8, "cacheRead": 0.1, "cacheWrite": 0.2 }
+        },
+        {
+          "id": "nemotron3",
+          "name": "Nemotron 3",
+          "reasoning": false,
+          "input": ["text"],
+          "contextWindow": 8192,
+          "maxTokens": 4096,
+          "cost": { "input": 0.3, "output": 0.6, "cacheRead": 0.15, "cacheWrite": 0.3 }
+        },
+        {
+          "id": "glm5.1",
+          "name": "GLM 5.1",
+          "reasoning": true,
+          "input": ["text"],
+          "contextWindow": 128000,
+          "maxTokens": 32000,
+          "cost": { "input": 0.5, "output": 1.0, "cacheRead": 0.25, "cacheWrite": 0.5 }
+        }
+      ]
     }
   }
 }

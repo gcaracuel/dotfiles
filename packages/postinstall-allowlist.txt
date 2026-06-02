@@ -1,0 +1,9 @@
+# postinstall-allowlist.txt — Packages allowed to run postinstall scripts
+# Pnpm does not run postinstall scripts for globally installed packages.
+# Add a package name here to have its postinstall script run after pnpm install.
+# One package per line. Lines starting with # are comments.
+#
+# Edit this file to add/remove packages.
+# Run: chezmoi apply  (triggers run_onchange script automatically)
+
+opencode-ai                          # AI code assistant (downloads native binary)
