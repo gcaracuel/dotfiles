@@ -30,12 +30,19 @@ if ! command -v mise &>/dev/null; then
 fi
 
 # Ensure pnpm is installed via mise (guards against script 03 running before mise config was linked)
-mise install pnpm --yes 2>/dev/null || true
+if ! mise install pnpm --yes; then
+  echo "WARNING: 'mise install pnpm' failed; attempting to continue..." >&2
+fi
+
+# Set PNPM_HOME and ensure it is on PATH so pnpm does not error about missing bin dir
+export PNPM_HOME="${PNPM_HOME:-$HOME/.local/share/pnpm}"
+export PATH="$PNPM_HOME/bin:$PATH"
+mkdir -p "$PNPM_HOME/bin"
 
 # Use mise exec to run pnpm so shim PATH setup is not required
-PNPM="mise exec -- pnpm"
+PNPM="mise exec pnpm -- pnpm"
 
-if ! mise exec -- pnpm --version &>/dev/null; then
+if ! mise exec pnpm -- pnpm --version &>/dev/null; then
   echo "ERROR: pnpm not found in mise. Ensure pnpm is configured in mise config." >&2
   exit 1
 fi

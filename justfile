@@ -143,7 +143,7 @@ _bump file:
 reinstall-packages:
     just _bump {{REPO_DIR}}/packages/Brewfile
     just _bump {{REPO_DIR}}/packages/packages.txt
-    just _bump {{REPO_DIR}}/packages/npm-packages.txt
+    just _bump {{REPO_DIR}}/packages/pnpm-packages.txt
     just _bump {{REPO_DIR}}/packages/pip-packages.txt
     just _bump {{REPO_DIR}}/packages/cargo-packages.txt
     just _bump {{REPO_DIR}}/packages/bun-packages.txt
@@ -152,7 +152,7 @@ reinstall-packages:
     chezmoi apply --source {{CHEZMOI_SOURCE}}
 
 # Force re-run of a specific package manager (e.g. just reinstall cargo)
-# Managers: brew, pacman, npm, pip, cargo, bun, vscode, krew
+# Managers: brew, pacman, pnpm, pip, cargo, bun, vscode, krew
 reinstall manager:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -160,6 +160,7 @@ reinstall manager:
       brew)   f="{{REPO_DIR}}/packages/Brewfile" ;;
       pacman) f="{{REPO_DIR}}/packages/packages.txt" ;;
       vscode) f="{{REPO_DIR}}/packages/vscode-extensions.txt" ;;
+      pnpm|npm) f="{{REPO_DIR}}/packages/pnpm-packages.txt" ;;
       *)      f="{{REPO_DIR}}/packages/{{manager}}-packages.txt" ;;
     esac
     just _bump "$f"
