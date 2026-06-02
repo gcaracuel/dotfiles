@@ -57,6 +57,7 @@ brew "ttyd"               # Terminal share via web
 brew "tailscale"          # VPN/mesh network
 brew "httpie"             # HTTP client
 brew "thefuck"            # Command correction
+brew "bitwarden-cli"      # Bitwarden password manager CLI
 
 # =============================================================================
 # Fonts (macOS cask)
