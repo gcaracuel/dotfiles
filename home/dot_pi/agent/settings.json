@@ -1,4 +1,6 @@
 {
+  "defaultModel": "deepseek-v3.2:cloud",
+  "defaultProvider": "ollama-api-key",
   "npmCommand": ["pnpm"],
   "packages": [
     "git:github.com/dbachelder/pi-btw@742f0ee7721ea8dcc9fc8d5ff62719a108ee662e",
