@@ -1,0 +1,18 @@
+{
+  "colors": {
+    "pi": "accent",
+    "model": "accent",
+    "shellMode": "accent",
+    "path": "secondary",
+    "gitClean": "success",
+    "gitDirty": "warning",
+    "thinking": "thinkingOff",
+    "thinkingMinimal": "thinkingMinimal",
+    "thinkingLow": "thinkingLow",
+    "thinkingMedium": "thinkingMedium"
+  },
+  "icons": {
+    "auto": "↯",
+    "warning": ""
+  }
+}
