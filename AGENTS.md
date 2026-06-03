@@ -58,9 +58,7 @@ dotfiles/
 │       └── yazi/                     # → ~/.config/yazi/
 │   ├── dot_pi/agent/                  # → ~/.pi/agent/ (Pi Agent config)
 │   │   ├── settings.json              #     ~/.pi/agent/settings.json
-│   │   ├── models.json                #     ~/.pi/agent/models.json
-│   │   └── themes/
-│   │       └── rose-pine.json         #     ~/.pi/agent/themes/rose-pine.json
+│   │   └── keybindings.json           #     ~/.pi/agent/keybindings.json (no app.model.select)
 │
 │   └── .chezmoiscripts/              # Run scripts (executed by chezmoi apply)
 │       ├── run_once_before_00-bootstrap.sh.tmpl      # Install brew/pacman
