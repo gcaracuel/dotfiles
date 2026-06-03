@@ -17,7 +17,12 @@ background = 000000
 background-opacity = 0.7
 background-blur-radius = 20
 
+# split divider — makes the boundary between splits clearly visible
+split-divider-color = #c4a7e7
+
+# dim unfocused splits more so the focused one is obvious
 unfocused-split-opacity = 0.5
+unfocused-split-fill = #000000
 
 # keybinds
 keybind = ctrl+h=goto_split:left

@@ -9,6 +9,7 @@
   "theme": "rose-pine",
   "npmCommand": ["pnpm"],
   "lastChangelogVersion": "0.78.0",
+  "defaultThinkingLevel": "medium",
   "workingVibe": "off",
   "packages": [
     "git:github.com/fgrehm/pi-ollama-cloud@f24c9b1be53c4bb514c5fb7a576add2b9c03c308",
