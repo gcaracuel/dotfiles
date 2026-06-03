@@ -3,7 +3,6 @@
   "tui.editor.cursorDown": ["down", "ctrl+n"],
   "tui.editor.cursorLeft": ["left", "ctrl+b"],
   "tui.editor.cursorRight": ["right", "ctrl+f"],
-  "app.model.select": ["ctrl+l", "ctrl+m"],
   "app.thinking.toggle": ["ctrl+t", "alt+t"],
   "app.tools.expand": ["ctrl+o", "alt+o"]
 }
