@@ -9,5 +9,3 @@ debug.log
 packages/Brewfile.lock.json
 packages/Brewfile.work.lock.json
 
-# Pi Agent runtime state
-home/dot_pi/agent/extensions/
