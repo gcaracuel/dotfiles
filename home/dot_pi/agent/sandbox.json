@@ -1,0 +1,40 @@
+{
+  "enabled": true,
+  "network": {
+    "allowedDomains": [
+      "localhost",
+      "127.0.0.1",
+      "*.npmjs.org",
+      "*.pypi.org",
+      "*.github.com",
+      "raw.githubusercontent.com",
+      "registry.npmjs.org"
+    ],
+    "deniedDomains": []
+  },
+  "filesystem": {
+    "denyRead": ["/Users", "/home", "/etc"],
+    "allowRead": [
+      ".",
+      "~/.config",
+      "~/.local",
+      "~/.cache",
+      "~/.pi",
+      "~/Library"
+    ],
+    "allowWrite": [
+      ".",
+      "/tmp",
+      "~/.pi",
+      "~/.cache"
+    ],
+    "denyWrite": [
+      ".env",
+      ".env.*",
+      "*.pem",
+      "*.key",
+      "id_rsa",
+      "id_ed25519"
+    ]
+  }
+}
