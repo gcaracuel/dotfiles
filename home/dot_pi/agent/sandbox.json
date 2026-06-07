@@ -10,7 +10,7 @@
   "filesystem": {
     "denyRead": [],
     "allowRead": [".", "~/.config", "~/.local", "Library"],
-    "allowWrite": [".", "/tmp"],
+    "allowWrite": [".", "../.git", "/tmp"],
     "denyWrite": [".env", ".env.*", "*.pem", "*.key"]
   }
 }
