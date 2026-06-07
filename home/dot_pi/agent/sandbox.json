@@ -8,7 +8,7 @@
     "deniedDomains": []
   },
   "filesystem": {
-    "denyRead": ["/Users", "/home"],
+    "denyRead": [],
     "allowRead": [".", "~/.config", "~/.local", "Library"],
     "allowWrite": [".", "/tmp"],
     "denyWrite": [".env", ".env.*", "*.pem", "*.key"]
