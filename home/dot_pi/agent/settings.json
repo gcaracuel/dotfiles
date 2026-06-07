@@ -19,6 +19,7 @@
     "git:github.com/carderne/pi-sandbox@ed2fee4ffeb79390b29518b562e159f856c575bd",
     "git:github.com/emanuelcasco/pi-mono-extensions@ae46a8ffe25ea164b576ee297f4a46564d4f17d8",
     "git:github.com/emanuelcasco/pi-mono-extensions@5cba2bba56615e2c4a0c72218e96fc5b99e11ba8",
-    "git:github.com/narumiruna/pi-extensions@465f258bbaab8996018185b5bcac4ef6e5e121e0"
+    "git:github.com/narumiruna/pi-extensions@465f258bbaab8996018185b5bcac4ef6e5e121e0",
+    "git:github.com/fitchmultz/pi-agent-browser-native@4104f67d97595a82622cade34b149b398481d8d0"
   ]
 }
