@@ -45,7 +45,6 @@ brew "gcc"                # GNU Compiler Collection
 brew "unzip"              # Unzip utility
 brew "mise"               # Runtime version manager
 brew "just"               # Command runner (justfile)
-brew "agent-browser"      # Browser automation CLI (pi-agent-browser-native dep)
 
 # =============================================================================
 # System & Utilities
