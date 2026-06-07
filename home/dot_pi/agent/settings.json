@@ -16,9 +16,9 @@
     "git:github.com/MasuRii/pi-rtk-optimizer@f98235021c70a9d91c680f0e99a862f96aa068c6",
     "git:github.com/dbachelder/pi-btw@742f0ee7721ea8dcc9fc8d5ff62719a108ee662e",
     "git:github.com/jonjonrankin/pi-caveman@0d4c639d672b0b80afaa035f582152dcab9c6a8f",
-    "npm:pi-sandbox",
-    "npm:pi-mono-auto-fix",
-    "npm:pi-mono-usage",
-    "npm:@narumitw/pi-statusline"
+    "git:github.com/carderne/pi-sandbox@ed2fee4ffeb79390b29518b562e159f856c575bd",
+    "git:github.com/emanuelcasco/pi-mono-extensions@ae46a8ffe25ea164b576ee297f4a46564d4f17d8",
+    "git:github.com/emanuelcasco/pi-mono-extensions@5cba2bba56615e2c4a0c72218e96fc5b99e11ba8",
+    "git:github.com/narumiruna/pi-extensions@465f258bbaab8996018185b5bcac4ef6e5e121e0"
   ]
 }
