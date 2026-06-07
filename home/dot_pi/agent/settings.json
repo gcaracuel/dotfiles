@@ -8,7 +8,7 @@
   "defaultProvider": "opencode",
   "theme": "rose-pine-moon",
   "npmCommand": ["pnpm"],
-  "lastChangelogVersion": "0.78.0",
+  "lastChangelogVersion": "0.78.1",
   "defaultThinkingLevel": "high",
   "workingVibe": "off",
   "packages": [
