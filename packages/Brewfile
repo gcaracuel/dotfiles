@@ -58,6 +58,7 @@ brew "tailscale"          # VPN/mesh network
 brew "httpie"             # HTTP client
 brew "thefuck"            # Command correction
 brew "bitwarden-cli"      # Bitwarden password manager CLI
+brew "ffmpeg"             # Audio/video encoding (pi-agent-browser-native dep)
 
 # =============================================================================
 # Fonts (macOS cask)

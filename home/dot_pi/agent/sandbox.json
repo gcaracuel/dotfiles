@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "allowBrowserProcess": true,
+  "network": {
+    "allowLocalBinding": true,
+    "allowAllUnixSockets": true,
+    "allowedDomains": ["github.com", "*.github.com"],
+    "deniedDomains": []
+  },
+  "filesystem": {
+    "denyRead": [],
+    "allowRead": [".", "~/.config", "~/.local", "Library"],
+    "allowWrite": [".", "../.git", "/tmp"],
+    "denyWrite": [".env", ".env.*", "*.pem", "*.key"]
+  }
+}
