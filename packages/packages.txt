@@ -53,6 +53,7 @@ tailscale
 httpie
 thefuck
 bitwarden-cli
+ffmpeg
 
 # =============================================================================
 # Fonts
