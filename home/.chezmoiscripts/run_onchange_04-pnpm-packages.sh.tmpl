@@ -17,6 +17,15 @@ STATE_FILE="$STATE_DIR/pnpm-installed.txt"
 
 mkdir -p "$STATE_DIR"
 
+# Detect if this is a forced reinstall (marker file created by `just reinstall pnpm`)
+FORCE_REINSTALL=false
+MARKER="$STATE_DIR/.force-reinstall-pnpm"
+if [[ -f "$MARKER" ]]; then
+  FORCE_REINSTALL=true
+  rm -f "$MARKER"
+  echo "==> [pnpm] Force reinstall requested"
+fi
+
 # Ensure brew-installed tools (including mise) are on PATH
 for brew_prefix in /opt/homebrew /home/linuxbrew/.linuxbrew /usr/local; do
   if [[ -f "$brew_prefix/bin/brew" ]]; then
@@ -77,15 +86,24 @@ skipped_count=0
 while IFS= read -r pkg; do
   [[ -z "$pkg" ]] && continue
 
-  if echo "$INSTALLED" | grep -q "^${pkg}$"; then
+  if [[ "$FORCE_REINSTALL" == "false" ]] && echo "$INSTALLED" | grep -q "^${pkg}$"; then
     echo "    ✓ $pkg (already installed)"
     skipped_count=$((skipped_count + 1))
   else
-    echo "    + $pkg"
-    if $PNPM add -g "$pkg"; then
-      installed_count=$((installed_count + 1))
+    if [[ "$FORCE_REINSTALL" == "true" ]]; then
+      echo "    + $pkg (upgrading to latest)"
+      if $PNPM add -g "${pkg}@latest"; then
+        installed_count=$((installed_count + 1))
+      else
+        echo "    WARNING: failed to upgrade $pkg" >&2
+      fi
     else
-      echo "    WARNING: failed to install $pkg" >&2
+      echo "    + $pkg"
+      if $PNPM add -g "$pkg"; then
+        installed_count=$((installed_count + 1))
+      else
+        echo "    WARNING: failed to install $pkg" >&2
+      fi
     fi
   fi
 done <<< "$DESIRED"

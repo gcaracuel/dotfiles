@@ -16,19 +16,13 @@ STATE_FILE="$STATE_DIR/cargo-installed.txt"
 
 mkdir -p "$STATE_DIR"
 
-# Detect if this is a forced reinstall (check if force-run timestamp changed in last 5 seconds)
+# Detect if this is a forced reinstall (marker file created by `just reinstall cargo`)
 FORCE_REINSTALL=false
-if grep -q '^# force-run:' "$PACKAGES_FILE"; then
-  FORCE_TS=$(grep '^# force-run:' "$PACKAGES_FILE" | sed 's/^# force-run: //')
-  # If timestamp is very recent (within 5 seconds), this is likely a forced reinstall
-  if command -v date &>/dev/null; then
-    NOW_EPOCH=$(date +%s)
-    FORCE_EPOCH=$(date -d "$FORCE_TS" +%s 2>/dev/null || date -j -f "%Y-%m-%dT%H:%M:%SZ" "$FORCE_TS" +%s 2>/dev/null || echo 0)
-    if [[ $((NOW_EPOCH - FORCE_EPOCH)) -lt 5 ]]; then
-      FORCE_REINSTALL=true
-      echo "==> [cargo] Detected force reinstall request"
-    fi
-  fi
+MARKER="$STATE_DIR/.force-reinstall-cargo"
+if [[ -f "$MARKER" ]]; then
+  FORCE_REINSTALL=true
+  rm -f "$MARKER"
+  echo "==> [cargo] Force reinstall requested"
 fi
 
 # Activate mise for this session

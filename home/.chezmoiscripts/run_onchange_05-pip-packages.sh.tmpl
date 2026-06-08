@@ -17,6 +17,15 @@ STATE_FILE="$STATE_DIR/pip-installed.txt"
 
 mkdir -p "$STATE_DIR"
 
+# Detect if this is a forced reinstall (marker file created by `just reinstall pip`)
+FORCE_REINSTALL=false
+MARKER="$STATE_DIR/.force-reinstall-pip"
+if [[ -f "$MARKER" ]]; then
+  FORCE_REINSTALL=true
+  rm -f "$MARKER"
+  echo "==> [pip] Force reinstall requested"
+fi
+
 # Activate mise for this session
 if command -v mise &>/dev/null; then
   eval "$(mise activate bash)" 2>/dev/null || true
@@ -32,10 +41,19 @@ DESIRED=$(parse_packages "$PACKAGES_FILE")
 # Prefer uv tool install (isolated), fall back to pip
 install_pkg() {
   local pkg="$1"
+  local force="$2"
   if command -v uv &>/dev/null; then
-    uv tool install "$pkg" || echo "    WARNING: failed to install $pkg via uv" >&2
+    if [[ "$force" == "true" ]]; then
+      uv tool install --reinstall "$pkg" || echo "    WARNING: failed to upgrade $pkg via uv" >&2
+    else
+      uv tool install "$pkg" || echo "    WARNING: failed to install $pkg via uv" >&2
+    fi
   elif command -v pip3 &>/dev/null; then
-    pip3 install --user "$pkg" || echo "    WARNING: failed to install $pkg via pip3" >&2
+    if [[ "$force" == "true" ]]; then
+      pip3 install --user --upgrade "$pkg" || echo "    WARNING: failed to upgrade $pkg via pip3" >&2
+    else
+      pip3 install --user "$pkg" || echo "    WARNING: failed to install $pkg via pip3" >&2
+    fi
   else
     echo "    WARNING: neither uv nor pip3 found, skipping $pkg" >&2
   fi
@@ -77,12 +95,12 @@ fi
 while IFS= read -r pkg; do
   [[ -z "$pkg" ]] && continue
   
-  if echo "$INSTALLED" | grep -q "^${pkg}$"; then
+  if [[ "$FORCE_REINSTALL" == "false" ]] && echo "$INSTALLED" | grep -q "^${pkg}$"; then
     echo "    ✓ $pkg (already installed)"
     skipped_count=$((skipped_count + 1))
   else
     echo "    + $pkg"
-    if install_pkg "$pkg"; then
+    if install_pkg "$pkg" "$FORCE_REINSTALL"; then
       installed_count=$((installed_count + 1))
     fi
   fi

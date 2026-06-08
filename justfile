@@ -150,6 +150,16 @@ reinstall-packages:
     just _bump {{REPO_DIR}}/packages/bun-packages.txt
     just _bump {{REPO_DIR}}/packages/vscode-extensions.txt
     just _bump {{REPO_DIR}}/packages/krew-plugins.txt
+    STATE_DIR="$HOME/.local/share/dotfiles-state"
+    mkdir -p "$STATE_DIR"
+    touch "$STATE_DIR/.force-reinstall-brew"
+    touch "$STATE_DIR/.force-reinstall-pacman"
+    touch "$STATE_DIR/.force-reinstall-pnpm"
+    touch "$STATE_DIR/.force-reinstall-pip"
+    touch "$STATE_DIR/.force-reinstall-cargo"
+    touch "$STATE_DIR/.force-reinstall-bun"
+    touch "$STATE_DIR/.force-reinstall-vscode"
+    touch "$STATE_DIR/.force-reinstall-krew"
     chezmoi apply --source {{CHEZMOI_SOURCE}}
 
 # Force re-run of a specific package manager (e.g. just reinstall cargo)
@@ -158,12 +168,15 @@ reinstall manager:
     #!/usr/bin/env bash
     set -euo pipefail
     case "{{manager}}" in
-      brew)   f="{{REPO_DIR}}/packages/Brewfile" ;;
-      pacman) f="{{REPO_DIR}}/packages/packages.txt" ;;
-      vscode) f="{{REPO_DIR}}/packages/vscode-extensions.txt" ;;
-      pnpm|npm) f="{{REPO_DIR}}/packages/pnpm-packages.txt" ;;
-      *)      f="{{REPO_DIR}}/packages/{{manager}}-packages.txt" ;;
+      brew)   f="{{REPO_DIR}}/packages/Brewfile";           m="brew" ;;
+      pacman) f="{{REPO_DIR}}/packages/packages.txt";       m="pacman" ;;
+      vscode) f="{{REPO_DIR}}/packages/vscode-extensions.txt"; m="vscode" ;;
+      pnpm|npm) f="{{REPO_DIR}}/packages/pnpm-packages.txt"; m="pnpm" ;;
+      *)      f="{{REPO_DIR}}/packages/{{manager}}-packages.txt"; m="{{manager}}" ;;
     esac
     just _bump "$f"
+    STATE_DIR="$HOME/.local/share/dotfiles-state"
+    mkdir -p "$STATE_DIR"
+    touch "$STATE_DIR/.force-reinstall-$m"
     chezmoi apply --source {{CHEZMOI_SOURCE}}
 
