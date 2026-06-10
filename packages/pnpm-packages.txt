@@ -5,4 +5,5 @@
 
 opencode-ai                          # AI code assistant
 @earendil-works/pi-coding-agent      # Pi Agent AI coding assistant
+@getpaseo/cli                         # Paseo CLI/server (cross-platform)
 # force-run: 2026-06-02T08:15:11Z

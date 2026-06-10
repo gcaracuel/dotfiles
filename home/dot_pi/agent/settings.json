@@ -18,6 +18,7 @@
     "git:github.com/jonjonrankin/pi-caveman@0d4c639d672b0b80afaa035f582152dcab9c6a8f",
     "git:github.com/carderne/pi-sandbox@ed2fee4ffeb79390b29518b562e159f856c575bd",
     "git:github.com/fitchmultz/pi-agent-browser-native@4104f67d97595a82622cade34b149b398481d8d0",
-    "npm:@narumitw/pi-statusline"
+    "npm:@narumitw/pi-statusline",
+    "git:github.com/baflow/pi-model-cycler@800e42432d73ea53eda7627dae95ae30763cc2fa"
   ]
 }

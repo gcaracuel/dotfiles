@@ -82,6 +82,7 @@ cask "visual-studio-code" # Code editor
 cask "vivaldi"            # Web browser
 cask "google-chrome"      # Web browser
 cask "obsidian"           # Knowledge base / notes
+cask "paseo"             # AI search / knowledge assistant
 cask "ollama-app"         # Ollama
 
 # =============================================================================
