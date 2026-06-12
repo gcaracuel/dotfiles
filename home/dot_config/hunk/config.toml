@@ -8,7 +8,7 @@
 #   pine    #3e8fb0  foam     #9ccfd8  iris     #c4a7e7
 
 theme  = "custom"
-mode   = "auto"
+mode   = "split"
 vcs    = "git"
 watch  = false
 line_numbers = true
