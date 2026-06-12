@@ -30,6 +30,12 @@ STATE_FILE="$STATE_DIR/brew-installed.txt"
 
 mkdir -p "$STATE_DIR"
 
+# Trust third-party taps that require explicit trust
+echo "==> [brew] Trusting third-party taps..."
+brew trust modem-dev/tap 2>/dev/null || true
+brew trust danielfoehrkn/switch 2>/dev/null || true
+brew trust gromgit/brewtils 2>/dev/null || true
+
 echo "==> [brew] Running brew bundle..."
 brew bundle --file="$BREWFILE"
 

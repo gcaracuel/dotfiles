@@ -26,6 +26,7 @@
 	rebase = true
 [init]
 	defaultBranch = main
+	templateDir = ~/.config/git/template
 [url "ssh://git@github.com/"]
 # [includeIf "gitdir:~/Projects/github/"]
 #   path = ~/Projects/github/.gitconfig

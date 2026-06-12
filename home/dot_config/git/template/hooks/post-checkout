@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# post-checkout hook — run after `git clone` to add an `upstream` remote
+# pointing at the same URL as `origin`.
+#
+# post-checkout args: <prev-HEAD> <new-HEAD> <branch-flag>
+# On initial clone, prev-HEAD is all zeros.
+
+PREV_HEAD="$1"
+BRANCH_FLAG="$3"
+
+ZERO="0000000000000000000000000000000000000000"
+
+# Only act on initial clone (prev HEAD = zeros, branch checkout = 1)
+[[ "$PREV_HEAD" != "$ZERO" || "$BRANCH_FLAG" != "1" ]] && exit 0
+
+ORIGIN_URL="$(git remote get-url origin 2>/dev/null)" || exit 0
+
+# Skip if upstream already exists
+git remote get-url upstream &>/dev/null && exit 0
+
+git remote add upstream "$ORIGIN_URL"
+echo "==> [git] Added remote 'upstream' → $ORIGIN_URL"

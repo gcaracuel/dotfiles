@@ -5,6 +5,7 @@
 # --- Taps ---
 tap "danielfoehrkn/switch"
 tap "gromgit/brewtils"
+tap "modem-dev/tap"
 
 # =============================================================================
 # Navigation & File Management
@@ -23,6 +24,7 @@ brew "ripgrep"            # grep replacement
 brew "jq"                 # JSON processor
 brew "yq"                 # YAML processor
 brew "git-delta"          # Git diff viewer
+brew "hunk"               # Review-first terminal diff viewer for agentic coders
 
 # =============================================================================
 # Terminal & Shell

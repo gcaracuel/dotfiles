@@ -1,0 +1,30 @@
+# ~/.config/hunk/config.toml
+# Managed by chezmoi — edit via: chezmoi edit ~/.config/hunk/config.toml
+#
+# Theme: Rosé Pine Moon — https://rosepinetheme.com/palette/ingredients/
+#   base    #232136  surface  #2a273f  overlay  #393552
+#   muted   #6e6a86  subtle   #908caa  text     #e0def4
+#   love    #eb6f92  gold     #f6c177  rose     #ea9a97
+#   pine    #3e8fb0  foam     #9ccfd8  iris     #c4a7e7
+
+theme  = "custom"
+mode   = "auto"
+vcs    = "git"
+watch  = false
+line_numbers = true
+wrap_lines   = false
+agent_notes  = true
+exclude_untracked    = false
+transparent_background = false
+
+[custom_theme]
+base       = "midnight"
+label      = "Rosé Pine Moon"
+accent     = "#ea9a97"   # rose    — active element / selection highlight
+panel      = "#2a273f"   # surface — sidebar / panel background
+noteBorder = "#c4a7e7"   # iris    — inline agent note borders
+
+[custom_theme.syntax]
+keyword = "#eb6f92"   # love  — keywords, control flow
+string  = "#f6c177"   # gold  — string literals
+comment = "#6e6a86"   # muted — comments
