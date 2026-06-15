@@ -9,7 +9,14 @@
   },
   "filesystem": {
     "denyRead": [],
-    "allowRead": [".", "~/.config", "~/.local", "Library"],
+    "allowRead": [
+      " ~/Projects/github/AGENTS.md", 
+      "~/Projects/github/gcaracuel/AGENTS.md", 
+      ".",
+      "~/.config", 
+      "~/.local", 
+      "Library"
+    ],
     "allowWrite": [".", "../.git", "/tmp"],
     "denyWrite": [".env", ".env.*", "*.pem", "*.key"]
   }
