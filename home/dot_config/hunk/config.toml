@@ -10,9 +10,9 @@
 theme  = "custom"
 mode   = "split"
 vcs    = "git"
-watch  = false
+watch  = true
 line_numbers = true
-wrap_lines   = false
+wrap_lines   = true
 agent_notes  = true
 exclude_untracked    = false
 transparent_background = false
