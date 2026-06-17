@@ -47,6 +47,7 @@ brew "gcc"                # GNU Compiler Collection
 brew "unzip"              # Unzip utility
 brew "mise"               # Runtime version manager
 brew "just"               # Command runner (justfile)
+brew "go-task"            # Task runner (Taskfile.yml)
 
 # =============================================================================
 # System & Utilities

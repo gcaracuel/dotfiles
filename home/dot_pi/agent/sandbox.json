@@ -14,8 +14,7 @@
       "~/Projects/github/gcaracuel/AGENTS.md", 
       ".",
       "~/.config", 
-      "~/.local", 
-      "Library"
+      "~/.local"
     ],
     "allowWrite": [".", "../.git", "/tmp"],
     "denyWrite": [".env", ".env.*", "*.pem", "*.key"]
