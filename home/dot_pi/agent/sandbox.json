@@ -10,7 +10,7 @@
   "filesystem": {
     "denyRead": [],
     "allowRead": [
-      " ~/Projects/github/AGENTS.md", 
+      "~/Projects/github/AGENTS.md", 
       "~/Projects/github/gcaracuel/AGENTS.md", 
       ".",
       "~/.config", 

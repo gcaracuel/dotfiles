@@ -20,4 +20,4 @@ VisualStudioExptTeam.intellicode-api-usage-examples
 VisualStudioExptTeam.vscodeintellicode
 wholroyd.jinja
 mvllow.rose-pine
-vscodevim.vim
+# vscodevim.vim
