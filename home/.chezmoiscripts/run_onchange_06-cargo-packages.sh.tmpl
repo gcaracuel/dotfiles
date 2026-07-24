@@ -30,6 +30,13 @@ if command -v mise &>/dev/null; then
   eval "$(mise activate bash)" 2>/dev/null || true
 fi
 
+# Add keg-only zig@0.15 to PATH (needed by herdr's vendored libghostty-vt)
+if [[ -x /opt/homebrew/opt/zig@0.15/bin/zig ]]; then
+  export PATH="/opt/homebrew/opt/zig@0.15/bin:$PATH"
+elif [[ -x /home/linuxbrew/.linuxbrew/opt/zig@0.15/bin/zig ]]; then
+  export PATH="/home/linuxbrew/.linuxbrew/opt/zig@0.15/bin:$PATH"
+fi
+
 if ! command -v cargo &>/dev/null; then
   echo "ERROR: cargo not found. Ensure rust is installed via mise." >&2
   exit 1

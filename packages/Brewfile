@@ -44,6 +44,7 @@ cask "handy"              # Speech-to-text (offline)
 brew "gh"                 # GitHub CLI
 brew "make"               # Build automation
 brew "gcc"                # GNU Compiler Collection
+brew "zig@0.15"           # Zig compiler v0.15 (needed by herdr cargo build, v0.16 incompatible)
 brew "unzip"              # Unzip utility
 brew "mise"               # Runtime version manager
 brew "just"               # Command runner (justfile)
@@ -85,7 +86,6 @@ cask "visual-studio-code" # Code editor
 cask "vivaldi"            # Web browser
 cask "google-chrome"      # Web browser
 cask "obsidian"           # Knowledge base / notes
-cask "paseo"             # AI search / knowledge assistant
 cask "ollama-app"         # Ollama
 
 # =============================================================================
@@ -95,3 +95,4 @@ brew "kubectl"            # Kubernetes CLI
 cask "gcloud-cli"      # Google Cloud CLI
 brew "awscli"             # AWS CLI
 brew "k9s"                # Kubernetes TUI# force-run: 2026-05-25T21:27:03Z
+# force-run: 2026-07-15T07:25:00Z

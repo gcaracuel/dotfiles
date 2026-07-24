@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# run_onchange_13-ssh-auth-keys.sh.tmpl
+# Ensures remote-access SSH keys (chezmoi-managed) are present
+# in ~/.ssh/authorized_keys with descriptive labels.
+#
+# Reads keys from chezmoi source dir (dot_ssh/remote-access.pub).
+# COMPOSABLE: Only appends — never removes existing keys.
+# Other keys (work, friends, etc.) survive every apply.
+#
+# Label comes from third field of each key line.
+# Example: ssh-ed25519 AAA... remote-access@connectbot
+#
+# chezmoi:template:left-delim="{{" right-delim="}}"
+#
+# remote-access.pub hash: {{ include (joinPath .chezmoi.sourceDir "dot_ssh/remote-access.pub") | sha256sum }}
+
+set -euo pipefail
+
+AUTH_KEYS="$HOME/.ssh/authorized_keys"
+
+# Resolve from chezmoi source dir directly
+# .chezmoi.sourceDir = the home/ directory being applied
+KEYS_FILE="{{ .chezmoi.sourceDir }}/dot_ssh/remote-access.pub"
+
+if [ ! -f "$KEYS_FILE" ]; then
+  echo "==> [ssh-auth] No remote-access.pub in chezmoi source — skipping."
+  exit 0
+fi
+
+# Ensure .ssh dir exists
+mkdir -p "$(dirname "$AUTH_KEYS")"
+chmod 700 "$(dirname "$AUTH_KEYS")" 2>/dev/null || true
+
+ADDED=0
+UPDATED=0
+SKIPPED=0
+
+while IFS= read -r PUB_LINE; do
+  [[ -z "$PUB_LINE" || "$PUB_LINE" =~ ^# ]] && continue
+
+  KEY_DATA="$(echo "$PUB_LINE" | awk '{print $1, $2}' 2>/dev/null || true)"
+  [ -z "$KEY_DATA" ] && continue
+
+  KEY_COMMENT="$(echo "$PUB_LINE" | awk '{print $3}' 2>/dev/null || true)"
+  [ -z "$KEY_COMMENT" ] && KEY_COMMENT="remote-access@$(hostname -s)"
+
+  AUTH_LINE="$KEY_DATA $KEY_COMMENT"
+
+  touch "$AUTH_KEYS"
+  chmod 600 "$AUTH_KEYS" 2>/dev/null || true
+
+  if grep -qF "$KEY_DATA" "$AUTH_KEYS" 2>/dev/null; then
+    if grep -qF "$AUTH_LINE" "$AUTH_KEYS" 2>/dev/null; then
+      SKIPPED=$((SKIPPED + 1))
+    else
+      sed -i.bak "s|^$KEY_DATA.*|$AUTH_LINE|" "$AUTH_KEYS" && rm -f "$AUTH_KEYS.bak"
+      UPDATED=$((UPDATED + 1))
+    fi
+  else
+    echo "$AUTH_LINE" >> "$AUTH_KEYS"
+    ADDED=$((ADDED + 1))
+  fi
+done < "$KEYS_FILE"
+
+TOTAL="$(grep -cvE '^\s*(#|$)' "$AUTH_KEYS" 2>/dev/null || echo 0)"
+echo "==> [ssh-auth] Keys added: $ADDED, updated: $UPDATED, unchanged: $SKIPPED"
+echo "==> [ssh-auth] $TOTAL key(s) total in authorized_keys."
