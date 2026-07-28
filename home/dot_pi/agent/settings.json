@@ -4,11 +4,13 @@
     "defaultModel": "deepseek-v4-flash",
     "defaultProvider": "ollama-cloud"
   },
-  "defaultModel": "deepseek-v4-flash-free",
-  "defaultProvider": "opencode",
+  "defaultModel": "deepseek-v4-flash",
+  "defaultProvider": "ollama-cloud",
   "theme": "rose-pine-moon",
-  "npmCommand": ["pnpm"],
-  "lastChangelogVersion": "0.79.1",
+  "npmCommand": [
+      "pnpm"
+  ],
+  "lastChangelogVersion": "0.80.6",
   "defaultThinkingLevel": "high",
   "workingVibe": "off",
   "packages": [
