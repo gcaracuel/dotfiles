@@ -9,3 +9,4 @@ debug.log
 packages/Brewfile.lock.json
 packages/Brewfile.work.lock.json
 
+.chezmoistate.boltdb

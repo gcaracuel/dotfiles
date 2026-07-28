@@ -1,0 +1,261 @@
+#!/usr/bin/env bash
+# remote-mode — Toggle remote access services on/off
+#
+# Usage:
+#   sudo remote-mode on       Start tailscale + SSH server
+#   sudo remote-mode off      Stop tailscale + SSH server
+#   sudo remote-mode status   Show current state
+#
+# All actions need sudo. Run without sudo and the script tells you.
+# SSH key managed by chezmoi (run_onchange_13-ssh-auth-keys).
+# herdr installed via cargo/cargo-packages.txt.
+
+set -euo pipefail
+
+ACTION="${1:-status}"
+OS="$(uname -s)"
+
+# ─── Sudo check ─────────────────────────────────────────────────────────────
+
+needs_sudo() {
+  if [ "$(id -u)" -ne 0 ]; then
+    echo "ERROR: this action needs root. Run with:"
+    echo "  sudo remote-mode $ACTION"
+    exit 1
+  fi
+}
+
+# ─── Tailscale helpers ──────────────────────────────────────────────────────
+
+tailscale_hostname() {
+  if command -v python3 &>/dev/null; then
+    local h
+    h="$(tailscale status --json 2>/dev/null | python3 -c "
+import sys, json
+try:
+    d = json.load(sys.stdin)
+    name = d.get('Self', {}).get('DNSName', '')
+    print(name.rstrip('.'))
+except: pass
+" 2>/dev/null || true)"
+    [ -n "$h" ] && echo "$h" && return 0
+  fi
+  tailscale ip -4 2>/dev/null || true
+}
+
+# ─── Tailscale ──────────────────────────────────────────────────────────────
+
+tailscale_on() {
+  if ! command -v tailscale &>/dev/null; then
+    echo "  ! tailscale not installed"
+    return 1
+  fi
+  if tailscale status 2>/dev/null | grep -qE '^\s*100\.'; then
+    echo "  ✓ tailscale already connected"
+    return 0
+  fi
+  case "$OS" in
+    Darwin)
+      if ! launchctl list 2>/dev/null | grep -qE 'tailscale|tailscaled'; then
+        echo "  → Starting tailscale service..."
+        if command -v brew &>/dev/null; then
+          brew services start tailscale 2>/dev/null || true
+        else
+          /opt/homebrew/opt/tailscale/bin/tailscaled 2>/dev/null &
+        fi
+        sleep 3
+      fi
+      ;;
+    Linux)
+      if command -v systemctl &>/dev/null; then
+        if ! systemctl is-active --quiet tailscaled 2>/dev/null; then
+          echo "  → Starting tailscale service..."
+          systemctl start tailscaled 2>/dev/null || true
+          sleep 2
+        fi
+      fi
+      ;;
+  esac
+  echo "  → Connecting tailscale..."
+  tailscale up
+}
+
+tailscale_off() {
+  if command -v tailscale &>/dev/null; then
+    echo "  → Disconnecting tailscale..."
+    tailscale down
+  fi
+}
+
+tailscale_status() {
+  if ! command -v tailscale &>/dev/null; then
+    echo "  tailscale: NOT INSTALLED"
+    return 1
+  fi
+  # Check connection via tailscale status (ip -4 returns IP even when disconnected)
+  if ! tailscale status 2>/dev/null | grep -qE '^\s*100\.'; then
+    echo "  tailscale: OFF"
+    return 1
+  fi
+  local ip
+  ip="$(tailscale ip -4 2>/dev/null || true)"
+  local host
+  host="$(tailscale_hostname)"
+  echo "  tailscale: ON"
+  echo "  ip:        $ip"
+  [ -n "$host" ] && echo "  hostname:  $host"
+  return 0
+}
+
+# ─── SSH Server ─────────────────────────────────────────────────────────────
+
+ssh_on() {
+  case "$OS" in
+    Darwin)
+      echo "  → Enabling Remote Login..."
+      if systemsetup -getremotelogin 2>/dev/null | grep -qi "On"; then
+        echo "  ✓ Remote Login already on"
+      else
+        # Try launchctl path first (no Full Disk Access needed)
+        if [ -f /System/Library/LaunchDaemons/ssh.plist ]; then
+          launchctl load -w /System/Library/LaunchDaemons/ssh.plist 2>/dev/null && {
+            echo "  ✓ SSH service started via launchctl"
+            return 0
+          }
+        fi
+        # Fallback: systemsetup (needs Full Disk Access)
+        systemsetup -setremotelogin on 2>/dev/null && {
+          echo "  ✓ Remote Login enabled"
+          return 0
+        }
+        echo "  ! Could not enable SSH. Grant Full Disk Access to Terminal in"
+        echo "    System Settings > Privacy & Security > Full Disk Access"
+        return 1
+      fi
+      ;;
+    Linux)
+      local svc=""
+      systemctl is-active --quiet sshd 2>/dev/null && svc=sshd || true
+      systemctl is-active --quiet ssh 2>/dev/null && svc=ssh || true
+      if [ -n "$svc" ]; then
+        echo "  → $svc already running"
+      elif systemctl list-units --type=service 2>/dev/null | grep -qE '\bsshd?\b'; then
+        svc=$(systemctl list-units --type=service 2>/dev/null | grep -oE '\bsshd?\b' | head -1)
+        echo "  → Starting $svc..."
+        systemctl enable --now "$svc"
+      else
+        echo "  ! SSH server not found. Install openssh."
+        return 1
+      fi
+      ;;
+  esac
+}
+
+ssh_off() {
+  case "$OS" in
+    Darwin)
+      echo "  → Disabling Remote Login..."
+      if launchctl list 2>/dev/null | grep -q com.openssh.sshd; then
+        launchctl unload -w /System/Library/LaunchDaemons/ssh.plist 2>/dev/null || true
+      fi
+      systemsetup -f -setremotelogin off 2>/dev/null || true
+      ;;
+    Linux)
+      for svc in sshd ssh; do
+        if systemctl is-active --quiet "$svc" 2>/dev/null; then
+          echo "  → Stopping $svc..."
+          systemctl disable --now "$svc" 2>/dev/null || true
+        fi
+      done
+      ;;
+  esac
+}
+
+ssh_status() {
+  case "$OS" in
+    Darwin)
+      if sudo launchctl list 2>/dev/null | grep -q com.openssh.sshd; then
+        echo "  ssh:       ON"
+        return 0
+      elif systemsetup -getremotelogin 2>/dev/null | grep -qi "On"; then
+        echo "  ssh:       ON"
+        return 0
+      else
+        echo "  ssh:       OFF"
+        return 1
+      fi
+      ;;
+    Linux)
+      local svc=""
+      systemctl is-active --quiet sshd 2>/dev/null && svc=sshd || true
+      systemctl is-active --quiet ssh 2>/dev/null && svc=ssh || true
+      if [ -n "$svc" ]; then
+        echo "  ssh:       ON ($svc)"
+        return 0
+      else
+        echo "  ssh:       OFF"
+        return 1
+      fi
+      ;;
+  esac
+}
+
+# ─── Main ───────────────────────────────────────────────────────────────────
+
+case "$ACTION" in
+  on|start|enable)
+    needs_sudo
+    echo "═══ Remote MODE ON ═══"
+    echo ""
+    tailscale_on || true
+    ssh_on || true
+    echo ""
+    echo "  ✓ Tailscale + SSH enabled."
+    echo ""
+    echo "  Connect from phone:"
+    echo "    Host: $(tailscale_hostname 2>/dev/null || echo '<tailscale-ip>')"
+    echo "    User: ${SUDO_USER:-$(whoami)}"
+    echo "    Port: 22"
+    echo ""
+    echo "  After SSH: herdr"
+    ;;
+
+  off|stop|disable)
+    needs_sudo
+    echo "═══ Remote MODE OFF ═══"
+    echo ""
+    ssh_off || true
+    tailscale_off || true
+    echo ""
+    echo "  ✓ Remote access disabled."
+    ;;
+
+  status|info)
+    needs_sudo
+    EXIT=0
+    echo "=== Remote Mode Status ==="
+    echo "  user:     $(whoami)@$(hostname -s 2>/dev/null || hostname)"
+    echo "  os:       $OS"
+    echo ""
+    tailscale_status || EXIT=$?
+    ssh_status || EXIT=$?
+    exit $EXIT
+    ;;
+
+  help|--help|-h)
+    echo "remote-mode — Toggle remote access (tailscale + SSH)"
+    echo ""
+    echo "Usage:"
+    echo "  sudo remote-mode on      Start tailscale + SSH server"
+    echo "  sudo remote-mode off     Stop tailscale + SSH server"
+    echo "  remote-mode status       Show current state"
+    echo ""
+    echo "all actions need sudo. run with: sudo remote-mode <action>"
+    ;;
+
+  *)
+    echo "Usage: remote-mode {on|off|status|help}"
+    echo "all actions need sudo. run with: sudo remote-mode <action>"
+    exit 1
+    ;;
+esac

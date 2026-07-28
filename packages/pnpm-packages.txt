@@ -6,5 +6,4 @@
 opencode-ai                          # AI code assistant
 @termdraw/app                        # Agent-friendly ASCII illustrator for the terminal
 @earendil-works/pi-coding-agent      # Pi Agent AI coding assistant
-@getpaseo/cli                         # Paseo CLI/server (cross-platform)
 # force-run: 2026-06-02T08:15:11Z
