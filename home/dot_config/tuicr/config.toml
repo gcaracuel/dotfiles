@@ -1,0 +1,15 @@
+# ~/.config/tuicr/config.toml
+# Managed by chezmoi — edit via: chezmoi edit ~/.config/tuicr/config.toml
+
+theme = "catppuccin-mocha"
+show_file_list = true
+diff_view = "unified"
+wrap = false
+
+comment_types = [
+  { id = "praise",    label = "PRAISE",    definition = "positive feedback",                              color = "#a6e3a1" },
+  { id = "suggestion", label = "SUGGESTION", definition = "possible improvements",                        color = "#89b4fa" },
+  { id = "note",      label = "NOTE",      definition = "observations or questions for clarification",    color = "#f9e2af" },
+  { id = "issue",     label = "ISSUE",     definition = "problems that should be fixed",                 color = "#f38ba8" },
+  { id = "nit",       label = "NITPICK",   definition = "small optional tweaks",                         color = "#cba6f7" },
+]
