@@ -24,8 +24,7 @@ brew "ripgrep"            # grep replacement
 brew "jq"                 # JSON processor
 brew "yq"                 # YAML processor
 brew "git-delta"          # Git diff viewer
-brew "hunk"               # Review-first terminal diff viewer for agentic coders
-# TODO: hunk likely deprecated by tuicr (cargo) — remove once tuicr stable
+brew "hunk"               # Review-first terminal diff viewer for agentic coders. TODO: hunk likely deprecated by tuicr (cargo) — remove once tuicr stable
 
 # =============================================================================
 # Terminal & Shell
