@@ -14,5 +14,6 @@ worktrunk                                        # Git worktree manager
 rtk|https://github.com/rtk-ai/rtk.git           # AI CLI for code generation
 agent-browser                                    # Browser automation CLI (pi-agent-browser-native dep)
 herdr|https://github.com/ogulcancelik/herdr.git   # Agent multiplexer for coding agents
+tuicr                                            # TUI for local code review (may deprecate hunk)
 # force-run: 2026-07-15T07:25:00Z
 # force-run: 2026-07-15T07:25:00Z

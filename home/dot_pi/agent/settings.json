@@ -20,6 +20,7 @@
     "git:github.com/fitchmultz/pi-agent-browser-native@4104f67d97595a82622cade34b149b398481d8d0",
     "npm:@narumitw/pi-statusline",
     "npm:@termdraw/pi@0.4.1",
-    "git:github.com/baflow/pi-model-cycler@800e42432d73ea53eda7627dae95ae30763cc2fa"
+    "git:github.com/baflow/pi-model-cycler@800e42432d73ea53eda7627dae95ae30763cc2fa",
+    "git:github.com/aldoborrero/pi-agent-kit@128c4c08396961ea8f934111ba1aad0b33c525b2"
   ]
 }
