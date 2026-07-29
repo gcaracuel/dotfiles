@@ -14,6 +14,7 @@
   "defaultThinkingLevel": "high",
   "workingVibe": "off",
   "packages": [
+    "git:github.com/fgrehm/pi-ollama-cloud@e5de23f619c440def33ee6296b1e9c8eca29a446",
     "git:github.com/MasuRii/pi-rtk-optimizer@f98235021c70a9d91c680f0e99a862f96aa068c6",
     "git:github.com/dbachelder/pi-btw@742f0ee7721ea8dcc9fc8d5ff62719a108ee662e",
     "git:github.com/jonjonrankin/pi-caveman@0d4c639d672b0b80afaa035f582152dcab9c6a8f",
