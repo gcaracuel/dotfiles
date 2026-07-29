@@ -23,6 +23,6 @@
     "npm:@narumitw/pi-statusline",
     "npm:@termdraw/pi@0.4.1",
     "git:github.com/baflow/pi-model-cycler@800e42432d73ea53eda7627dae95ae30763cc2fa",
-    "git:github.com/aldoborrero/pi-agent-kit@128c4c08396961ea8f934111ba1aad0b33c525b2"
+    "https://git.sr.ht/~cherry_ramatis/pi-tuicr@a017c75ad6fefc98a7a64aca453b2aa33764a03d"
   ]
 }
