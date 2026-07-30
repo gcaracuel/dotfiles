@@ -4,15 +4,17 @@
     "defaultModel": "deepseek-v4-flash",
     "defaultProvider": "ollama-cloud"
   },
-  "defaultModel": "deepseek-v4-flash-free",
-  "defaultProvider": "opencode",
+  "defaultModel": "deepseek-v4-flash",
+  "defaultProvider": "ollama-cloud",
   "theme": "rose-pine-moon",
-  "npmCommand": ["pnpm"],
-  "lastChangelogVersion": "0.79.1",
+  "npmCommand": [
+      "pnpm"
+  ],
+  "lastChangelogVersion": "0.80.6",
   "defaultThinkingLevel": "high",
   "workingVibe": "off",
   "packages": [
-    "git:github.com/fgrehm/pi-ollama-cloud@f24c9b1be53c4bb514c5fb7a576add2b9c03c308",
+    "git:github.com/fgrehm/pi-ollama-cloud@e5de23f619c440def33ee6296b1e9c8eca29a446",
     "git:github.com/MasuRii/pi-rtk-optimizer@f98235021c70a9d91c680f0e99a862f96aa068c6",
     "git:github.com/dbachelder/pi-btw@742f0ee7721ea8dcc9fc8d5ff62719a108ee662e",
     "git:github.com/jonjonrankin/pi-caveman@0d4c639d672b0b80afaa035f582152dcab9c6a8f",
@@ -20,6 +22,7 @@
     "git:github.com/fitchmultz/pi-agent-browser-native@4104f67d97595a82622cade34b149b398481d8d0",
     "npm:@narumitw/pi-statusline",
     "npm:@termdraw/pi@0.4.1",
-    "git:github.com/baflow/pi-model-cycler@800e42432d73ea53eda7627dae95ae30763cc2fa"
+    "git:github.com/baflow/pi-model-cycler@800e42432d73ea53eda7627dae95ae30763cc2fa",
+    "https://git.sr.ht/~cherry_ramatis/pi-tuicr@a017c75ad6fefc98a7a64aca453b2aa33764a03d"
   ]
 }

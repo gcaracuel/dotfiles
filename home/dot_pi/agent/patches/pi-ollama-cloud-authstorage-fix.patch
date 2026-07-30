@@ -1,0 +1,32 @@
+# Patch: pi-ollama-cloud AuthStorage → readStoredCredential
+# Required for pi v0.82.1+ (AuthStorage removed from exports)
+# Apply after pi installs/updates the extension:
+#   cd ~/.pi/agent/git/github.com/fgrehm/pi-ollama-cloud
+#   git apply /path/to/this/patch
+
+diff --git a/web-tools.ts b/web-tools.ts
+index abc123..def456 100644
+--- a/web-tools.ts
++++ b/web-tools.ts
+@@ -8,7 +8,7 @@
+  * Does NOT depend on provider registration or model fetching internals.
+  */
+ 
+-import { AuthStorage, type ExtensionAPI, keyHint, truncateToVisualLines } from "@earendil-works/pi-coding-agent";
++import { readStoredCredential, type ExtensionAPI, keyHint, truncateToVisualLines } from "@earendil-works/pi-coding-agent";
+ import { Text, truncateToWidth } from "@earendil-works/pi-tui";
+ import { Type } from "@sinclair/typebox";
+ import { OLLAMA_BASE } from "./models.ts";
+@@ -31,10 +31,8 @@ interface FetchResponse {
+ 
+ // --- Helpers ---
+ 
+-const authStorage = AuthStorage.create();
+-
+ async function getCloudApiKey(): Promise<string | undefined> {
+-  return authStorage.getApiKey("ollama-cloud") ?? process.env.OLLAMA_API_KEY;
++  const credential = readStoredCredential("ollama-cloud");
++  return credential?.key ?? process.env.OLLAMA_API_KEY;
+ }
+ 
+ function noApiKeyError() {
