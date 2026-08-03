@@ -18,7 +18,7 @@
     "git:github.com/MasuRii/pi-rtk-optimizer@f98235021c70a9d91c680f0e99a862f96aa068c6",
     "npm:pi-atelier@0.7.0",
     {
-      "source": "git:git@github.com:gcaracuel/pi-extensions@5e4c95589086682d4beb16320efc0a4f189eab73",
+      "source": "git:git@github.com:gcaracuel/pi-extensions@08088179278fed160cad47c93a9389fba2c6d50d",
       "extensions": [
         "extensions/pi-tuicr/src/index.ts",
         "extensions/pi-model-cycler/index.ts",
