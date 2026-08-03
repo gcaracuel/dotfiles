@@ -16,7 +16,7 @@
   "packages": [
     "git:github.com/fgrehm/pi-ollama-cloud@e5de23f619c440def33ee6296b1e9c8eca29a446",
     "git:github.com/MasuRii/pi-rtk-optimizer@f98235021c70a9d91c680f0e99a862f96aa068c6",
-    "npm:pi-atelier",
+    "git:github.com/michaelmjhhhh/pi-atelier@d78f1d113814af4eee6deb9f4418f96cf50c66fa",
     {
       "source": "git:github.com/gcaracuel/pi-extensions@24cc53c462c62ce053aa70bf7c9cef8d4d2f715c",
       "extensions": [
