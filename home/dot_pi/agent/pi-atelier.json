@@ -1,0 +1,11 @@
+{
+  "preset": "editorial",
+  "shortcut": "alt+a",
+  "density": "comfortable",
+  "contextWarning": 70,
+  "contextDanger": 90,
+  "currencyDecimals": 3,
+  "showSessionActions": true,
+  "showSidebarToolNames": false,
+  "completionNotifications": true
+}
