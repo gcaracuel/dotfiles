@@ -1,0 +1,22 @@
+{
+  "preset": "editorial",
+  "shortcut": "alt+a",
+  "density": "comfortable",
+  "segmentLayout": [
+    { "id": "brand", "visible": false },
+    { "id": "activity", "visible": false },
+    { "id": "metrics", "visible": true },
+    { "id": "performance", "visible": false },
+    { "id": "context", "visible": true },
+    { "id": "model", "visible": true },
+    { "id": "git", "visible": true },
+    { "id": "statuses", "visible": true },
+    { "id": "menu", "visible": true }
+  ],
+  "contextWarning": 70,
+  "contextDanger": 90,
+  "currencyDecimals": 3,
+  "showSessionActions": true,
+  "showSidebarToolNames": false,
+  "completionNotifications": true
+}
