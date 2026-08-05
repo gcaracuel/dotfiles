@@ -12,6 +12,8 @@
 [push]
 	default = simple
 	autoSetupRemote = true
+[branch]
+	autoSetupMerge = always
 [mergetool]
 	prompt = false
 [merge]
