@@ -6,6 +6,9 @@
 worktree-path = "{{ repo_path }}/../{{ branch | sanitize }}"
 skip-commit-generation-prompt = true
 
+[list]
+json-schema = 2
+
 [switch.picker]
 # Pager command for diff preview (overrides git's core.pager)
 pager = "delta --paging=never"
